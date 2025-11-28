@@ -1,0 +1,19 @@
+.contenedor {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 13px;
+    box-shadow: 0px 4px 15px rgb(0, 0, 0);
+}
+
+
+.titulo-bienvenida {
+    background-color: rgb(148, 183, 185);   /* color del recuadro */
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: block;             /* ocupa toda la línea */
+    width: 100%;                /* asegura el ancho total */
+    font-weight: bold;
+    font-family: lato;
+}
+
