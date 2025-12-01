@@ -6,6 +6,9 @@ from datetime import datetime
 app = Flask(__name__, static_folder="static")
 app.secret_key = "CAMBIA_ESTA_CLAVE_POR_ALGO_SEGURO"
 
+
+
+######se actualiza datos #########33
 # -------------------------
 # CONFIGURACIÓN BD (POSTGRES)
 # Ajusta los valores según tu entorno pgAdmin4
