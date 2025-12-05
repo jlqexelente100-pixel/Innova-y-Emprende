@@ -58,4 +58,23 @@ h1 {
 
 .link-lateral:hover {
     color: rgb(54, 131, 112);
+    text-decoration: underline;
+}
+
+.recuperar-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.link-recuperar {
+    color: rgb(28, 107, 77);
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.link-recuperar:hover {
+    color: rgb(54, 131, 112);
+    text-decoration: underline;
 }

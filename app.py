@@ -38,8 +38,8 @@ def conectar_bd():
         return None
     
 def enviar_correo(destinatario, enlace):
-    remitente = "necoarksita@gmail.com"
-    password = "mubt lsbr lmgn nouf"  # 16 caracteres
+    remitente = "innovayemprende1@gmail.com"
+    password = "mhgy yxgi qtuw myjl"  # 16 caracteres
 
     mensaje = MIMEMultipart("alternative")
     mensaje["Subject"] = "Recuperación de contraseña"
@@ -72,7 +72,7 @@ def recuperar():
     if request.method == "GET":
         return render_template("recuperar.html")
 
-    email = request.form["email"]
+    email = request.form.get("email")
 
     conn = conectar_bd()
     cur = conn.cursor()
@@ -213,6 +213,7 @@ def crear_tablas():
     cur.execute("SELECT COUNT(*) FROM cursos;")
     ccount = cur.fetchone()[0]
     if ccount == 0:
+
         # crear un profesor ejemplo
         cur.execute("SELECT id FROM usuarios WHERE correo = %s;", ("profesor@demo.test",))
         r = cur.fetchone()
@@ -234,7 +235,6 @@ def crear_tablas():
     conn.close()
     print("Tablas creadas/verificadas y datos iniciales insertados (si hacía falta).")
 
-crear_tablas()
 
 # --------------------------
 # RUTAS DE FRONTEND (HTML)
