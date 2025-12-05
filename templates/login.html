@@ -10,13 +10,13 @@
 </head>
 <body>
   
-  <div class="fondo">
+   <div class="fondo">
     
-    <img src="static\styles\imagenes\logo_nova-F.png" class="logo">
+      <img src="{{ url_for('static', filename='styles/imagenes/logo_nova-F.png') }}" alt="Logo" class="logo">
 
    <div class="contenedor">
       <h1 class="titulo-bienvenida">Bienvenido</h1>
-      <hr>
+      
       <br>
       
       <!-- Mostrar mensajes flash si existen -->
@@ -48,11 +48,11 @@
             </label>
          </div>
          
-         <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
+         <div class="btn-container">
+            <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
+            <a class="link-lateral" href="{{ url_for('registrar') }}">Crear cuenta</a>
+         </div>
       </form>
-      
-      <br>
-      <a href="{{ url_for('registrar') }}">Crear cuenta</a>
    </div>
 
  </div>
