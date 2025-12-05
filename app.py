@@ -2,11 +2,16 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 import psycopg2
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from itsdangerous import URLSafeTimedSerializer
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
 
 app = Flask(__name__, static_folder="static")
 app.secret_key = "CAMBIA_ESTA_CLAVE_POR_ALGO_SEGURO"
 
-
+serializer = URLSafeTimedSerializer(app.secret_key)
 
 ######se actualiza datos #########33
 # -------------------------
@@ -31,6 +36,95 @@ def conectar_bd():
     except Exception as e:
         print("Error al conectar a la BD:", e)
         return None
+    
+def enviar_correo(destinatario, enlace):
+    remitente = "necoarksita@gmail.com"
+    password = "mubt lsbr lmgn nouf"  # 16 caracteres
+
+    mensaje = MIMEMultipart("alternative")
+    mensaje["Subject"] = "Recuperación de contraseña"
+    mensaje["From"] = remitente
+    mensaje["To"] = destinatario
+
+    html = f"""
+    <p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+    <a href="{enlace}">{enlace}</a>
+    """
+
+    mensaje.attach(MIMEText(html, "html"))
+
+    try:
+        servidor = smtplib.SMTP("smtp.gmail.com", 587)
+        servidor.starttls()
+        servidor.login(remitente, password)
+        servidor.sendmail(remitente, destinatario, mensaje.as_string())
+        servidor.quit()
+
+        print("Correo enviado correctamente.")
+    except Exception as e:
+        print("Error al enviar correo:", e)
+
+# ------------------------------------------------
+# 1. Página para pedir el correo
+# ------------------------------------------------
+@app.route("/recuperar", methods=["GET", "POST"])
+def recuperar():
+    if request.method == "GET":
+        return render_template("recuperar.html")
+
+    email = request.form["email"]
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    # CAMBIO NECESARIO: email → correo
+    cur.execute("SELECT id FROM usuarios WHERE correo = %s", (email,))
+    
+    user = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if user:
+        token = serializer.dumps(email, salt="recuperar-salt")
+        link = f"http://localhost:5000/restablecer/{token}"
+
+        # Aquí normalmente ENVÍAS CORREO
+        enviar_correo(email, link)
+
+    return "Si el correo existe, enviaremos un enlace de recuperación."
+
+# ------------------------------------------------
+# 2. Página del enlace recibido por correo
+# ------------------------------------------------
+@app.route("/restablecer/<token>", methods=["GET", "POST"])
+def restablecer(token):
+    try:
+        email = serializer.loads(token, salt="recuperar-salt", max_age=3600)
+    except:
+        return "El enlace ha expirado o no es válido."
+
+    if request.method == "POST":
+        nueva = request.form["password"]
+
+        # CAMBIO NECESARIO: aplicar hash
+        nueva_hash = generate_password_hash(nueva)
+
+        conn = conectar_bd()
+        cur = conn.cursor()
+
+        # CAMBIO NECESARIO: password → password_hash, email → correo
+        cur.execute(
+            "UPDATE usuarios SET password_hash = %s WHERE correo = %s",
+            (nueva_hash, email)
+        )
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return "Contraseña actualizada correctamente."
+
+    return render_template("restablecer.html")    
 
 # -----------------------------------
 # Crear tablas si no existen
