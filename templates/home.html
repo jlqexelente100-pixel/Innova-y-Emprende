@@ -4,13 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innova y Emprende</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}">                
-  
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}">
+
+    <style>
+
+       
+    </style>
 </head>
 
 <body>
 
-    
+    <!-- Nubes animadas -->
+    <div class="clouds">
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+        <div class="cloud cloud4"></div>
+        <div class="cloud cloud5"></div>
+        <div class="cloud cloud6"></div>
+    </div>
+
     <nav>
         <div class="logo-area">
             <img src="{{ url_for('static', filename='styles/imagenes/logo_nova-F.png') }}" alt="logo">
@@ -18,10 +32,9 @@
         </div>
 
         <ul>
-            <li><a href="#plataforma">Plataforma</a></li>
             <li><a href="#servicios">Servicios</a></li>
             <li><a href="#recursos">Recursos</a></li>
-            <li><a href="#precios">Precios</a></li>
+            <li><a href="contactanos">Contáctanos</a></li>
         </ul>
 
         <div style="display: flex; gap: 12px;">
@@ -35,11 +48,7 @@
         <h1>El futuro del emprendimiento comienza aquí</h1>
         <p>Impulsa tus ideas, crea oportunidades y transforma tu proyecto con la ayuda de herramientas modernas y visión innovadora.</p>
 
-        <div class="form-container">
-            <a href="{{ url_for('registrar') }}" class="btn-green" style="text-decoration: none; display: inline-block;">Registrarme</a>
-            <a href="{{ url_for('login') }}" class="btn-blue-border" style="text-decoration: none; display: inline-block;">Iniciar sesión</a>
-        </div>
-
+    
         <!-- Imagen del búho como ilustración principal -->
         <img src="{{ url_for('static', filename='styles/imagenes/buho.png') }}" alt="logo">
     </section>

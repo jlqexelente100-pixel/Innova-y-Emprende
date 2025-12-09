@@ -72,6 +72,8 @@
         .hero {
             text-align: center;
             padding: 100px 20px 40px;
+            position: relative;
+            z-index: 2;
         }
 
         .hero h1 {
@@ -89,9 +91,112 @@
         }
 
         .hero img {
-            width: 300px;     /* antes: 250px */
+            width: 450px;     /* aumentado de 300px */
             animation: float 3s ease-in-out infinite;
             margin-top: 25px;
+        }
+
+        /* Nubes animadas */
+        .clouds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            opacity: 0.6;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+        }
+
+        .cloud::before {
+            width: 30px;
+            height: 30px;
+            top: -15px;
+            left: 10px;
+        }
+
+        .cloud::after {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            right: 10px;
+        }
+
+        .cloud1 {
+            width: 80px;
+            height: 30px;
+            top: 40%;
+            left: -80px;
+            animation: moveCloud 20s linear infinite;
+        }
+
+        .cloud2 {
+            width: 100px;
+            height: 35px;
+            top: 55%;
+            right: -100px;
+            animation: moveCloud 25s linear infinite;
+            animation-delay: 5s;
+        }
+
+        .cloud3 {
+            width: 90px;
+            height: 32px;
+            top: 50%;
+            left: -90px;
+            animation: moveCloud 30s linear infinite;
+            animation-delay: 10s;
+        }
+
+        .cloud4 {
+            width: 95px;
+            height: 33px;
+            top: 60%;
+            right: -95px;
+            animation: moveCloud 28s linear infinite;
+            animation-delay: 2s;
+        }
+
+        .cloud5 {
+            width: 85px;
+            height: 31px;
+            top: 45%;
+            left: -85px;
+            animation: moveCloud 22s linear infinite;
+            animation-delay: 8s;
+        }
+
+        .cloud6 {
+            width: 100px;
+            height: 36px;
+            top: 65%;
+            right: -100px;
+            animation: moveCloud 26s linear infinite;
+            animation-delay: 12s;
+        }
+
+        @keyframes moveCloud {
+            0% {
+                left: -100px;
+            }
+            100% {
+                left: 100vw;
+            }
         }
 
 
