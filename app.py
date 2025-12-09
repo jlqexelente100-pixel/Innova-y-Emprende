@@ -38,8 +38,11 @@ def conectar_bd():
         return None
     
 def enviar_correo(destinatario, enlace):
+    """Envía un correo con el enlace de recuperación.
+    Devuelve True si el envío fue exitoso, False en caso contrario.
+    """
     remitente = "innovayemprende1@gmail.com"
-    password = "mhgy yxgi qtuw myjl"  # 16 caracteres
+    password = "mhgy yxgi qtuw myjl"  # Asegúrate de usar un App Password válido
 
     mensaje = MIMEMultipart("alternative")
     mensaje["Subject"] = "Recuperación de contraseña"
@@ -47,22 +50,24 @@ def enviar_correo(destinatario, enlace):
     mensaje["To"] = destinatario
 
     html = f"""
-    <p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
-    <a href="{enlace}">{enlace}</a>
+    <p>Haz clic en el siguiente enlace para restablecer tu contraseña (válido 1 hora):</p>
+    <p><a href="{enlace}">{enlace}</a></p>
     """
 
     mensaje.attach(MIMEText(html, "html"))
 
     try:
-        servidor = smtplib.SMTP("smtp.gmail.com", 587)
+        servidor = smtplib.SMTP("smtp.gmail.com", 587, timeout=20)
+        servidor.ehlo()
         servidor.starttls()
         servidor.login(remitente, password)
         servidor.sendmail(remitente, destinatario, mensaje.as_string())
         servidor.quit()
-
-        print("Correo enviado correctamente.")
+        print("Correo enviado correctamente a:", destinatario)
+        return True
     except Exception as e:
         print("Error al enviar correo:", e)
+        return False
 
 # ------------------------------------------------
 # 1. Página para pedir el correo
@@ -72,26 +77,35 @@ def recuperar():
     if request.method == "GET":
         return render_template("recuperar.html")
 
-    email = request.form.get("email")
+    correo = request.form.get("correo") or request.form.get("email")
+    if not correo:
+        flash("Ingresa un correo válido.")
+        return redirect(url_for("recuperar"))
 
     conn = conectar_bd()
-    cur = conn.cursor()
+    if not conn:
+        flash("Error de conexión a la base de datos. Intenta más tarde.")
+        return redirect(url_for("recuperar"))
 
-    # CAMBIO NECESARIO: email → correo
-    cur.execute("SELECT id FROM usuarios WHERE correo = %s", (email,))
-    
+    cur = conn.cursor()
+    cur.execute("SELECT id FROM usuarios WHERE correo = %s", (correo,))
     user = cur.fetchone()
     cur.close()
     conn.close()
 
     if user:
-        token = serializer.dumps(email, salt="recuperar-salt")
-        link = f"http://localhost:5000/restablecer/{token}"
+        token = serializer.dumps(correo, salt="recuperar-salt")
+        link = url_for('restablecer', token=token, _external=True)
+        enviado = enviar_correo(correo, link)
+        if enviado:
+            flash("Hemos enviado un enlace de recuperación a tu correo electronico.")
+        else:
+            flash("No se pudo enviar el correo. Verifica la configuración del servidor de correo.")
+    else:
+        
+        flash("Hemos enviado un enlace de recuperación a tu correo electronico.")
 
-        # Aquí normalmente ENVÍAS CORREO
-        enviar_correo(email, link)
-
-    return "Si el correo existe, enviaremos un enlace de recuperación."
+    return redirect(url_for("login"))
 
 # ------------------------------------------------
 # 2. Página del enlace recibido por correo
@@ -239,10 +253,18 @@ def crear_tablas():
 # --------------------------
 # RUTAS DE FRONTEND (HTML)
 # --------------------------
+
+
 @app.route("/")
 @app.route("/home")
-def index():
+def home():
     return render_template("home.html")
+
+
+@app.route("/index")
+def index():
+    return render_template("index.html")
+
 
 @app.route("/login", methods=["GET","POST"])
 def login():

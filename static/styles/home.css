@@ -5,8 +5,9 @@
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
-            background: radial-gradient(circle at top, #003B91, #001A33 70%);
+            background: linear-gradient(180deg, #007b91 0%, #006172 30%, #003842 60%, #001a1f 100%);
             color: white;
+            min-height: 100vh;
         }
 
         nav {
@@ -25,8 +26,8 @@
         }
 
         .logo-area img {
-            width: 55px;
-            height: 55px;
+            width: 60px;
+            height: 60px;
         }
 
         .logo-area span {
@@ -91,9 +92,9 @@
         }
 
         .hero img {
-            width: 450px;     /* aumentado de 300px */
+            width: 500px;     
             animation: float 3s ease-in-out infinite;
-            margin-top: 25px;
+            margin-top: -90px;  /* movido más arriba */
         }
 
         /* Nubes animadas */
@@ -217,30 +218,7 @@
             outline: none;
         }
 
-        .btn-green {
-            background: #22c55e;
-            padding: 14px 22px;
-            border-radius: 10px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            color: white;
-            transition: 0.3s;
-        }
-
-        .btn-green:hover {
-            background: #16a34a;
-        }
-
-        .btn-blue-border {
-            padding: 14px 22px;
-            border-radius: 10px;
-            border: 2px solid #7dd3fc;
-            background: transparent;
-            color: #7dd3fc;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+    
 
         .btn-blue-border:hover {
             background: #7dd3fc;

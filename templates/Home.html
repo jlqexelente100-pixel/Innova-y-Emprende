@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innova y Emprende</title>
+
+     <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top, #003B91, #001A33 70%);
+            color: white;
+        }
+
+        /* NAV */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-area img {
+            width: 55px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .logo-area span {
+            font-size: 1.4rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #cfd8ff;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: white;
+        }
+
+        .btn-nav {
+            padding: 8px 18px;
+            border: 1px solid white;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-nav:hover {
+            background: white;
+            color: #001A33;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 100px 20px 40px;
+        }
+
+        .hero h1 {
+            font-size: 3.1rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: auto;
+            opacity: 0.9;
+            margin-bottom: 35px;
+        }
+
+        /* Imagen del búho */
+        .hero img {
+            width: 380px; /* MÁS GRANDE */
+            margin-top: 20px;
+            animation: none; /* SIN MOVIMIENTO */
+        }
+
+        /* FORMULARIO */
+        .form-container {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .form-container input {
+            padding: 14px 18px;
+            width: 260px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+        }
+
+        .btn-green {
+            background: #22c55e;
+            padding: 14px 22px;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .btn-green:hover {
+            background: #16a34a;
+        }
+
+        .btn-blue-border {
+            padding: 14px 22px;
+            border-radius: 10px;
+            border: 2px solid #7dd3fc;
+            background: transparent;
+            color: #7dd3fc;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-blue-border:hover {
+            background: #7dd3fc;
+            color: #001A33;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <div class="logo-area">
+           <img src="{{ url_for('static', filename='styles/imagenes/logo_nova-F.png') }}" class="logo">
+            <span>Innova y Emprende</span>
+        </div>
+
+        <ul>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="recursos.html">Recursos</a></li>
+        </ul>
+
+        <a class="btn-nav" href="#">Iniciar sesión</a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <h1>El futuro del emprendimiento comienza aquí</h1>
+        <p>Impulsa tus ideas, crea oportunidades y transforma tu proyecto con la ayuda de herramientas modernas y visión innovadora.</p>
+
+        <div class="form-container">
+            <input type="email" placeholder="Introduce tu correo electrónico">
+            <button class="btn-green">Registrarme</button>
+            <button class="btn-blue-border">Saber más</button>
+        </div>
+
+        <!-- Imagen del búho como ilustración principal -->
+        <img src="{{ url_for('static', filename='styles/imagenes/Buhoo.png') }}" alt="buhito">
+
+    </section>
+
+</body>
+</html>

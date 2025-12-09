@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innova y Emprende</title>
+    <!-- Fuente Lato -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}">
-
-    <style>
-
-       
-    </style>
+   
 </head>
 
 <body>
@@ -23,8 +20,10 @@
         <div class="cloud cloud4"></div>
         <div class="cloud cloud5"></div>
         <div class="cloud cloud6"></div>
+        <div class="cloud cloud7"></div>
+        <div class="cloud cloud8"></div>
     </div>
-
+    
     <nav>
         <div class="logo-area">
             <img src="{{ url_for('static', filename='styles/imagenes/logo_nova-F.png') }}" alt="logo">
@@ -34,21 +33,21 @@
         <ul>
             <li><a href="#servicios">Servicios</a></li>
             <li><a href="#recursos">Recursos</a></li>
-            <li><a href="contactanos">Contáctanos</a></li>
+            <li><a href="#contactanos">Contáctanos</a></li>
         </ul>
 
         <div style="display: flex; gap: 12px;">
             <a class="btn-nav" href="{{ url_for('login') }}">Iniciar sesión</a>
-            <a class="btn-nav" style="background: #001A33; border: color white; color: white;" href="{{ url_for('registrar') }}">Registrarse</a>
+            <a class="btn-nav" style="background: #006172; border: color white; color: white;" href="{{ url_for('registrar') }}">Registrarse</a>
         </div>
     </nav>
 
-    <!-- HERO -->
+    
     <section class="hero">
         <h1>El futuro del emprendimiento comienza aquí</h1>
         <p>Impulsa tus ideas, crea oportunidades y transforma tu proyecto con la ayuda de herramientas modernas y visión innovadora.</p>
 
-    
+
         <!-- Imagen del búho como ilustración principal -->
         <img src="{{ url_for('static', filename='styles/imagenes/buho.png') }}" alt="logo">
     </section>
