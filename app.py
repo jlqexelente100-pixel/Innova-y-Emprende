@@ -260,6 +260,10 @@ def crear_tablas():
 def home():
     return render_template("home.html")
 
+@app.route('/servicios')
+def servicios():
+    return render_template('servicios.html')
+
 
 @app.route("/index")
 def index():
