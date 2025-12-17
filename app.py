@@ -42,7 +42,7 @@ def enviar_correo(destinatario, enlace):
     Devuelve True si el envío fue exitoso, False en caso contrario.
     """
     remitente = "innovayemprende1@gmail.com"
-    password = "mhgy yxgi qtuw myjl"  # Asegúrate de usar un App Password válido
+    password = "gqzs gcmq ksup flkn"  # Asegúrate de usar un App Password válido
 
     mensaje = MIMEMultipart("alternative")
     mensaje["Subject"] = "Recuperación de contraseña"
@@ -265,9 +265,9 @@ def servicios():
     return render_template('servicios.html')
 
 
-@app.route("/index")
+@app.route("/inicio")
 def index():
-    return render_template("index.html")
+    return render_template("inicio.html")
 
 
 @app.route("/login", methods=["GET","POST"])
