@@ -20,7 +20,7 @@ serializer = URLSafeTimedSerializer(app.secret_key)
 # -------------------------
 DB_CONFIG = {
     'host': 'localhost',
-    'database': 'plataforma_cursos',
+    'database': 'Emprende',
     'user': 'postgres',
     'password': '123456',
     'port': 5432
@@ -42,7 +42,7 @@ def enviar_correo(destinatario, enlace):
     Devuelve True si el envío fue exitoso, False en caso contrario.
     """
     remitente = "innovayemprende1@gmail.com"
-    password = "gqzs gcmq ksup flkn"  # Asegúrate de usar un App Password válido
+    password = "mhgy yxgi qtuw myjl"  # Asegúrate de usar un App Password válido
 
     mensaje = MIMEMultipart("alternative")
     mensaje["Subject"] = "Recuperación de contraseña"
@@ -148,7 +148,18 @@ def crear_tablas():
     if not conn:
         return
     cur = conn.cursor()
-    cur.execute("""
+    # Agregar columnas si no existen (para DBs existentes)
+    try:
+        cur.execute("ALTER TABLE usuarios ADD COLUMN apellido TEXT;")
+        conn.commit()
+    except:
+        conn.rollback()
+    try:
+        cur.execute("ALTER TABLE usuarios ADD COLUMN username TEXT UNIQUE;")
+        conn.commit()
+    except:
+        conn.rollback()
+        cur.execute("""
         CREATE TABLE IF NOT EXISTS usuarios (
             id SERIAL PRIMARY KEY,
             nombre TEXT NOT NULL,
@@ -160,17 +171,7 @@ def crear_tablas():
             creado_en TIMESTAMP DEFAULT NOW()
         );
     """)
-    # Agregar columnas si no existen (para DBs existentes)
-    try:
-        cur.execute("ALTER TABLE usuarios ADD COLUMN apellido TEXT;")
-        conn.commit()
-    except:
-        pass
-    try:
-        cur.execute("ALTER TABLE usuarios ADD COLUMN username TEXT UNIQUE;")
-        conn.commit()
-    except:
-        pass
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS cursos (
             id SERIAL PRIMARY KEY,
@@ -194,7 +195,7 @@ def crear_tablas():
     """)
     cur.execute("""
         CREATE TABLE IF NOT EXISTS metodos_pago (
-            id SERIAL PRIMARY KEY,
+            ID SERIAL PRIMARY KEY,
             nombre TEXT,
             tipo TEXT,
             habilitado BOOLEAN DEFAULT TRUE
@@ -265,9 +266,9 @@ def servicios():
     return render_template('servicios.html')
 
 
-@app.route("/inicio")
+@app.route("/index")
 def index():
-    return render_template("inicio.html")
+    return render_template("index.html")
 
 
 @app.route("/login", methods=["GET","POST"])
@@ -572,5 +573,6 @@ def mis_compras():
 # Ejecutar app
 # --------------------------
 if __name__ == "__main__":
+    crear_tablas()
     app.run(debug=True)
 
