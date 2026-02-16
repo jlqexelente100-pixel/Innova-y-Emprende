@@ -266,6 +266,11 @@ def servicios():
     return render_template('servicios.html')
 
 
+@app.route('/contacto')
+def contacto():
+    return render_template("contacto.html")
+
+
 @app.route("/index")
 def index():
     return render_template("index.html")
