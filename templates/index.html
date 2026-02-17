@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Academia Online - Inicio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/inicio.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/logo.jpeg') }}" type="image/x-icon">
+</head>
+<body>
+
+<!--barra de navegaciom-->
+<nav class="navbar navbar-expand-lg mi-navbar">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('index') }}">Inicio</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link " aria-current="page" href="{{ url_for('mis_compras') }}">Mis Compras</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('profesor_crear_curso') }}">Crear curso</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('profesor_dashboard') }}">Información Profesores</a>
+        </li>
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search"/>
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<!-- CATÁLOGO -->
+<section>
+    <h2 class="text-center mt-4">Catálogo de cursos disponibles</h2>
+
+    <div class="cards-container">
+
+        <!-- Curso 1 -->
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='styles/imagenes/mentalidad.jpeg') }}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">Introducción y mentalidad emprendedora</h5>
+                <p class="card-text">
+                    Este curso te enseña qué es emprender, los tipos de emprendimientos y cómo empezar tu propio proyecto.
+                </p>
+                <a href="#" class="btn btn-primary">Mostrar más</a>
+            </div>
+        </div>
+
+        <!-- Curso 2 -->
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='styles/imagenes/joyeria.jpeg') }}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">Joyería artesanal</h5>
+                <p class="card-text">
+                    Curso práctico donde los estudiantes aprenden a diseñar y crear piezas de joyería hechas a mano utilizando materiales como alambre, cuentas, piedras naturales y resinas. Incluye técnicas básicas, diseño creativo y cómo montar un catálogo para vender.
+                </p>
+                <a href="#" class="btn btn-primary">Mostrar más</a>
+            </div>
+        </div>
+
+        <!-- Curso 3 -->
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='styles/imagenes/programacion.jpeg') }}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">Programación básica</h5>
+                <p class="card-text">
+                    Curso introductorio para aprender lógica de programación, variables, funciones y manejo básico de datos. Ideal para quienes quieren comenzar en tecnología sin experiencia previa.
+                </p>
+                <a href="#" class="btn btn-primary">Mostrar más</a>
+            </div>
+        </div>
+
+        <!-- Curso 4 -->
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='styles/imagenes/cosmetic.jpeg') }}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">Cosmética natural casera</h5>
+                <p class="card-text">
+                    Enseña a elaborar productos como jabones artesanales, velas aromáticas, exfoliantes y cremas naturales usando ingredientes seguros y fáciles de conseguir.
+                </p>
+                <a href="#" class="btn btn-primary">Mostrar más</a>
+            </div>
+        </div>
+
+        <!-- Curso 5 -->
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='styles/imagenes/reposteria.jpeg') }}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">Repostería casera</h5>
+                <p class="card-text">
+                    Curso donde aprenden recetas básicas (cupcakes, galletas, tortas) y cómo presentar y vender sus productos.
+                </p>
+                <a href="#" class="btn btn-primary">Mostrar más</a>
+            </div>
+        </div>
+
+        <!-- Curso 6 -->
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='styles/imagenes/bordado.jpeg') }}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">Bordado y costura básica</h5>
+                <p class="card-text">
+                    Enseña puntadas, diseño en tela, personalización de ropa y técnicas de costura sencilla.
+                </p>
+                <a href="#" class="btn btn-primary">Mostrar más</a>
+            </div>
+        </div>
+
+        <!-- Curso 7 -->
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='styles/imagenes/edicion_audio.jpeg') }}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">Edición de audio y podcasts</h5>
+                <p class="card-text">
+                    Curso donde aprenden a grabar, editar y producir audios de calidad usando programas gratuitos. Incluye cómo crear un podcast desde cero.
+                </p>
+                <a href="#" class="btn btn-primary">Mostrar más</a>
+            </div>
+        </div>
+
+        <!-- Curso 8 -->
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='static/styles/imagenes/cat_and_dog.jpeg') }}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">Cuidado de mascotas</h5>
+                <p class="card-text">
+                    Curso donde aprenden cuidado básico, paseos, alimentación y servicios para mascotas.
+                </p>
+                <a href="#" class="btn btn-primary">Mostrar más</a>
+            </div>
+        </div>
+
+        <!-- Curso 9 -->
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='static/styles/imagenes/cultivo_en_casa.jpeg') }}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">Huertas urbanas y cultivo en casa</h5>
+                <p class="card-text">
+                    Enseña cómo sembrar en espacios pequeños, cuidado de plantas y cosecha básica.
+                </p>
+                <a href="#" class="btn btn-primary">Mostrar más</a>
+            </div>
+        </div>
+
+        <!-- Curso 10 -->
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='static/styles/imagenes/digital_marketing.jpeg') }}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">Marketing digital</h5>
+                <p class="card-text">
+                    Curso práctico sobre cómo vender por internet: estrategias de redes, contenido, anuncios básicos, embudos de venta y atención al cliente.
+                </p>
+                <a href="#" class="btn btn-primary">Mostrar más</a>
+            </div>
+        </div>
+
+        <!-- Curso 11 -->
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='static/styles/imagenes/marca_personal.jpeg') }}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">Creación de marca personal</h5>
+                <p class="card-text">
+                    Curso donde se enseña a construir una identidad propia en redes: estilo visual, comunicación, tono, storytelling y cómo destacarse en el area a desarrollar.
+                </p>
+                <a href="#" class="btn btn-primary">Mostrar más</a>
+            </div>
+        </div>
+      </div>
+
+      
+<section>
+    <div id="contenedor-cursos" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; padding:20px;">
+        <!-- Se llenará con JS -->
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script>
+async function cargar(){
+    const r = await fetch("/cursos");
+    const cursos = await r.json();
+    const cont = document.getElementById("contenedor-cursos");
+    cont.innerHTML = "";
+    cursos.forEach(c => {
+        const div = document.createElement("div");
+        div.style.background = "#fff";
+        div.style.padding = "12px";
+        div.style.borderRadius = "8px";
+        div.style.boxShadow = "0 2px 6px rgba(0,0,0,0.08)";
+        div.innerHTML = `
+            <img src="${c.imagen_url || '/static/img/default.jpg'}" style="width:100%; height:160px; object-fit:cover; border-radius:6px;">
+            <h3>${c.titulo}</h3>
+            <p>${c.descripcion ? c.descripcion.substring(0,120) + '...' : ''}</p>
+            <p><strong>Precio:</strong> $${c.precio}</p>
+            <a href="/curso/${c.id}">Ver curso</a>
+        `;
+        cont.appendChild(div);
+    });
+}
+cargar();
+</script>
+
+</body>
+</html>

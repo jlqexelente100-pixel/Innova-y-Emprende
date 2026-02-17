@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><title>{{ leccion.titulo }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+</head>
+
+
+<body>
+
+<!--barra de navegaciom-->
+<nav class="navbar navbar-expand-lg mi-navbar">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('index') }}">Inicio</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link " aria-current="page" href="{{ url_for('mis_compras') }}">Mis Compras</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('profesor_crear_curso') }}">Crear curso</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('profesor_dashboard') }}">Información Profesores</a>
+        </li>
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search"/>
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+
+  <h2>{{ leccion.titulo }}</h2>
+  {% if leccion.video_url %}
+    <div>
+      <!-- si es URL de YouTube puedes embeber con iframe; aquí mostramos el link simple -->
+      <p><a href="{{ leccion.video_url }}" target="_blank">Ver video</a></p>
+      <iframe width="640" height="360" src="{{ leccion.video_url }}" frameborder="0" allowfullscreen></iframe>
+    </div>
+  {% endif %}
+  <div>
+    <h3>Contenido</h3>
+    <p>{{ leccion.contenido }}</p>
+  </div>
+  <p><a href="/curso/{{ leccion.curso_id }}">Volver al curso</a></p>
+</body>
+</html>

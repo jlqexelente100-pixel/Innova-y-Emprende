@@ -1,0 +1,96 @@
+/*BARRA*/
+.mi-navbar {
+    background-color: #5b92c6be ;
+    font-family: lato;
+    font-size: 17px;
+    min-height: 70px;
+}
+
+.navbar-brand {
+    color: white;
+    border-radius: 5px ;
+    padding: 10px 10px;
+}
+
+.navbar-brand:hover {
+    color: #000000;
+   border: 4px solid white;
+   background-color: rgb(248, 250, 252);
+}
+
+.nav-link {
+    border: none;
+    color: white;
+    border-radius: 5px ;
+    padding: 10px 10px ;
+}
+
+.mi-navbar .nav-link:hover {
+    color: #000000;
+   border: 4px solid white;
+   background-color: rgb(248, 250, 252);
+}
+
+.btn-outline-success {
+    background-color: aliceblue;
+    color: white;
+    border: 2px solid white;
+    border-radius: 5px ;
+    padding: 7px 15px ;
+}
+
+.btn-outline-success:hover {
+    background-color: #5b92c6be;
+    color: white;
+    border: 2px solid white;
+}
+
+.d-flex .btn-outline-success {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.d-flex .btn-outline-success:hover {
+    transform: scale(1.05);
+}
+
+/*CATALOGO*/
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;              /* Que bajen a otra fila */
+    justify-content: center;      /* Centrar horizontal */
+    gap: 30px;                    /* Espacio entre tarjetas */
+    padding: 40px;
+}
+
+.card {
+    border-radius: 15px;
+    overflow: hidden;             /* Redondea imagen */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+.card-img-top {
+    height: 180px;
+    object-fit: cover;            
+}
+
+.card-title {
+    font-weight: bold;
+    text-align: center;
+}
+
+.card-text {
+    font-size: 14px;
+    text-align: justify;
+}
+
+.card .btn {
+    display: block;
+    margin: 15px auto 0;
+    border-radius: 20px;
+}

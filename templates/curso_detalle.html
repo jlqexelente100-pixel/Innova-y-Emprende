@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><title>{{ curso.titulo }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+<!--barra de navegaciom-->
+<nav class="navbar navbar-expand-lg mi-navbar">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('index') }}">Inicio</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link " aria-current="page" href="{{ url_for('mis_compras') }}">Mis Compras</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('profesor_crear_curso') }}">Crear curso</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('profesor_dashboard') }}">Información Profesores</a>
+        </li>
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search"/>
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+
+ <h2>Introducción y mentalidad emprendedora</h2>
+ <img src="{{ curso.imagen_url }}" style="width:320px; height:200px; object-fit:cover;">
+ <p>
+   Este curso te enseña qué es emprender, los tipos de emprendimientos y cómo empezar tu propio proyecto.
+   Además, aprenderás a desarrollar una mentalidad creativa, organizada y motivada para avanzar con seguridad.
+   Es el curso ideal para quienes quieren iniciar un emprendimiento desde cero.
+ </p>
+ <p><strong>Precio:</strong> Gratis</p>
+
+ <h3>Clases</h3>
+ <ul>
+   <li>Clase 1: ¿Qué es emprender?</li>
+   <li>Clase 2: Tipos de emprendimientos (digitales, físicos, servicios, creativos)</li>
+   <li>Clase 3: ¿Qué necesitas para empezar?</li>
+   <li>Clase 4: Creatividad y cómo generar ideas</li>
+   <li>Clase 5: Hábitos de un emprendedor</li>
+   <li>Clase 6: Cómo organizarte sin estrés</li>
+ </ul>
+
+ <h3>Comprar curso</h3>
+ <form class="comprarForm">
+   <label>Método de pago:
+     <select class="metodo_pago"></select>
+   </label><br>
+   <input type="hidden" name="curso_id" value="1">
+   <input type="hidden" name="monto" value="0">
+   <button type="button" onclick="comprar(this)">Comprar</button>
+ </form>
+
+ <hr>
+
+ <h2>Construye tu idea de negocio</h2>
+ <img src="https://media.istockphoto.com/id/1344939844/photo/hand-holding-drawing-virtual-lightbulb-with-brain-on-bokeh-background-for-creative-and-smart.jpg?s=2048x2048&w=is&k=20&c=vL6VgSTXd9Xn3d0F8DCD_a9o2LO2O_UcTpHPrs4HaVc=" style="width:320px; height:200px; object-fit:cover;">
+ <p>
+  En este curso aprenderás a transformar una idea en un proyecto real.
+  Descubrirás cómo encontrar ideas útiles, cómo saber si funcionan, qué hace especial tu emprendimiento y cómo crear una primera versión sencilla de tu producto o servicio.
+  Es ideal para pasar de “tengo una idea” a “ya sé qué voy a emprender”.
+ </p>
+ <p><strong>Precio:</strong> $6.000</p>
+
+ <h3>Clases</h3>
+ <ul>
+   <li>Clase 1: Cómo encontrar ideas realistas</li>
+   <li>Clase 2: Validación: ¿Mi idea funcionará?</li>
+   <li>Clase 3: Propuesta de valor</li>
+   <li>Clase 4: Tu primer prototipo</li>
+ </ul>
+
+ <h3>Comprar curso</h3>
+ <form class="comprarForm">
+   <label>Método de pago:
+     <select class="metodo_pago"></select>
+   </label><br>
+   <input type="hidden" name="curso_id" value="2">
+   <input type="hidden" name="monto" value="6000">
+   <button type="button" onclick="comprar(this)">Comprar</button>
+ </form>
+
+ <hr>
+
+ <h2>Plan de negocios paso a paso</h2>
+ <img src="https://media.istockphoto.com/id/929956844/photo/group-of-business-people-having-a-meeting.jpg?s=2048x2048&w=is&k=20&c=XMkVJoqbR7pBoiH296b3VxILURxxYWqZoNn1X1RF9Hw=" style="width:320px; height:200px; object-fit:cover;">
+ <p>
+   Aquí aprenderás a organizar tu negocio en un plan claro y sencillo. Conocerás a tus clientes, competidores,
+   costos y cómo estructurar tu emprendimiento.
+ </p>
+ <p><strong>Precio:</strong> $7.000</p>
+
+ <h3>Clases</h3>
+ <ul>
+   <li>Clase 1: ¿Qué es un plan de negocio?</li>
+   <li>Clase 2: Clientes</li>
+   <li>Clase 3: Competencia</li>
+   <li>Clase 4: Costos y gastos</li>
+   <li>Clase 5: Cómo escribir tu plan</li>
+ </ul>
+
+ <h3>Comprar curso</h3>
+ <form class="comprarForm">
+   <label>Método de pago:
+     <select class="metodo_pago"></select>
+   </label><br>
+   <input type="hidden" name="curso_id" value="3">
+   <input type="hidden" name="monto" value="7000">
+   <button type="button" onclick="comprar(this)">Comprar</button>
+ </form>
+ 
+ <hr>
+
+ <h2>Marketing básico</h2>
+ <img src="https://cdn.pixabay.com/photo/2019/10/23/08/17/data-4570804_960_720.jpg" style="width:320px; height:200px; object-fit:cover;">
+ <p>
+    En este curso descubrirás cómo lograr que más personas conozcan tu negocio.
+   Aprenderás identidad de marca, mensajes claros, contenido seguro y cómo atraer clientes sin gastar mucho.
+ </p>
+ <p><strong>Precio:</strong> $6.000</p>
+
+ <h3>Clases</h3>
+ <ul>
+   <li>Clase 1: Identidad de marca</li>
+   <li>Clase 2: Propuesta de valor</li>
+   <li>Clase 3: Contenido seguro para redes</li>
+   <li>Clase 4: Atraer clientes sin gastar dinero</li>
+ </ul>
+
+ <h3>Comprar curso</h3>
+ <form class="comprarForm">
+   <label>Método de pago:
+     <select class="metodo_pago"></select>
+   </label><br>
+   <input type="hidden" name="curso_id" value="4">
+   <input type="hidden" name="monto" value="6000">
+   <button type="button" onclick="comprar(this)">Comprar</button>
+ </form>
+
+ <hr>
+
+ <h2>Ventas para principiantes</h2>
+ <img src="https://cdn.pixabay.com/photo/2019/07/13/10/25/payment-4334491_960_720.jpg" style="width:320px; height:200px; object-fit:cover;">
+ <p>
+   Aprenderás a comunicar tu producto de forma amable, clara y efectiva.
+   Cómo explicar beneficios, atender clientes y manejar mensajes correctamente.
+ </p>
+ <p><strong>Precio:</strong> $5.000</p>
+
+ <h3>Clases</h3>
+ <ul>
+   <li>Clase 1: Presentar tu producto</li>
+   <li>Clase 2: Explicar beneficios</li>
+   <li>Clase 3: Trato respetuoso al cliente</li>
+   <li>Clase 4: Manejo de mensajes y comentarios</li>
+ </ul>
+
+ <h3>Comprar curso</h3>
+ <form class="comprarForm">
+   <label>Método de pago:
+     <select class="metodo_pago"></select>
+   </label><br>
+   <input type="hidden" name="curso_id" value="5">
+   <input type="hidden" name="monto" value="5000">
+   <button type="button" onclick="comprar(this)">Comprar</button>
+ </form>
+
+ <hr>
+
+ <h2>Diseño y marca</h2>
+ <img src="{{ curso.imagen_url }}" style="width:320px; height:200px; object-fit:cover;">
+ <p>
+   Este curso te ayuda a crear la imagen visual de tu emprendimiento. Logotipos simples, colores, tipografías
+   y plantillas para redes, explicado de forma sencilla.
+ </p>
+ <p><strong>Precio:</strong> $6.000</p>
+
+ <h3>Clases</h3>
+ <ul>
+   <li>Clase 1: Crear un logotipo simple</li>
+   <li>Clase 2: Elegir colores y tipografías</li>
+   <li>Clase 3: Plantillas para tus posts</li>
+   <li>Clase 4: Consistencia visual</li>
+ </ul>
+
+ <h3>Comprar curso</h3>
+ <form class="comprarForm">
+   <label>Método de pago:
+     <select class="metodo_pago"></select>
+   </label><br>
+   <input type="hidden" name="curso_id" value="6">
+   <input type="hidden" name="monto" value="6000">
+   <button type="button" onclick="comprar(this)">Comprar</button>
+ </form>
+
+ <hr>
+
+ <h2>Productividad y organización</h2>
+ <img src="{{ curso.imagen_url }}" style="width:320px; height:200px; object-fit:cover;">
+ <p>
+   Ideal para estudiantes que también emprenden.
+   Aprenderás a dividir metas, priorizar, mantener motivación y equilibrar tu estudio con tu proyecto.
+ </p>
+ <p><strong>Precio:</strong> $5.000</p>
+
+ <h3>Clases</h3>
+ <ul>
+   <li>Clase 1: Dividir metas grandes</li>
+   <li>Clase 2: Listas y prioridades</li>
+   <li>Clase 3: Mantener motivación</li>
+   <li>Clase 4: Equilibrar estudio y emprendimiento</li>
+ </ul>
+
+ <h3>Comprar curso</h3>
+ <form class="comprarForm">
+   <label>Método de pago:
+     <select class="metodo_pago"></select>
+   </label><br>
+   <input type="hidden" name="curso_id" value="7">
+   <input type="hidden" name="monto" value="5000">
+   <button type="button" onclick="comprar(this)">Comprar</button>
+ </form>
+
+<p><a href="/">Volver</a></p>
+
+
+<script>
+ async function cargarMetodos() {
+    const r = await fetch("/metodos_pago");
+    const metodos = await r.json();
+    const selects = document.querySelectorAll(".metodo_pago");
+
+    selects.forEach(sel => {
+        metodos.forEach(m => {
+            const o = document.createElement("option");
+            o.value = m.id;
+            o.text = m.nombre;
+            sel.appendChild(o);
+        });
+    });
+ }
+
+async function comprar(btn) {
+    const form = btn.closest("form");
+    const curso_id = form.querySelector("input[name='curso_id']").value;
+    const monto = form.querySelector("input[name='monto']").value;
+    const metodo_pago_id = form.querySelector(".metodo_pago").value;
+
+    const res = await fetch("/comprar", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ curso_id, metodo_pago_id, monto })
+    });
+
+    const data = await res.json();
+    alert(data.mensaje || data.error || "Respuesta recibida");
+}
+
+cargarMetodos();
+
+</script>
+
+</body>
+</html>

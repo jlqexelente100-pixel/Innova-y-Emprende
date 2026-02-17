@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrate!</title>
+  <link rel="stylesheet" href="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/registrar.css') }}">
+</head>
+
+<body>
+  
+ <div class="fondo">
+  <img src="static\styles\imagenes\logo_nova-F.png" class="logo">
+
+   <div class="carta-registro">
+
+   <form method="POST" action="/registrar">
+
+       
+      <h2>Registrate</h2>
+       
+      <br> 
+
+      <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+
+      <br>
+
+      <label for="apellido" class="form-label">Apellido</label>
+            <input type="text" class="form-control" id="apellido" name="apellido" required>
+
+      <br>
+
+      <label for="username" class="form-label">Nombre de Usuario</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+
+      <br>
+
+      <div class="mb-3">
+
+            <label for="exampleInputEmail1" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" name="correo" aria-describedby="emailHelp" required>
+            <div id="emailHelp" class="form-text">Nunca compartiremos tu correo electrónico con nadie más.</div>
+            
+      </div>
+
+
+      <div class="mb-3">
+
+            <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="exampleInputPassword1" name="password" required>
+
+      </div>
+
+
+    <select class="Rol" name="rol" required>
+    <option value="" selected disabled>Tipo de Rol</option>
+    <option value="alumno">Alumno</option>
+    <option value="profesor">Profesor</option>
+    </select>
+
+      <br>
+      <br>
+      
+      <div class="regresar-seguir">
+            <button type="submit" class="btn btn-primary btn-lg">Registrarse</button>
+            <p class="link-lateral">¿Ya tienes cuenta? <a href="{{ url_for('login') }}">Iniciar sesión</a></p>
+      </div>
+
+   </form>
+      
+   </div>
+
+  </div>
+ 
+<script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"></script> 
+</body>
+</html>

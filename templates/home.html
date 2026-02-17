@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innova y Emprende</title>
+    <!-- Fuente Lato -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/logo.jpeg') }}" type="image/x-icon">
+   
+</head>
+
+<body>
+
+    <!-- Nubes animadas -->
+    <div class="clouds">
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+        <div class="cloud cloud4"></div>
+        <div class="cloud cloud5"></div>
+        <div class="cloud cloud6"></div>
+        <div class="cloud cloud7"></div>
+        <div class="cloud cloud8"></div>
+    </div>
+    
+    <nav>
+        <div class="logo-area">
+            <img src="{{ url_for('static', filename='styles/imagenes/logo_nova-F.png') }}" alt="logo">
+            <span>Innova y Emprende</span>
+        </div>
+
+        <ul>
+            <li><a href="{{ url_for ('servicios') }}">Servicios</a>
+            <li><a href="#recursos">Recursos</a></li>
+            <li><a href="{{ url_for ('contacto') }}">Contáctanos</a></li>
+        </ul>
+
+        <div style="display: flex; gap: 12px;">
+            <a class="btn-nav" href="{{ url_for('login') }}">Iniciar sesión</a>
+            <a class="btn-nav" style="background: #006172; border: color white; color: white;" href="{{ url_for('registrar') }}">Registrarse</a>
+        </div>
+    </nav>
+
+    
+    <section class="hero">
+        <h1>El futuro del emprendimiento comienza aquí</h1>
+        <p>Impulsa tus ideas, crea oportunidades y transforma tu proyecto con la ayuda de herramientas modernas y visión innovadora.</p>
+
+
+        <!-- Imagen del búho como ilustración principal -->
+        <img src="{{ url_for('static', filename='styles/imagenes/buho.png') }}" alt="logo">
+    </section>
+
+</body>
+</html>

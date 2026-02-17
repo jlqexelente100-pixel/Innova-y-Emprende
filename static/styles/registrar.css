@@ -1,0 +1,84 @@
+.carta-registro{
+    background-color: rgb(247, 247, 240);
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 13px;
+    box-shadow: 0px 4px 15px rgb(0, 0, 0)
+}
+
+
+
+.fondo {
+    background-image: url("../styles/imagenes/books-5372392_1920.jpg");
+    background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  padding: 40px;
+}
+
+
+.logo {
+    width: 100px;
+    height: 100px;
+}
+
+h2 {
+    color: white;
+    font-family: lato;
+    background-color: rgba(54, 131, 112, 0.644);
+    margin: -20px -20px 0 -20px;
+    padding: 20px;
+    border-radius: 13px 13px 0 0 ;
+}
+
+
+.btn {
+    border: none;
+    background-color: rgba(54, 131, 112, 0.644);
+    color: rgb(255, 255, 255);
+    
+}
+
+.btn:hover {
+    background-color: rgb(28, 107, 77);
+}
+
+.mt-3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.regresar-seguir {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.link-lateral {
+    margin: 0;
+    padding: 0;
+    color: black;
+    text-align: right;
+}
+
+.link-lateral a {
+    color: rgb(28, 107, 77);
+   
+    
+}
+
+
+
+
+
+
+    
+
+
+
+
