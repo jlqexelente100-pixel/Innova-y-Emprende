@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innova y Emprende</title>
+
     <!-- Fuente Lato -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='imagenes/logo.jpeg') }}" type="image/x-icon">
-   
 </head>
 
 <body>
@@ -32,26 +32,56 @@
         </div>
 
         <ul>
-            <li><a href="{{ url_for ('servicios') }}">Servicios</a>
+            <li><a href="{{ url_for ('servicios') }}">Servicios</a></li>
             <li><a href="#recursos">Recursos</a></li>
             <li><a href="{{ url_for ('contacto') }}">Contáctanos</a></li>
         </ul>
 
         <div style="display: flex; gap: 12px;">
             <a class="btn-nav" href="{{ url_for('login') }}">Iniciar sesión</a>
-            <a class="btn-nav" style="background: #006172; border: color white; color: white;" href="{{ url_for('registrar') }}">Registrarse</a>
+            <a class="btn-nav" style="background: #006172; color: white;" href="{{ url_for('registrar') }}">Registrarse</a>
         </div>
     </nav>
 
-    
     <section class="hero">
         <h1>El futuro del emprendimiento comienza aquí</h1>
         <p>Impulsa tus ideas, crea oportunidades y transforma tu proyecto con la ayuda de herramientas modernas y visión innovadora.</p>
 
-
-        <!-- Imagen del búho como ilustración principal -->
         <img src="{{ url_for('static', filename='styles/imagenes/buho.png') }}" alt="logo">
     </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+
+            <div class="footer-section">
+                <h3>Innova y Emprende</h3>
+                <p>
+                    Plataforma educativa para impulsar ideas de negocio y proyectos innovadores.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Enlaces</h3>
+                <ul>
+                    <li><a href="{{ url_for('servicios') }}">Servicios</a></li>
+                    <li><a href="#recursos">Recursos</a></li>
+                    <li><a href="{{ url_for('contacto') }}">Contacto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <p>Email: contacto@innova.com</p>
+                <p>Tel: +57 300 123 4567</p>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Innova y Emprende | Todos los derechos reservados</p>
+        </div>
+    </footer>
 
 </body>
 </html>

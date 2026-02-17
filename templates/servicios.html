@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Servicios</title>
+
     <!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='styles/servicios.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
+    <!-- Tu CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/servicios.css') }}">
 </head>
 <body>
-    <section id="servicios" class="py-5 bg-light">
+  
+<section id="servicios" class="py-5 bg-light">
   <div class="container text-center">
 
     <h2 class="mb-5 fw-bold">Nuestros Servicios</h2>
 
     <div class="row g-4">
 
-      <!-- Servicio 1: Cursos de Emprendimiento -->
+      <!-- Servicio 1 -->
       <div class="col-md-4">
         <div class="card h-100 shadow-sm">
           <div class="card-body">
@@ -30,7 +33,7 @@
         </div>
       </div>
 
-      <!-- Servicio 2: Cursos Especializados -->
+      <!-- Servicio 2 -->
       <div class="col-md-4">
         <div class="card h-100 shadow-sm">
           <div class="card-body">
@@ -43,7 +46,7 @@
         </div>
       </div>
 
-      <!-- Servicio 3: Recursos Educativos -->
+      <!-- Servicio 3 -->
       <div class="col-md-4">
         <div class="card h-100 shadow-sm">
           <div class="card-body">
@@ -56,7 +59,7 @@
         </div>
       </div>
 
-      <!-- Servicio 4: Comunidad o Soporte -->
+      <!-- Servicio 4 -->
       <div class="col-md-4 mx-auto">
         <div class="card h-100 shadow-sm">
           <div class="card-body">
@@ -80,6 +83,47 @@
 
   </div>
 </section>
+
+<!-- FOOTER -->
+<footer class="bg-dark text-white pt-5">
+  <div class="container">
+    <div class="row text-start">
+
+      <!-- Columna 1 -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold">Sobre Nosotros</h5>
+        <p>
+          Plataforma dedicada a la formación de emprendedores con cursos, recursos y comunidad.
+        </p>
+      </div>
+
+      <!-- Columna 2 -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold">Enlaces</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white text-decoration-none">Inicio</a></li>
+          <li><a href="#servicios" class="text-white text-decoration-none">Servicios</a></li>
+          <li><a href="#cursos" class="text-white text-decoration-none">Cursos</a></li>
+          <li><a href="#" class="text-white text-decoration-none">Contacto</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3 -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold">Contacto</h5>
+        <p>Email: contacto@empresa.com</p>
+        <p>Tel: +57 300 123 4567</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Parte inferior -->
+  <div class="text-center py-3 bg-black">
+    <small>&copy; 2026 Innova y Emprende | Todos los derechos reservados</small>
+  </div>
+</footer>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
