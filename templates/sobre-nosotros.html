@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nosotros</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/sobreNosotros.css') }}">
+</head>
+<body>
+
+    <nav>
+        <div class="logo-area">
+            <img src="{{ url_for('static', filename='styles/imagenes/logo_nova-F.png') }}" alt="logo">
+            <span>Innova y Emprende</span>
+        </div>
+
+        <ul>
+            <li><a href="{{ url_for ('servicios') }}">Servicios</a>
+            <li><a href="{{ url_for ('home') }}">Home</a></li>
+            <li><a href="#recursos">Recursos</a></li>
+        </ul>
+
+        <div style="display: flex; gap: 12px;">
+            <a class="btn-nav" href="{{ url_for('login') }}">Iniciar sesión</a>
+            <a class="btn-nav" style="background: #006172; border: color white; color: white;" href="{{ url_for('registrar') }}">Registrarse</a>
+        </div>
+    </nav>
+
+    <section class="sobre-nosotros">
+        <div class="clouds">
+            <div class="cloud cloud1"></div>
+            <div class="cloud cloud2"></div>
+            <div class="cloud cloud3"></div>
+            <div class="cloud cloud4"></div>
+            <div class="cloud cloud5"></div>
+            <div class="cloud cloud6"></div>
+        </div>
+    
+        <h1>Sobre Nosotros</h1>
+        <div class="contenedor-parrafos">
+            <div class="parrafo1">
+                <p>Somos una comunidad comprometida con el crecimiento académico, el liderazgo y la formación integral de nuestros estudiantes. Creemos en el 
+                   respeto, la responsabilidad y el trabajo en equipo como pilares fundamentales para construir un mejor futuro. Fomentamos espacios de 
+                   aprendizaje donde cada persona pueda desarrollar su potencial y convertirse en un agente de cambio positivo en la sociedad.</p>
+            </div>
+
+            <div class="parrafo2">
+                 <p>Asimismo, somos un equipo apasionado por el emprendimiento y la innovación. Nuestra misión es brindar a los emprendedores las herramientas, 
+                 recursos y el acompañamiento necesarios para transformar sus ideas en negocios exitosos. Confiamos en el poder de la creatividad y la 
+                 colaboración como motores para impulsar el crecimiento y generar un impacto significativo en la comunidad.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Valores -->
+    <section class="valores">
+        <h2>Nuestros Valores</h2>
+        <div class="contenedor-valores">
+            <div class="card fade-up">
+                <div class="card-icon">🚀</div>
+                <h3>Innovación</h3>
+                <p>Buscamos constantemente nuevas formas de resolver problemas y superar expectativas.</p>
+            </div>
+            <div class="card fade-up">
+                <div class="card-icon">🤝</div>
+                <h3>Compromiso</h3>
+                <p>Nos dedicamos al éxito de nuestros clientes con honestidad y transparencia.</p>
+            </div>
+            <div class="card fade-up">
+                <div class="card-icon">⭐</div>
+                <h3>Excelencia</h3>
+                <p>Elevamos la calidad en cada detalle para entregar resultados que perduran.</p>
+            </div>
+            <div class="card fade-up">
+                <div class="card-icon">🌍</div>
+                <h3>Impacto</h3>
+                <p>Creamos soluciones que generan un cambio positivo en las personas y el entorno.</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
