@@ -1,131 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servicios</title>
+    <title>Servicios - Innova y Emprende</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Tu CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/servicios.css') }}">
 </head>
 <body>
-  
-<section id="servicios" class="py-5 bg-light">
-  <div class="container text-center">
 
-    <h2 class="mb-5 fw-bold">Nuestros Servicios</h2>
-
-    <div class="row g-4">
-
-      <!-- Servicio 1 -->
-      <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <div class="display-4">📚</div>
-            <h5 class="card-title mt-3 fw-bold">Cursos de Emprendimiento</h5>
-            <p class="card-text">
-              Aprende habilidades esenciales para iniciar y desarrollar tus propios proyectos.
-            </p>
-          </div>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="logo-area">
+            <img src="{{ url_for('static', filename='styles/imagenes/logo_nova-F.png') }}" alt="logo">
+            <span>Innova y Emprende</span>
         </div>
-      </div>
 
-      <!-- Servicio 2 -->
-      <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <div class="display-4">🎯</div>
-            <h5 class="card-title mt-3 fw-bold">Cursos Especializados</h5>
-            <p class="card-text">
-              Programas formativos centrados en áreas clave como marketing, finanzas, creatividad y más.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Servicio 3 -->
-      <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <div class="display-4">📥</div>
-            <h5 class="card-title mt-3 fw-bold">Materiales y Recursos</h5>
-            <p class="card-text">
-              Accede a plantillas, guías, herramientas y contenido descargable para potenciar tu aprendizaje.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Servicio 4 -->
-      <div class="col-md-4 mx-auto">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <div class="display-4">🤝</div>
-            <h5 class="card-title mt-3 fw-bold">Acompañamiento y Comunidad</h5>
-            <p class="card-text">
-              Únete a una comunidad de emprendedores y recibe apoyo durante tu proceso de aprendizaje.
-            </p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Botón -->
-    <div class="mt-5">
-      <a href="#cursos" class="btn btn-primary btn-lg">
-        Ver todos los cursos
-      </a>
-    </div>
-
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="bg-dark text-white pt-5">
-  <div class="container">
-    <div class="row text-start">
-
-      
-      <div class="col-md-4 mb-4">
-        <h5 class="fw-bold">Sobre Nosotros</h5>
-        <p>
-          Plataforma dedicada a la formación de emprendedores con cursos, recursos y comunidad.
-        </p>
-      </div>
-
-      
-      <div class="col-md-4 mb-4">
-        <h5 class="fw-bold">Enlaces</h5>
-        <ul class="list-unstyled">
-          <li><a href="#" class="text-white text-decoration-none">Inicio</a></li>
-          <li><a href="#servicios" class="text-white text-decoration-none">Servicios</a></li>
-          <li><a href="#cursos" class="text-white text-decoration-none">Cursos</a></li>
-          <li><a href="#" class="text-white text-decoration-none">Contacto</a></li>
+        <ul>
+            <li><a href="{{ url_for('servicios') }}">Servicios</a></li>
+            <li><a href="#recursos">Recursos</a></li>
+            <li><a href="{{ url_for('sobre_nosotros') }}">Sobre Nosotros</a></li>
         </ul>
-      </div>
 
-      
-      <div class="col-md-4 mb-4">
-        <h5 class="fw-bold">Contacto</h5>
-        <p>Email: contacto@empresa.com</p>
-        <p>Tel: +57 300 123 4567</p>
-      </div>
+        <div style="display: flex; gap: 12px;">
+            <a class="btn-nav" href="{{ url_for('login') }}">Iniciar sesión</a>
+            <a class="btn-nav" style="background: #006172; color: white;" href="{{ url_for('registrar') }}">Registrarse</a>
+        </div>
+    </nav>
 
-    </div>
-  </div>
+    <!-- HERO + NUBES -->
+    <section style="position: relative;">
+        <div class="clouds">
+            <div class="cloud cloud1"></div>
+            <div class="cloud cloud2"></div>
+            <div class="cloud cloud3"></div>
+            <div class="cloud cloud4"></div>
+            <div class="cloud cloud5"></div>
+            <div class="cloud cloud6"></div>
+        </div>
 
-  
-  <div class="text-center py-3 bg-black">
-    <small>&copy; 2026 Innova y Emprende | Todos los derechos reservados</small>
-  </div>
-</footer>
+        <div class="hero-section">
+            <h1 class="fade-up">Nuestros Servicios</h1>
+            <p class="fade-up">Todo lo que necesitas para iniciar, crecer y consolidar tu emprendimiento.</p>
+        </div>
+    </section>
 
+    <!-- SERVICIOS -->
+    <section id="servicios" class="servicios-section">
+        <div class="container text-center">
+            <div class="row g-4 justify-content-center">
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+                <div class="col-md-6 col-lg-3 fade-up">
+                    <div class="card-servicio">
+                        <div class="icon">📚</div>
+                        <h5>Cursos de Emprendimiento</h5>
+                        <p>Aprende habilidades esenciales para iniciar y desarrollar tus propios proyectos.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3 fade-up">
+                    <div class="card-servicio">
+                        <div class="icon">🎯</div>
+                        <h5>Cursos Especializados</h5>
+                        <p>Programas formativos centrados en áreas clave como marketing, finanzas, creatividad y más.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3 fade-up">
+                    <div class="card-servicio">
+                        <div class="icon">📥</div>
+                        <h5>Materiales y Recursos</h5>
+                        <p>Accede a plantillas, guías, herramientas y contenido descargable para potenciar tu aprendizaje.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3 fade-up">
+                    <div class="card-servicio">
+                        <div class="icon">🤝</div>
+                        <h5>Acompañamiento y Comunidad</h5>
+                        <p>Únete a una comunidad de emprendedores y recibe apoyo durante tu proceso de aprendizaje.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="row text-start">
+
+                <div class="col-md-4 mb-4">
+                    <h5>Sobre Nosotros</h5>
+                    <p>Plataforma dedicada a la formación de emprendedores con cursos, recursos y comunidad.</p>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h5>Enlaces</h5>
+                    <a href="#">Inicio</a>
+                    <a href="#servicios">Servicios</a>
+                    <a href="#cursos">Cursos</a>
+                    <a href="#">Contacto</a>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h5>Contacto</h5>
+                    <a href="mailto:contacto@empresa.com">contacto@empresa.com</a>
+                    <a href="tel:+573001234567">+57 300 123 4567</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <small>&copy; 2026 Innova y Emprende | Todos los derechos reservados</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

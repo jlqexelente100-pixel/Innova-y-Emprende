@@ -31,6 +31,7 @@ body {
     z-index: 2;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
     letter-spacing: 1px;
+    font-weight: bold;
 }
 
 .parrafo1 {
@@ -90,6 +91,7 @@ body {
     margin-bottom: 40px;
     color: #333;
     letter-spacing: 0.5px;
+    font-weight: bold;
 }
 
 .contenedor-valores {
@@ -282,6 +284,7 @@ body {
             font-size: 1.4rem;
             font-weight: bold;
             letter-spacing: 1px;
+            color: white;
         }
 
         nav ul {
@@ -317,4 +320,50 @@ body {
             color: #001A33;
         }
 
-        
+/* ── FOOTER ── */
+footer {
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.45);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 50px 0 0;
+}
+
+footer h5 {
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: white;
+}
+
+footer p,
+footer small {
+    color: #8fc8d4;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #a8d8e2;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 7px;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+footer a:hover {
+    color: #0d6efd;
+}
+
+.footer-bottom {
+    background: rgba(0, 0, 0, 0.4);
+    text-align: center;
+    padding: 14px;
+    margin-top: 40px;
+}
+
+.footer-bottom small {
+    color: #6a9eaa;
+    font-size: 0.82rem;
+}
+
+

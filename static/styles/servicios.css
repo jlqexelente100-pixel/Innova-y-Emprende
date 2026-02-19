@@ -1,22 +1,241 @@
+/* ── BASE ── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
-    background-color: #006172;
-    margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(180deg, #007b91 0%, #006172 30%, #003842 60%, #001a1f 100%);
+    color: white;
+    min-height: 100vh;
 }
 
-/* FOOTER */
+/* ── NAVBAR ── */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 40px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    position: relative;
+    z-index: 10;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-area img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.logo-area span {
+    font-size: 1.4rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: white;
+}
+
+nav ul {
+    display: flex;
+    gap: 25px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #cfd8ff;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+nav ul li a:hover {
+    color: white;
+}
+
+.btn-nav {
+    padding: 8px 18px;
+    border: 1px solid white;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 0.9rem;
+}
+
+.btn-nav:hover {
+    background: white;
+    color: #001A33;
+}
+
+/* ── HERO ── */
+.hero-section {
+    position: relative;
+    text-align: center;
+    padding: 80px 20px 60px;
+    z-index: 2;
+}
+
+.hero-section h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.hero-section p {
+    font-size: 1.1rem;
+    color: #b2e0ea;
+    max-width: 550px;
+    margin: 0 auto;
+}
+
+/* ── NUBES ── */
+.clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.cloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    opacity: 0.6;
+}
+
+.cloud::before,
+.cloud::after {
+    content: '';
+    position: absolute;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+}
+
+.cloud::before { width: 30px; height: 30px; top: -15px; left: 10px; }
+.cloud::after  { width: 50px; height: 50px; top: -25px; right: 10px; }
+
+.cloud1 { width: 80px;  height: 30px; top: 40%; left: -80px;  animation: moveCloud 20s linear infinite; }
+.cloud2 { width: 100px; height: 35px; top: 55%; left: -100px; animation: moveCloud 25s linear infinite; animation-delay: 5s; }
+.cloud3 { width: 90px;  height: 32px; top: 50%; left: -90px;  animation: moveCloud 30s linear infinite; animation-delay: 10s; }
+.cloud4 { width: 95px;  height: 33px; top: 60%; left: -95px;  animation: moveCloud 28s linear infinite; animation-delay: 2s; }
+.cloud5 { width: 85px;  height: 31px; top: 45%; left: -85px;  animation: moveCloud 22s linear infinite; animation-delay: 8s; }
+.cloud6 { width: 100px; height: 36px; top: 65%; left: -100px; animation: moveCloud 26s linear infinite; animation-delay: 12s; }
+
+@keyframes moveCloud {
+    0%   { left: -100px; }
+    100% { left: 100vw; }
+}
+
+/* ── FADE UP ── */
+.fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.7s ease forwards;
+}
+
+.fade-up:nth-child(2) { animation-delay: 0.15s; }
+.fade-up:nth-child(3) { animation-delay: 0.30s; }
+.fade-up:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SECCIÓN SERVICIOS ── */
+.servicios-section {
+    position: relative;
+    z-index: 2;
+    padding: 60px 20px;
+}
+
+.card-servicio {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 18px;
+    padding: 35px 25px;
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+    height: 100%;
+    color: white;
+}
+
+.card-servicio:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-servicio .icon {
+    font-size: 3rem;
+    margin-bottom: 18px;
+}
+
+.card-servicio h5 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.card-servicio p {
+    font-size: 0.9rem;
+    color: #b2dce6;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ── FOOTER ── */
 footer {
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.45);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 50px 0 0;
     margin-top: 50px;
 }
 
 footer h5 {
+    font-weight: 700;
     margin-bottom: 15px;
+    color: white;
+}
+
+footer p,
+footer small {
+    color: #8fc8d4;
+    font-size: 0.9rem;
 }
 
 footer a {
+    color: #a8d8e2;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 7px;
+    font-size: 0.9rem;
     transition: 0.3s;
 }
 
 footer a:hover {
-    color: #0d6efd; /* azul bootstrap */
+    color: #0d6efd;
+}
+
+.footer-bottom {
+    background: rgba(0, 0, 0, 0.4);
+    text-align: center;
+    padding: 14px;
+    margin-top: 40px;
+}
+
+.footer-bottom small {
+    color: #6a9eaa;
+    font-size: 0.82rem;
 }
