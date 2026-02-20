@@ -6,6 +6,8 @@
     <title>Servicios - Innova y Emprende</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- fuente Lato y estilos general del home -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/servicios.css') }}">
 </head>
 <body>
@@ -13,19 +15,20 @@
     <!-- NAVBAR -->
     <nav>
         <div class="logo-area">
+            <a href="{{ url_for ('home') }}">
             <img src="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}" alt="logo">
+            </a>
             <span>Innova y Emprende</span>
         </div>
 
         <ul>
             <li><a href="{{ url_for('servicios') }}">Servicios</a></li>
-            <li><a href="#recursos">Recursos</a></li>
             <li><a href="{{ url_for('sobre_nosotros') }}">Sobre Nosotros</a></li>
         </ul>
 
         <div style="display: flex; gap: 12px;">
             <a class="btn-nav" href="{{ url_for('login') }}">Iniciar sesión</a>
-            <a class="btn-nav" style="background: #006172; color: white;" href="{{ url_for('registrar') }}">Registrarse</a>
+            <a class="btn-nav" href="{{ url_for('registrar') }}">Registrarse</a>
         </div>
     </nav>
 

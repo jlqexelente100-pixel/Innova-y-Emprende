@@ -17,25 +17,39 @@
             padding: 18px 40px;
             background: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(8px);
+            height: 96px;
+            box-sizing: border-box;
+            margin: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        span{
+            color: white;
         }
 
         .logo-area {
             display: flex;
             align-items: center;
             gap: 12px;
+            margin: 0;
+            padding: 0;
         }
 
         .logo-area img {
             width: 60px;
             height: 60px;
-            /*mix-blend-mode: screen; /* o "multiply" dependiendo del fondo 
-            border-radius: 50%;*/
+            margin: 0;
+            padding: 0;
         }
 
         .logo-area span {
             font-size: 1.4rem;
             font-weight: bold;
             letter-spacing: 1px;
+            margin: 0;
+            padding: 0;
         }
 
         nav ul {
@@ -43,6 +57,9 @@
             gap: 25px;
             list-style: none;
             padding: 0;
+            margin: 0;
+            height: 100%;
+            align-items: center;
         }
 
         nav ul li a {
@@ -50,6 +67,9 @@
             color: #cfd8ff;
             font-size: 0.95rem;
             transition: 0.3s;
+            padding: 0;
+            margin: 0;
+            white-space: nowrap;
         }
 
         nav ul li a:hover {
@@ -64,6 +84,10 @@
             text-decoration: none;
             transition: 0.3s;
             font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            height: auto;
+            white-space: nowrap;
         }
 
         .btn-nav:hover {

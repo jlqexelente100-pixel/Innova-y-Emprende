@@ -27,19 +27,20 @@
     
     <nav>
         <div class="logo-area">
+            <a href="{{ url_for ('home') }}">
             <img src="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}" alt="logo">
+            </a>
             <span>Innova y Emprende</span>
         </div>
 
         <ul>
             <li><a href="{{ url_for ('servicios') }}">Servicios</a></li>
-            <li><a href="#recursos">Recursos</a></li>
             <li><a href="{{ url_for('sobre_nosotros') }}">Sobre Nosotros</a></li>
         </ul>
 
         <div style="display: flex; gap: 12px;">
             <a class="btn-nav" href="{{ url_for('login') }}">Iniciar sesión</a>
-            <a class="btn-nav" style="background: #006172; color: white;" href="{{ url_for('registrar') }}">Registrarse</a>
+            <a class="btn-nav" href="{{ url_for('registrar') }}">Registrarse</a>
         </div>
     </nav>
 
