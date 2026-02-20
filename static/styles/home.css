@@ -26,10 +26,8 @@
         }
 
         .logo-area img {
-            width: 60px;
-            height: 60px;
-            /*mix-blend-mode: screen; /* o "multiply" dependiendo del fondo 
-            border-radius: 50%;*/
+            width: 80px;
+            height: 80px;
         }
 
         .logo-area span {

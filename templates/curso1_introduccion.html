@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción y mentalidad emprendedora</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/curso1.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>Introducción y mentalidad emprendedora</h1>
+
+    <div class="curso-info">
+        <img src="{{ url_for('static', filename='styles/imagenes/mentalidad.jpeg') }}" alt="Curso Emprendimiento">
+        
+        <div class="descripcion">
+            <p>
+                Este curso te enseña qué es emprender, los tipos de emprendimientos y cómo empezar tu propio proyecto.
+                Además, aprenderás a desarrollar una mentalidad creativa, organizada y motivada para avanzar con seguridad.
+                Es el curso ideal para quienes quieren iniciar un emprendimiento desde cero.
+            </p>
+            <div class="precio">Precio: Gratis</div>
+        </div>
+    </div>
+
+    <h2>Clases</h2>
+    <ul>
+        <li>Clase 1: ¿Qué es emprender?</li>
+        <li>Clase 2: Tipos de emprendimientos (digitales, físicos, servicios, creativos)</li>
+        <li>Clase 3: ¿Qué necesitas para empezar?</li>
+        <li>Clase 4: Creatividad y cómo generar ideas</li>
+        <li>Clase 5: Hábitos de un emprendedor</li>
+        <li>Clase 6: Cómo organizarte sin estrés</li>
+    </ul>
+
+    <div class="comprar">
+        <h2>Comprar curso</h2>
+        <label>Método de pago:</label><br>
+        <select>
+            <option>Método de pago:</option>
+            <option>Nequi</option>
+            <option>PayPal</option>
+            <option>DaviPlata</option>
+        </select>
+        <br><br>
+        <button>Comprar</button>
+    </div>
+
+</div>
+
+
+    
+</body>
+</html>

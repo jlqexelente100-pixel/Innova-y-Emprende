@@ -1,0 +1,120 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0F4C5C, #1B6B7A, #02A285);
+    color: white;
+    padding: 40px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+/* Título principal */
+h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #ffffff;
+}
+
+/* Sección info curso */
+.curso-info {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.curso-info img {
+    width: 250px;
+    border-radius: 12px;
+    border: 3px solid #02A285;
+}
+
+.descripcion {
+    flex: 1;
+}
+
+.precio {
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #02A285;
+}
+
+/* Subtítulos */
+h2 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 3px solid #1B6B7A;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* Lista */
+ul {
+    margin-left: 20px;
+    line-height: 1.8;
+}
+
+ul li {
+    margin-bottom: 5px;
+}
+
+/* Sección comprar */
+.comprar {
+    margin-top: 30px;
+    background: rgba(15, 76, 92, 0.25); /* #0F4C5C con transparencia */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Select */
+select {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    width: 250px;
+}
+
+/* Botón */
+button {
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    background-color: #02A285;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+button:hover {
+    background-color: #1B6B7A;
+    transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .curso-info {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .curso-info img {
+        width: 100%;
+        max-width: 300px;
+    }
+}

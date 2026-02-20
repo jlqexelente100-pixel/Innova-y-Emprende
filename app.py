@@ -276,6 +276,11 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/curso1_introduccion")
+def curso1_introduccion():
+    return render_template("curso1_introduccion.html")
+
+
 @app.route("/login", methods=["GET","POST"])
 def login():
     if request.method == "GET":
