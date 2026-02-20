@@ -10,12 +10,17 @@
 </head>
 <body>
 
-<!--barra de navegaciom-->
 <div class="layout">
 
   <!-- Sidebar -->
   <nav id="sidebar" class="bg-dark text-white p-3">
-    <h4 class="text-center mb-4">Panel</h4>
+
+    <form class="mt-3" onsubmit="return false;">
+      <input id="buscador" class="form-control mb-2" 
+             type="search" 
+             placeholder="Buscar curso..." 
+             onkeyup="filtrarCursos()">
+    </form>
 
     <ul class="nav flex-column">
       <li class="nav-item mb-2">
@@ -43,12 +48,6 @@
       </li>
     </ul>
 
-    <hr class="bg-light">
-
-    <form class="mt-3">
-      <input class="form-control mb-2" type="search" placeholder="Buscar">
-      <button class="btn btn-success w-100" type="submit">Buscar</button>
-    </form>
   </nav>
 
 <!-- CATÁLOGO -->
@@ -58,7 +57,7 @@
     <div class="cards-container">
 
         <!-- Curso 1 -->
-        <div class="card" style="width: 18rem;">
+        <div class="card curso-card" style="width: 18rem;">
             <img src="{{ url_for('static', filename='styles/imagenes/mentalidad.jpeg') }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">Introducción y mentalidad emprendedora</h5>
@@ -70,7 +69,7 @@
         </div>
 
         <!-- Curso 2 -->
-        <div class="card" style="width: 18rem;">
+        <div class="card curso-card" style="width: 18rem;">
             <img src="{{ url_for('static', filename='styles/imagenes/joyeria.jpeg') }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">Joyería artesanal</h5>
@@ -82,7 +81,7 @@
         </div>
 
         <!-- Curso 3 -->
-        <div class="card" style="width: 18rem;">
+        <div class="card curso-card" style="width: 18rem;">
             <img src="{{ url_for('static', filename='styles/imagenes/programacion.jpeg') }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">Programación básica</h5>
@@ -94,7 +93,7 @@
         </div>
 
         <!-- Curso 4 -->
-        <div class="card" style="width: 18rem;">
+        <div class="card curso-card" style="width: 18rem;">
             <img src="{{ url_for('static', filename='styles/imagenes/cosmetic.jpeg') }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">Cosmética natural casera</h5>
@@ -106,7 +105,7 @@
         </div>
 
         <!-- Curso 5 -->
-        <div class="card" style="width: 18rem;">
+        <div class="card curso-card" style="width: 18rem;">
             <img src="{{ url_for('static', filename='styles/imagenes/reposteria.jpeg') }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">Repostería casera</h5>
@@ -118,7 +117,7 @@
         </div>
 
         <!-- Curso 6 -->
-        <div class="card" style="width: 18rem;">
+        <div class="card curso-card" style="width: 18rem;">
             <img src="{{ url_for('static', filename='styles/imagenes/bordado.jpeg') }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">Bordado y costura básica</h5>
@@ -130,7 +129,7 @@
         </div>
 
         <!-- Curso 7 -->
-        <div class="card" style="width: 18rem;">
+        <div class="card curso-card" style="width: 18rem;">
             <img src="{{ url_for('static', filename='styles/imagenes/edicion_audio.jpeg') }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">Edición de audio y podcasts</h5>
@@ -142,7 +141,7 @@
         </div>
 
         <!-- Curso 8 -->
-        <div class="card" style="width: 18rem;">
+        <div class="card curso-card" style="width: 18rem;">
             <img src="{{ url_for('static', filename='static/styles/imagenes/cat_and_dog.jpeg') }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">Cuidado de mascotas</h5>
@@ -154,7 +153,7 @@
         </div>
 
         <!-- Curso 9 -->
-        <div class="card" style="width: 18rem;">
+        <div class="card curso-card" style="width: 18rem;">
             <img src="{{ url_for('static', filename='static/styles/imagenes/cultivo_en_casa.jpeg') }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">Huertas urbanas y cultivo en casa</h5>
@@ -166,7 +165,7 @@
         </div>
 
         <!-- Curso 10 -->
-        <div class="card" style="width: 18rem;">
+        <div class="card curso-card" style="width: 18rem;">
             <img src="{{ url_for('static', filename='static/styles/imagenes/digital_marketing.jpeg') }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">Marketing digital</h5>
@@ -178,7 +177,7 @@
         </div>
 
         <!-- Curso 11 -->
-        <div class="card" style="width: 18rem;">
+        <div class="card curso-card" style="width: 18rem;">
             <img src="{{ url_for('static', filename='static/styles/imagenes/marca_personal.jpeg') }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">Creación de marca personal</h5>
@@ -221,6 +220,23 @@ async function cargar(){
     });
 }
 cargar();
+function filtrarCursos() {
+    const input = document.getElementById("buscador").value.toLowerCase();
+
+    // Filtrar cards estáticas
+    const cards = document.querySelectorAll(".curso-card");
+    cards.forEach(card => {
+        const texto = card.innerText.toLowerCase();
+        card.style.display = texto.includes(input) ? "" : "none";
+    });
+
+    // Filtrar cursos cargados dinámicamente
+    const cursosDinamicos = document.querySelectorAll("#contenedor-cursos > div");
+    cursosDinamicos.forEach(curso => {
+        const texto = curso.innerText.toLowerCase();
+        curso.style.display = texto.includes(input) ? "" : "none";
+    });
+}
 </script>
 
 </body>
