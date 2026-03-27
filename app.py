@@ -72,7 +72,7 @@ serializer = URLSafeTimedSerializer(app.secret_key)
 # CONFIGURACIÓN BD (POSTGRES)
 # -------------------------
 DB_CONFIG = {
-    'host': 'localhost',
+    'host': os.getenv('DB_HOST', 'localhost'),  # usa 'db' en Docker, 'localhost' en local
     'database': 'Emprende',
     'user': 'postgres',
     'password': '123456',
@@ -481,7 +481,7 @@ def login():
 def logout():
     session.clear()
     flash("Sesión cerrada.")
-    return redirect(url_for("index"))
+    return redirect(url_for("home"))
 
 
 @app.route("/registrar", methods=["GET", "POST"])
@@ -864,8 +864,6 @@ def crear_checkout():
 
     conn = conectar_bd()
     cur = conn.cursor()
-
-    # FIX: precio y nombre del curso siempre desde la BD, nunca del frontend
     cur.execute("SELECT titulo, precio FROM cursos WHERE id = %s;", (curso_id,))
     curso = cur.fetchone()
     cur.close()
@@ -886,17 +884,18 @@ def crear_checkout():
             line_items=[{
                 "price_data": {
                     "currency": "usd",
-                    "product_data": {
-                        "name": titulo_curso
-                    },
-                    # FIX: precio desde BD, no del request
+                    "product_data": { "name": titulo_curso },
                     "unit_amount": int(precio * 100),
                 },
                 "quantity": 1,
             }],
             mode="payment",
-            # FIX: BASE_URL desde .env + session_id para verificar después
-            success_url=f"{BASE_URL}/pago-exitoso?curso_id={curso_id}&session_id={{CHECKOUT_SESSION_ID}}",
+            # ✅ Guardar datos del usuario en Stripe
+            metadata={
+                "usuario_id": str(session["user_id"]),
+                "curso_id": str(curso_id)
+            },
+            success_url=f"{BASE_URL}/pago-exitoso?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{BASE_URL}/pago-cancelado",
         )
         return jsonify({"url": checkout_session.url})
@@ -910,42 +909,40 @@ def crear_checkout():
 # --------------------------
 @app.route("/pago-exitoso")
 def pago_exitoso():
-    if not session.get("user_id"):
-        flash("Debes iniciar sesión")
-        return redirect(url_for("login"))
-
     stripe_session_id = request.args.get("session_id")
-    curso_id = request.args.get("curso_id")
 
-    # FIX: validar que vengan los parámetros
-    if not stripe_session_id or not curso_id:
+    if not stripe_session_id:
         flash("Solicitud inválida.")
         return redirect(url_for("index"))
 
-    # FIX: verificar con Stripe que el pago realmente se realizó
+    # Verificar con Stripe
     try:
         checkout = stripe.checkout.Session.retrieve(stripe_session_id)
     except Exception as e:
-        flash("No se pudo verificar el pago con Stripe.")
+        flash("No se pudo verificar el pago.")
         return redirect(url_for("index"))
 
     if checkout.payment_status != "paid":
         flash("El pago no fue completado.")
         return redirect(url_for("index"))
 
-    usuario_id = session["user_id"]
+    # ✅ Recuperar datos desde los metadatos de Stripe
+    usuario_id = checkout.metadata.get("usuario_id")
+    curso_id = checkout.metadata.get("curso_id")
+
+    if not usuario_id or not curso_id:
+        flash("Error al procesar la compra.")
+        return redirect(url_for("index"))
+
+    monto = checkout.amount_total / 100
 
     conn = conectar_bd()
     cur = conn.cursor()
-
-    # FIX: precio real desde Stripe (en centavos → dividir entre 100)
-    monto = checkout.amount_total / 100
 
     cur.execute("SELECT id FROM metodos_pago WHERE nombre = %s;", ("Stripe (tarjeta)",))
     metodo = cur.fetchone()
     metodo_pago_id = metodo[0] if metodo else None
 
-    # FIX: ON CONFLICT en stripe_session_id para evitar compras duplicadas
     cur.execute("""
         INSERT INTO compras(usuario_id, curso_id, metodo_pago_id, monto, estado, stripe_session_id)
         VALUES (%s, %s, %s, %s, 'completado', %s)
@@ -956,7 +953,20 @@ def pago_exitoso():
     cur.close()
     conn.close()
 
-    flash("Pago realizado correctamente ✅")
+    # ✅ Restaurar sesión si no está activa
+    if not session.get("user_id"):
+        session["user_id"] = int(usuario_id)
+        conn = conectar_bd()
+        cur = conn.cursor()
+        cur.execute("SELECT nombre, rol FROM usuarios WHERE id = %s;", (usuario_id,))
+        r = cur.fetchone()
+        cur.close()
+        conn.close()
+        if r:
+            session["nombre"] = r[0]
+            session["rol"] = r[1]
+
+    flash("¡Pago realizado correctamente! ✅")
     return redirect(url_for("mis_compras"))
 
 
@@ -1494,19 +1504,25 @@ def mis_cursos_progreso():
     conn = conectar_bd()
     cur = conn.cursor()
 
+    # FIX: incluir todos los cursos comprados, aunque no haya progreso aún
     cur.execute("""
         SELECT
-            pc.curso_id, c.titulo, c.imagen_url, pc.porcentaje, pc.completado,
-            pc.ultima_actualizacion,
+            c.id AS curso_id,
+            c.titulo,
+            c.imagen_url,
+            COALESCE(pc.porcentaje, 0) AS porcentaje,
+            COALESCE(pc.completado, FALSE) AS completado,
+            COALESCE(pc.ultima_actualizacion, comp.fecha) AS ultima_actualizacion,
             COUNT(l.id) AS total_lecciones,
-            SUM(CASE WHEN pl.completada THEN 1 ELSE 0 END) AS lecciones_completadas
-        FROM progreso_cursos pc
-        JOIN cursos c ON pc.curso_id = c.id
+            COUNT(pl.id) FILTER (WHERE pl.completada = TRUE) AS lecciones_completadas
+        FROM compras comp
+        JOIN cursos c ON comp.curso_id = c.id
+        LEFT JOIN progreso_cursos pc ON pc.curso_id = c.id AND pc.usuario_id = comp.usuario_id
         LEFT JOIN lecciones l ON l.curso_id = c.id
-        LEFT JOIN progreso_lecciones pl ON pl.leccion_id = l.id AND pl.usuario_id = pc.usuario_id
-        WHERE pc.usuario_id = %s
-        GROUP BY pc.curso_id, c.titulo, c.imagen_url, pc.porcentaje, pc.completado, pc.ultima_actualizacion
-        ORDER BY pc.ultima_actualizacion DESC
+        LEFT JOIN progreso_lecciones pl ON pl.leccion_id = l.id AND pl.usuario_id = comp.usuario_id
+        WHERE comp.usuario_id = %s AND comp.estado = 'completado'
+        GROUP BY c.id, c.titulo, c.imagen_url, pc.porcentaje, pc.completado, pc.ultima_actualizacion, comp.fecha
+        ORDER BY ultima_actualizacion DESC
     """, (usuario_id,))
 
     filas = cur.fetchall()
@@ -1518,12 +1534,12 @@ def mis_cursos_progreso():
             "curso_id": row[0], "titulo": row[1], "imagen_url": row[2],
             "porcentaje": float(row[3]), "completado": row[4],
             "ultima_actualizacion": str(row[5]),
-            "total_lecciones": row[6] or 0, "lecciones_completadas": row[7] or 0
+            "total_lecciones": row[6] or 0,
+            "lecciones_completadas": row[7] or 0
         }
         for row in filas
     ]
     return render_template("mis_cursos.html", cursos=cursos)
-
 
 # --------------------------
 # BÚSQUEDA

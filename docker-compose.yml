@@ -5,16 +5,18 @@ services:
     build: .
     ports:
       - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=db
     depends_on:
       - db
- 
+
   db:
     image: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: Emprende
-
-      
     ports:
       - "5432:5432"

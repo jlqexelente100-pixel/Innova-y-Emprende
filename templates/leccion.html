@@ -8,99 +8,122 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="container mt-4 leccion-container">
 
-```
-<h2>{{ leccion.titulo }}</h2>
+    <h2>{{ leccion.titulo }}</h2>
 
-{% if leccion.fecha %}
-    <p><small class="text-muted">Fecha: {{ leccion.fecha }}</small></p>
-{% endif %}
+    {% if leccion.fecha %}
+        <p><small class="text-muted">Fecha: {{ leccion.fecha }}</small></p>
+    {% endif %}
 
-<!-- REUNIONES -->
-{% if reuniones %}
-    {% for r in reuniones %}
-        <div class="reunion">
-            <p class="mb-3">{{ r.mensaje }}</p>
-
-            <div class="d-flex flex-column flex-sm-row gap-2">
-                <a href="{{ r.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-                    Entrar a la clase en vivo
-                </a>
-
-                {% if session.get('rol') == 'profesor' %}
-                    <button onclick="eliminarMeet({{ r.id }})" class="btn btn-danger btn-sm">
-                        Eliminar
-                    </button>
-                {% endif %}
+    <!-- REUNIONES -->
+    {% if reuniones %}
+        {% for r in reuniones %}
+            <div class="reunion">
+                <p class="mb-3">{{ r.mensaje }}</p>
+                <div class="d-flex flex-column flex-sm-row gap-2">
+                    <a href="{{ r.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                        Entrar a la clase en vivo
+                    </a>
+                    {% if session.get('rol') == 'profesor' %}
+                        <button onclick="eliminarMeet({{ r.id }})" class="btn btn-danger btn-sm">
+                            Eliminar
+                        </button>
+                    {% endif %}
+                </div>
             </div>
-        </div>
-    {% endfor %}
-{% endif %}
+        {% endfor %}
+    {% endif %}
 
-<!-- CREAR REUNION -->
-{% if session.get('rol') == 'profesor' %}
-    <button onclick="crearMeet()" class="btn btn-warning mt-2">
-        Crear reunión
-    </button>
-    <div id="nueva-reunion" class="mt-3"></div>
-{% endif %}
+    <!-- CREAR REUNION -->
+    {% if session.get('rol') == 'profesor' %}
+        <button onclick="crearMeet()" class="btn btn-warning mt-2">Crear reunión</button>
+        <div id="nueva-reunion" class="mt-3"></div>
+    {% endif %}
 
-<!--  VIDEO -->
-{% if leccion.video_url %}
+    <!-- VIDEO -->
+    {% if leccion.video_url %}
     <div class="mb-4">
         <div class="video-container">
-            <iframe src="{{ leccion.video_url }}" allowfullscreen></iframe>
+            <div id="youtube-player"></div>
         </div>
     </div>
-{% endif %}
+    {% endif %}
 
-<!-- CONTENIDO -->
-<div class="mb-4">
-    <h4>Contenido</h4>
-    <p>{{ leccion.contenido }}</p>
-</div>
+    <!-- CONTENIDO -->
+    <div class="mb-4">
+        <h4>Contenido</h4>
+        <p>{{ leccion.contenido }}</p>
+    </div>
 
-<!-- ✅ BOTÓN COMPLETAR -->
-<div class="mb-4">
-    <button onclick="completarLeccion({{ leccion.id }})" class="btn btn-success">
-        Marcar como completada
-    </button>
+    <!-- BOTÓN COMPLETAR -->
+    <div class="mb-4">
+        <button id="btn-completar" onclick="completarLeccion({{ leccion.id }})" class="btn btn-success">
+            Marcar como completada
+        </button>
+        <p class="mt-2">
+            Progreso del curso: <span id="progreso">--%</span>
+        </p>
+    </div>
 
-    <p class="mt-2">
-        Progreso del curso: <span id="progreso">--%</span>
-    </p>
-</div>
-
-<!-- VOLVER -->
-<a href="/curso/{{ leccion.curso_id }}" class="btn btn-secondary">
-    Volver al curso
-</a>
-```
+    <!-- VOLVER -->
+    <a href="/curso/{{ leccion.curso_id }}" class="btn btn-secondary">
+        Volver al curso
+    </a>
 
 </div>
 {% endblock %}
 
 {% block scripts %}
-
 <script>
+// ── YouTube IFrame API ──────────────────────────────────
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(tag);
 
-// ✅ COMPLETAR LECCIÓN
-function completarLeccion(leccionId) {
-    fetch(`/leccion/${leccionId}/completar`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
+var player;
+var videoUrl = "{{ leccion.video_url }}";
+var leccionId = {{ leccion.id }};
+var yaCompletada = false;
+
+function onYouTubeIframeAPIReady() {
+    if (!videoUrl) return;
+
+    // extraer el video ID del embed URL
+    var videoId = videoUrl.split("/embed/")[1];
+    if (!videoId) return;
+
+    player = new YT.Player('youtube-player', {
+        height: '100%',
+        width: '100%',
+        videoId: videoId,
+        playerVars: { 'rel': 0 },
+        events: {
+            'onStateChange': onPlayerStateChange
         }
+    });
+}
+
+function onPlayerStateChange(event) {
+    // YT.PlayerState.ENDED === 0
+    if (event.data === YT.PlayerState.ENDED && !yaCompletada) {
+        completarLeccion(leccionId);
+    }
+}
+
+// ── Completar lección ───────────────────────────────────
+function completarLeccion(id) {
+    fetch(`/leccion/${id}/completar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
     })
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            alert("✅ Lección completada");
-
-            document.getElementById("progreso").innerText =
-                data.porcentaje_curso + "%";
+            yaCompletada = true;
+            document.getElementById("progreso").innerText = data.porcentaje_curso + "%";
+            document.getElementById("btn-completar").disabled = true;
+            document.getElementById("btn-completar").innerText = "✅ Completada";
         } else {
             alert("❌ " + data.error);
         }
@@ -108,98 +131,35 @@ function completarLeccion(leccionId) {
     .catch(err => console.error(err));
 }
 
-// CREAR MEET
+// ── Meet ────────────────────────────────────────────────
 function crearMeet() {
-    fetch("/profesor/leccion/{{leccion.id}}/crear-meet", {
+    fetch("/profesor/leccion/{{ leccion.id }}/crear-meet", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             hora_inicio: "2026-03-10 18:00:00",
             hora_fin: "2026-03-10 19:00:00",
             mensaje: "Clase en vivo"
         })
     })
-    .then(res => {
-        if (!res.ok) {
-            return res.json().then(err => { throw new Error(err.error || "Error"); });
-        }
-        return res.json();
-    })
-    .then(data => {
-        const nuevaReunionDiv = document.getElementById("nueva-reunion");
-
-        nuevaReunionDiv.innerHTML = `
-            <div class="reunion alert alert-success">
-                <p class="mb-3">Clase en vivo</p>
-
-                <div class="d-flex flex-column flex-sm-row gap-2">
-                    <a href="${data.url}" target="_blank" class="btn btn-primary">
-                        Entrar a la clase en vivo
-                    </a>
-
-                    <button onclick="eliminarMeet(${data.id})" class="btn btn-danger btn-sm">
-                        Eliminar
-                    </button>
-                </div>
-            </div>
-        `;
-    })
-    .catch(error => {
-        alert("Error creando reunión: " + error.message);
-    });
-}
-
-// ELIMINAR MEET
-function eliminarMeet(id) {
-    if (!confirm("¿Seguro que deseas eliminar esta reunión?")) return;
-
-    fetch(`/meet/${id}/eliminar`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-    .then(res => {
-        if (!res.ok) {
-            return res.json().then(err => { throw new Error(err.error || "Error"); });
-        }
-        return res.json();
-    })
-    .then(() => {
-        alert("Reunión eliminada correctamente");
-        location.reload();
-    })
-    .catch(error => {
-        alert("Error al eliminar reunión: " + error.message);
-    });
-}
-
-</script>
-
-<script>
-function completarLeccion(leccionId) {
-    fetch(`/leccion/${leccionId}/completar`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
     .then(res => res.json())
     .then(data => {
-        if (data.success) {
-            alert("✅ Lección completada");
-
-            // actualizar progreso si luego lo agregas
-            console.log("Progreso:", data.porcentaje_curso);
-        } else {
-            alert("❌ " + data.error);
-        }
+        document.getElementById("nueva-reunion").innerHTML = `
+            <div class="reunion alert alert-success">
+                <p class="mb-3">Clase en vivo</p>
+                <a href="${data.url}" target="_blank" class="btn btn-primary">Entrar</a>
+                <button onclick="eliminarMeet(${data.id})" class="btn btn-danger btn-sm">Eliminar</button>
+            </div>`;
     })
-    .catch(err => console.error(err));
+    .catch(err => alert("Error: " + err.message));
+}
+
+function eliminarMeet(id) {
+    if (!confirm("¿Eliminar esta reunión?")) return;
+    fetch(`/meet/${id}/eliminar`, { method: "POST" })
+    .then(() => location.reload())
+    .catch(err => alert("Error: " + err.message));
 }
 </script>
-
 {% endblock %}
 
