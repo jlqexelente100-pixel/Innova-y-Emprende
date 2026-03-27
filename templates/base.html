@@ -80,20 +80,20 @@
             </div>
         </div>
 
-        <!-- 🔍 BUSCADOR -->
-        <form action="/buscar" method="GET" style="display:flex; align-items:center; gap:8px;">
-        <input 
-            type="text" 
-            name="q" 
-            placeholder="Buscar cursos..." 
-            required
-            style="padding: 6px 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px;"
-        />
-        <button type="submit" style="padding: 6px 14px; border-radius: 8px; background:#007bff; color:#fff; border:none; cursor:pointer;">
-            Buscar
-        </button>
+<!-- 🔍 BUSCADOR -->
+        <form action="/buscar" method="GET" class="search-form mb-3">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input 
+                    type="text" 
+                    name="q" 
+                    placeholder="Buscar cursos..."
+                    required
+                    class="search-input"
+                />
+            </div>
         </form>
-        {% endif %}
+            {% endif %}
 
         <ul class="nav flex-column">
             <li class="nav-item mb-2">

@@ -244,3 +244,43 @@ body {
         right: 0.75rem;
     }
 }
+
+/* ── Buscador ─────────────────────────────── */
+.search-form {
+    width: 100%;
+}
+
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 6px 12px;
+    gap: 8px;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.search-wrapper:focus-within {
+    background: rgba(255, 255, 255, 0.13);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.search-icon {
+    font-size: 13px;
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+.search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 13px;
+    width: 100%;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
