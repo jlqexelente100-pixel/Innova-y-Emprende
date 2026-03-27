@@ -1,7 +1,6 @@
 body {
     font-family: "Inter", "Lato", sans-serif;
-
-     background: linear-gradient(90deg, #a6cbd5 0%, #d9eef4 40%, #e4f4f8 100%);
+    background: white;
     margin: 0;
     padding: 0;
 }

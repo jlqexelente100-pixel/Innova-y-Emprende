@@ -13,7 +13,7 @@
 }
 
 .regresar-seguir {
-    display: flex;
+    display: flex 1170px;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
