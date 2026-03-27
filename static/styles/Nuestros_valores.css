@@ -1,0 +1,150 @@
+@import url("home.css");
+
+body {
+    margin: 0;
+    font-family: "Lato", sans-serif !important;
+    background: linear-gradient(180deg, #007b91 0%, #006172 30%, #003842 60%, #001a1f 100%);
+    color: white;
+    min-height: 100vh;
+}
+
+.hero-shell {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section {
+    position: relative;
+    text-align: center;
+    padding: clamp(4rem, 8vw, 5rem) 20px clamp(3rem, 6vw, 4rem);
+    z-index: 2;
+}
+
+.hero-section h1 {
+    font-size: clamp(2.2rem, 4.4vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.hero-section p {
+    font-size: clamp(1rem, 2vw, 1.1rem);
+    color: #b2e0ea;
+    max-width: 550px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+.fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.7s ease forwards;
+}
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.valores-section {
+    padding: clamp(2.5rem, 7vw, 4rem) 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 18px;
+    padding: 30px 24px;
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+    height: 100%;
+    color: white;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 18px;
+}
+
+.card h3 {
+    color: white;
+    margin-bottom: 12px;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.card p {
+    color: #b2dce6;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin: 0;
+}
+
+footer {
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.45);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 50px 0 0;
+    margin-top: 100px;
+}
+
+footer h5 {
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: white;
+}
+
+footer p,
+footer small {
+    color: #8fc8d4;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #a8d8e2;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 7px;
+    font-size: 0.9rem;
+}
+
+footer a:hover {
+    color: #0d6efd;
+}
+
+.footer-bottom {
+    background: rgba(0, 0, 0, 0.4);
+    text-align: center;
+    padding: 14px;
+    margin-top: 40px;
+}
+
+.footer-bottom small {
+    color: #6a9eaa;
+    font-size: 0.82rem;
+}
+
+@media (max-width: 768px) {
+    .valores-section {
+        padding-inline: 15px;
+    }
+
+    .card {
+        padding: 24px 18px;
+    }
+
+    footer {
+        padding: 40px 20px 0;
+        text-align: center;
+    }
+}

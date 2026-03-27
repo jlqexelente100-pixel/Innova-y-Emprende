@@ -1,0 +1,64 @@
+@import url("login.css");
+
+.main-container {
+    width: min(100%, 1180px);
+}
+
+.right-panel {
+    justify-content: flex-start;
+}
+
+.contenedor {
+    width: min(100%, 520px);
+}
+
+.regresar-seguir {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.regresar-seguir > * {
+    flex: 1 1 220px;
+}
+
+.link-lateral {
+    margin: 0;
+    padding: 0;
+    color: #007b91;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.link-lateral a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.link-lateral a:hover,
+.link-lateral:hover {
+    text-decoration: underline;
+}
+
+.Rol {
+    width: 100%;
+    padding: 0.8rem 0.95rem;
+    border-radius: 12px;
+    border: 1px solid #ced4da;
+    font-size: 1rem;
+    background: white;
+}
+
+#emailHelp {
+    margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .regresar-seguir {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

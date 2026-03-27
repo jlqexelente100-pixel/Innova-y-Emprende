@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ curso.titulo }} - Academia Online
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/curso_detalle.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="curso-header">
+    <div class="container">
+        <h1>{{ curso.titulo }}</h1>
+        <p class="mb-2">
+            Impartido por:
+            <strong>{{ curso.profesor_id }}</strong>
+        </p>
+
+        {% if curso.precio and curso.precio > 0 %}
+        <h3 class="mb-0">${{ "%.2f"|format(curso.precio) }}</h3>
+        {% else %}
+        <h3 class="mb-0">GRATIS</h3>
+        {% endif %}
+    </div>
+</section>
+
+<div class="container my-4">
+    <div class="curso-detalle-grid">
+        <div>
+            <img src="{{ url_for('static', filename=curso.imagen_url) }}"
+                 class="curso-imagen"
+                 alt="{{ curso.titulo }}">
+
+            <div class="curso-panel mb-4">
+                <div class="card-body">
+                    <h3>Descripcion</h3>
+                    <p class="mb-0">{{ curso.descripcion }}</p>
+                </div>
+            </div>
+
+            {% if curso.precio and curso.precio > 0 and not curso.puede_acceder %}
+            <button class="btn btn-principal" onclick="comprarCurso({{ curso.id }}, {{ curso.precio }})">
+                Comprar curso
+            </button>
+            {% endif %}
+
+            {% if curso.es_profesor %}
+            {% endif %}
+        </div>
+
+        <div>
+            {% if curso.puede_acceder %}
+            <div class="curso-panel">
+                <div class="card-body">
+                    <h5>Lecciones ({{ lecciones|length }})</h5>
+
+                    {% for leccion in lecciones %}
+                    <div class="leccion-item" onclick="irALeccion({{ leccion.id }})">
+                        <strong>{{ leccion.titulo }}</strong>
+
+                        {% if leccion.video_url %}
+                        <br>
+                        <small class="text-muted">Tiene video</small>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p class="mb-0">No hay lecciones aun.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="curso-panel mt-3">
+                <div class="card-body">
+                    <h5>Foro del Curso</h5>
+                    <p>Discute con otros estudiantes.</p>
+                    <a href="{{ url_for('foro_curso', curso_id=curso.id) }}" class="btn btn-outline-primary btn-sm">
+                        Ir al foro
+                    </a>
+                </div>
+            </div>
+
+            <div class="alert alert-success mt-4 profesor-panel">
+                <h5>Panel Profesor</h5>
+                <div class="btn-group-responsive mt-3">
+                    <a href="{{ url_for('profesor_anadir_leccion', curso_id=curso.id) }}" class="btn btn-sm btn-primary">
+                        Agregar leccion
+                    </a>
+
+                    <button class="btn btn-sm btn-secondary" onclick="editarEstilos()">
+                        Personalizar CSS
+                    </button>
+                </div>
+            </div>
+            
+            {% else %}
+            <div class="curso-panel">
+                <div class="card-body">
+                    <h5>Contenido restringido</h5>
+                    <p class="mb-0">Debes comprar el curso para ver las lecciones.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const cursoId = {{ curso.id }};
+
+function irALeccion(id) {
+    window.location.href = `/leccion/${id}`;
+}
+
+async function comprarCurso(curso_id, precio) {
+    try {
+        const res = await fetch("/crear-checkout-session", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                curso_id: curso_id,
+                precio: precio
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            alert(data.error || "Error creando el pago");
+        }
+    } catch (e) {
+        alert("Error al procesar el pago");
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,251 @@
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px;
+}
+
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+.card-img-top {
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-title {
+    font-weight: bold;
+    text-align: center;
+}
+
+.card-text {
+    font-size: 14px;
+    text-align: justify;
+}
+
+.card .btn {
+    display: block;
+    margin: 15px auto 0;
+    border-radius: 20px;
+}
+
+body {
+    margin: 0;
+    font-family: "Lato", sans-serif;
+    background: #ffffff;
+    color: #0f172a;
+    min-height: 100vh;
+}
+
+section {
+    flex: 1;
+    padding: 0 20px 20px;
+    transition: all 0.3s ease;
+}
+
+.barra-superior {
+    width: calc(100% + 3rem);
+    min-height: 120px;
+    background: linear-gradient(180deg, #003842, #001a1f);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    margin: 0 0 0 -1.5rem;
+    position: relative;
+    overflow: hidden;
+    
+}
+
+.content {
+    padding-top: 0 ;
+}
+
+.clouds {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.cloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    opacity: 0.6;
+}
+
+.cloud::before,
+.cloud::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+}
+
+.cloud::before {
+    width: 30px;
+    height: 30px;
+    top: -15px;
+    left: 10px;
+}
+
+.cloud::after {
+    width: 50px;
+    height: 50px;
+    top: -25px;
+    right: 10px;
+}
+
+.cloud1 {
+    width: 80px;
+    height: 30px;
+    top: 15px;
+    left: -80px;
+    animation: moveCloud 20s linear infinite;
+}
+
+.cloud2 {
+    width: 100px;
+    height: 35px;
+    top: 55px;
+    left: -100px;
+    animation: moveCloud 25s linear infinite;
+    animation-delay: 5s;
+}
+
+.cloud3 {
+    width: 90px;
+    height: 32px;
+    top: 35px;
+    left: -90px;
+    animation: moveCloud 30s linear infinite;
+    animation-delay: 10s;
+}
+
+.cloud4 {
+    width: 95px;
+    height: 33px;
+    top: 75px;
+    left: -95px;
+    animation: moveCloud 28s linear infinite;
+    animation-delay: 2s;
+}
+
+.logo-whatsapp {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: #003842; /* color oficial de WhatsApp */
+    border-radius: 50%;
+}
+
+.logo-whatsapp img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.logo-whatsapp img:hover {
+    transform: scale(1.1);
+
+}
+
+@keyframes moveCloud {
+    0% { left: -100px; }
+    100% { left: 100vw; }
+}
+
+@media (max-width: 992px) {
+    .cards-container {
+        gap: 20px;
+        padding: 30px;
+    }
+
+    .card {
+        width: 45%;
+    }
+
+    .card-img-top {
+        height: 150px;
+    }
+
+    .barra-superior {
+        width: calc(100% + 2rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .cards-container {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+        gap: 20px;
+    }
+
+    .card {
+        width: min(100%, 420px);
+    }
+
+    .card-img-top {
+        height: 200px;
+    }
+
+    .barra-superior {
+        min-height: 96px;
+        padding-inline: 1rem;
+        font-size: 0.95rem;
+        margin-top: -4.8rem ;
+    }
+
+    .cloud1,
+    .cloud2,
+    .cloud3,
+    .cloud4 {
+        transform: scale(0.6);
+        transform-origin: left center;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-img-top {
+        height: 180px;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
+
+    .card-text {
+        font-size: 0.85rem;
+    }
+
+    .card .btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    .barra-superior {
+        width: calc(100% + 1.7rem);
+        margin-left: -0.85rem;
+    }
+}
+
+

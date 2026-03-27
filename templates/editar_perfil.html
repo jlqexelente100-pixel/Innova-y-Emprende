@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Perfil{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/editar_perfil.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="perfil-container">
+    <h3 class="mb-4 text-center">Editar Perfil</h3>
+
+    <div class="text-center mb-4">
+        <img
+            src="{% if usuario[3] %}
+                    {{ url_for('static', filename=usuario[3]) }}
+                 {% else %}
+                    {{ url_for('static', filename='imagenes/default-user.png') }}
+                 {% endif %}"
+            class="rounded-circle shadow"
+            width="120"
+            height="120"
+            style="object-fit: cover;"
+            alt="Foto de perfil"
+        >
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label" for="nombre">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ usuario[0] }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="apellido">Apellido</label>
+            <input type="text" class="form-control" id="apellido" name="apellido" value="{{ usuario[1] }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" value="{{ usuario[2] }}" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label" for="foto">Cambiar foto de perfil</label>
+            <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+            <small class="text-muted">Formatos permitidos: JPG, PNG, GIF</small>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

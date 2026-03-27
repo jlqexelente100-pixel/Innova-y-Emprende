@@ -1,0 +1,62 @@
+html {% extends "base.html" %} 
+
+{% block title %} Pago - {{ curso.titulo }}
+
+{% endblock %} 
+
+{% block extra_css %} 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pago.css') }}"> 
+{% endblock %} 
+
+{% block content %} 
+<section class="pago-container py-5"> 
+    <h1 class="mb-4">Confirmar Compra</h1> 
+    <!-- Resumen del Curso -->
+      <div class="curso-resumen"> 
+        <h4>{{ curso.titulo }}</h4> 
+        <p class="mb-2">Estás a punto de adquirir este curso.</p> 
+        <div class="precio-total"> 
+            {% if curso.precio > 0 %} 
+            ${{ "%.2f"|format(curso.precio) }} 
+            {% else %} GRATIS {% endif %} </div> 
+        </div> 
+
+        <!-- Curso con pago --> 
+         {% if curso.precio > 0 %} 
+         <div class="metodos-pago"> 
+            <h3>Método de pago</h3> 
+            <button class="btn-payments" onclick="comprarCurso({{curso.id}}, {{curso.precio}})"> 
+                Pagar con tarjeta </button> 
+                <p class="text-muted mt-2"> El pago será procesado de forma segura. </p> 
+            </div> 
+            {% else %} 
+
+            <!-- Curso gratuito --> 
+             <div class="alert alert-info"> 
+                <h4>Este curso es gratuito</h4> 
+                <p>No requiere pago. Serás inscrito automáticamente.</p> 
+                <form method="POST" action="{{ url_for('comprar') }}"> 
+                    <input type="hidden" name="curso_id" value="{{ curso.id }}"> 
+                    <input type="hidden" name="monto" value="0"> 
+                    <button type="submit" class="btn-payments"> 
+                        Inscribirse al curso 
+                    </button> 
+                </form> 
+            </div> 
+            {% endif %} 
+            <!-- Volver --> 
+             <div class="volver-enlace mt-4"> 
+                <a href="{{ url_for('curso_detalle', curso_id=curso.id) }}"> 
+                    ← Volver al curso 
+                </a> 
+            </div> 
+        </section> 
+        
+        {% endblock %} 
+        {% block scripts %} 
+
+        <script> 
+        async function comprarCurso(curso_id, precio)
+        { let res = await fetch("/crear-checkout-session",{ method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ curso_id:curso_id, precio:precio }) }) let data = await res.json() if(data.url){ window.location.href = data.url }else{ alert(data.error) } } 
+        </script> 
+        {% endblock %}

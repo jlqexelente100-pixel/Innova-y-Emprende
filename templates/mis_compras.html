@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Compras{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/mis_compras.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <h2 class="mb-4 fw-bold">Mis compras</h2>
+
+    {% if compras %}
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Curso</th>
+                                <th>Monto</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in compras %}
+                            <tr>
+                                <td>{{ c.fecha }}</td>
+                                <td class="fw-semibold">{{ c.titulo }}</td>
+                                <td>${{ c.monto }}</td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        {{ c.estado }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info shadow-sm">
+            No tienes compras aún.
+        </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+            Volver
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

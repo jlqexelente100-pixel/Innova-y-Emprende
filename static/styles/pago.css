@@ -1,0 +1,81 @@
+/* Contenedor principal */
+.pago-container{
+    max-width: 800px;
+    margin: auto;
+    padding: 30px;
+}
+
+/* Tarjeta del curso */
+.curso-resumen{
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.08);
+}
+
+/* Precio */
+.precio-total{
+    font-size: 28px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+/* Sección métodos de pago */
+.metodos-pago{
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+/* Botón de pago */
+.btn-payments{
+    background: linear-gradient(90deg,#4f46e5,#2563eb);
+    border: none;
+    color: white;
+    font-size: 18px;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Hover botón */
+.btn-payments:hover{
+    background: linear-gradient(90deg,#4338ca,#1d4ed8);
+    transform: translateY(-2px);
+}
+
+/* Texto informativo */
+.text-muted{
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Volver al curso */
+.volver-enlace{
+    margin-top: 25px;
+}
+
+.volver-enlace a{
+    text-decoration: none;
+    color: #2563eb;
+    font-weight: 500;
+}
+
+.volver-enlace a:hover{
+    text-decoration: underline;
+}
+
+/* Alertas */
+.alert{
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.alert-info{
+    background: #e0f2fe;
+    color: #0369a1;
+}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Academia Online - Inicio{% endblock %}
+
+{% block content %}
+
+
+<div class="container py-4">
+    <div class="row g-4">
+        {% for curso in cursos %}
+        <div class="col-sm-6 col-xl-4">
+            <div class="card h-100 shadow-sm" style="border-top: 4px solid {{ curso.color_principal }};">
+                <img
+                    src="{{ url_for('static', filename=curso.imagen_url) }}"
+                    class="card-img-top"
+                    style="height:200px; object-fit:cover;"
+                    alt="{{ curso.titulo }}"
+                >
+
+                <div class="card-body">
+                    <h5 class="card-title" style="color: {{ curso.color_principal }};">
+                        {{ curso.titulo }}
+                    </h5>
+
+                    <p class="card-text">
+                        {{ curso.descripcion[:120] }}...
+                    </p>
+                </div>
+
+                <div class="card-footer d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2"
+                     style="background-color: {{ curso.color_secundario }};">
+                    <strong>${{ curso.precio }}</strong>
+
+                    <a href="{{ url_for('curso_detalle', curso_id=curso.id) }}" class="btn btn-primary btn-sm">
+                        Ver mas
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="https://wa.me/573241869341" class="logo-whatsapp" target="_blank" rel="noopener noreferrer">
+        <img src="{{ url_for('static', filename='styles/imagenes/logo_whatsapp.png') }}" alt="WhatsApp">
+    </a>
+</div>
+{% endblock %}

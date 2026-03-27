@@ -1,0 +1,1565 @@
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
+import psycopg2
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime, timedelta
+from itsdangerous import URLSafeTimedSerializer
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import os
+from werkzeug.utils import secure_filename
+import uuid
+import stripe
+from dotenv import load_dotenv
+from pathlib import Path
+
+env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path=env_path)
+
+print("ENV PATH:", env_path)
+print("STRIPE KEY:", os.getenv("STRIPE_SECRET_KEY"))
+
+# --------------------------
+# Cargar variables de entorno
+# --------------------------
+load_dotenv()  # FIX: antes faltaba el ()
+
+# --------------------------
+# Funcion Video YouTube: convierte URL a formato embed
+# --------------------------
+def convertir_youtube(url):
+    if not url:
+        return None
+    if "watch?v=" in url:
+        return url.replace("watch?v=", "embed/")
+    if "youtu.be/" in url:
+        video_id = url.split("youtu.be/")[1]
+        return f"https://www.youtube.com/embed/{video_id}"
+    return url
+
+
+app = Flask(__name__, static_folder="static")
+
+# FIX: secret_key desde .env
+app.secret_key = os.getenv("SECRET_KEY", "CAMBIA_ESTA_CLAVE_EN_EL_ENV")
+
+# --------------------------
+# Stripe — API key desde .env
+# --------------------------
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+
+# FIX: BASE_URL desde .env para no hardcodear localhost
+BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")
+
+print("Stripe inicializado")
+
+# =============================
+# CONFIG SUBIDA IMÁGENES
+# =============================
+UPLOAD_FOLDER = "static/uploads"
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+serializer = URLSafeTimedSerializer(app.secret_key)
+
+# -------------------------
+# CONFIGURACIÓN BD (POSTGRES)
+# -------------------------
+DB_CONFIG = {
+    'host': 'localhost',
+    'database': 'Emprende',
+    'user': 'postgres',
+    'password': '123456',
+    'port': 5432
+}
+
+
+def conectar_bd():
+    try:
+        conn = psycopg2.connect(**DB_CONFIG)
+        return conn
+    except psycopg2.OperationalError as e:
+        if "does not exist" in str(e) or "no existe" in str(e):
+            try:
+                temp_config = DB_CONFIG.copy()
+                temp_config['database'] = 'postgres'
+                temp_conn = psycopg2.connect(**temp_config)
+                temp_conn.autocommit = True
+                cur = temp_conn.cursor()
+                cur.execute(f"CREATE DATABASE {DB_CONFIG['database']};")
+                cur.close()
+                temp_conn.close()
+                conn = psycopg2.connect(**DB_CONFIG)
+                return conn
+            except Exception as e2:
+                print("Error al crear la base de datos:", e2)
+                return None
+        else:
+            print("Error al conectar a la BD:", e)
+            return None
+
+
+def enviar_correo(destinatario, enlace):
+    remitente = "innovayemprende1.2@gmail.com"
+    password = "cwbd dprx ncgc zyyf"
+
+    mensaje = MIMEMultipart("alternative")
+    mensaje["Subject"] = "Recuperación de contraseña"
+    mensaje["From"] = remitente
+    mensaje["To"] = destinatario
+
+    html = f"""
+    <p>Haz clic en el siguiente enlace para restablecer tu contraseña (válido 1 hora):</p>
+    <p><a href="{enlace}">{enlace}</a></p>
+    """
+
+    mensaje.attach(MIMEText(html, "html"))
+
+    try:
+        servidor = smtplib.SMTP("smtp.gmail.com", 587, timeout=20)
+        servidor.ehlo()
+        servidor.starttls()
+        servidor.login(remitente, password)
+        servidor.sendmail(remitente, destinatario, mensaje.as_string())
+        servidor.quit()
+        print("Correo enviado correctamente a:", destinatario)
+        return True
+    except Exception as e:
+        print("Error al enviar correo:", e)
+        return False
+
+
+# ------------------------------------------------
+# 1. Página para pedir el correo
+# ------------------------------------------------
+@app.route("/recuperar", methods=["GET", "POST"])
+def recuperar():
+    if request.method == "GET":
+        return render_template("recuperar.html")
+
+    correo = request.form.get("correo") or request.form.get("email")
+    if not correo:
+        flash("Ingresa un correo válido.")
+        return redirect(url_for("recuperar"))
+
+    conn = conectar_bd()
+    if not conn:
+        flash("Error de conexión a la base de datos. Intenta más tarde.")
+        return redirect(url_for("recuperar"))
+
+    cur = conn.cursor()
+    cur.execute("SELECT id FROM usuarios WHERE correo = %s", (correo,))
+    user = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if user:
+        token = serializer.dumps(correo, salt="recuperar-salt")
+        link = url_for('restablecer', token=token, _external=True)
+        enviado = enviar_correo(correo, link)
+        if enviado:
+            flash("Hemos enviado un enlace de recuperación a tu correo electrónico.")
+        else:
+            flash("No se pudo enviar el correo. Verifica la configuración del servidor de correo.")
+    else:
+        flash("Hemos enviado un enlace de recuperación a tu correo electrónico.")
+
+    return redirect(url_for("login"))
+
+
+# ------------------------------------------------
+# 2. Página del enlace recibido por correo
+# ------------------------------------------------
+@app.route("/restablecer/<token>", methods=["GET", "POST"])
+def restablecer(token):
+    try:
+        email = serializer.loads(token, salt="recuperar-salt", max_age=3600)
+    except:
+        return "El enlace ha expirado o no es válido."
+
+    if request.method == "POST":
+        nueva = request.form["password"]
+        nueva_hash = generate_password_hash(nueva)
+
+        conn = conectar_bd()
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE usuarios SET password_hash = %s WHERE correo = %s",
+            (nueva_hash, email)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return "Contraseña actualizada correctamente."
+
+    return render_template("restablecer.html")
+
+
+# -----------------------------------
+# Crear tablas si no existen
+# -----------------------------------
+def crear_tablas():
+    conn = conectar_bd()
+    if not conn:
+        return
+    cur = conn.cursor()
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS usuarios (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT NOT NULL,
+        apellido TEXT,
+        username TEXT UNIQUE,
+        correo TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        rol TEXT NOT NULL,
+        foto_perfil TEXT,
+        creado_en TIMESTAMP DEFAULT NOW()
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS cursos (
+        id SERIAL PRIMARY KEY,
+        titulo TEXT NOT NULL,
+        descripcion TEXT,
+        precio NUMERIC,
+        imagen_url TEXT,
+        profesor_id INTEGER REFERENCES usuarios(id),
+        creado_en TIMESTAMP DEFAULT NOW()
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS lecciones (
+        id SERIAL PRIMARY KEY,
+        curso_id INTEGER REFERENCES cursos(id),
+        titulo TEXT,
+        video_url TEXT,
+        contenido TEXT,
+        fecha TIMESTAMP,
+        creado_en TIMESTAMP DEFAULT NOW()
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS reuniones_meet (
+        id SERIAL PRIMARY KEY,
+        leccion_id INTEGER REFERENCES lecciones(id),
+        url_meet TEXT NOT NULL,
+        hora_inicio TIMESTAMP NOT NULL,
+        hora_fin TIMESTAMP NOT NULL,
+        mensaje TEXT,
+        activa BOOLEAN DEFAULT TRUE,
+        creada_en TIMESTAMP DEFAULT NOW()
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS notificaciones (
+        id SERIAL PRIMARY KEY,
+        usuario_id INTEGER REFERENCES usuarios(id),
+        tipo TEXT,
+        titulo TEXT,
+        mensaje TEXT,
+        leccion_id INTEGER REFERENCES lecciones(id),
+        leida BOOLEAN DEFAULT FALSE,
+        creada_en TIMESTAMP DEFAULT NOW()
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS estilos_curso (
+        id SERIAL PRIMARY KEY,
+        curso_id INTEGER REFERENCES cursos(id),
+        color_principal TEXT,
+        color_secundario TEXT,
+        fuente TEXT,
+        css_personalizado TEXT,
+        creado_en TIMESTAMP DEFAULT NOW()
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS metodos_pago (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT,
+        tipo TEXT,
+        habilitado BOOLEAN DEFAULT TRUE
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS compras (
+        id SERIAL PRIMARY KEY,
+        usuario_id INTEGER REFERENCES usuarios(id),
+        curso_id INTEGER REFERENCES cursos(id),
+        metodo_pago_id INTEGER REFERENCES metodos_pago(id),
+        monto NUMERIC,
+        estado TEXT,
+        stripe_session_id TEXT UNIQUE,
+        fecha TIMESTAMP DEFAULT NOW()
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS foro_posts (
+        id SERIAL PRIMARY KEY,
+        curso_id INTEGER REFERENCES cursos(id),
+        usuario_id INTEGER REFERENCES usuarios(id),
+        titulo TEXT NOT NULL,
+        contenido TEXT NOT NULL,
+        creado_en TIMESTAMP DEFAULT NOW()
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS progreso_lecciones (
+        id                  SERIAL PRIMARY KEY,
+        usuario_id          INTEGER REFERENCES usuarios(id) ON DELETE CASCADE,
+        leccion_id          INTEGER REFERENCES lecciones(id) ON DELETE CASCADE,
+        completada          BOOLEAN DEFAULT FALSE,
+        fecha_completado    TIMESTAMP,
+        progreso_porcentaje NUMERIC DEFAULT 0 CHECK (progreso_porcentaje >= 0 AND progreso_porcentaje <= 100),
+        ultima_interaccion  TIMESTAMP DEFAULT NOW(),
+        UNIQUE(usuario_id, leccion_id)
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS progreso_cursos (
+        id                  SERIAL PRIMARY KEY,
+        usuario_id          INTEGER REFERENCES usuarios(id) ON DELETE CASCADE,
+        curso_id            INTEGER REFERENCES cursos(id) ON DELETE CASCADE,
+        porcentaje          NUMERIC DEFAULT 0 CHECK (porcentaje >= 0 AND porcentaje <= 100),
+        ultima_actualizacion TIMESTAMP DEFAULT NOW(),
+        completado          BOOLEAN DEFAULT FALSE,
+        UNIQUE(usuario_id, curso_id)
+    );
+    """)
+
+    # Datos iniciales
+    cur.execute("SELECT COUNT(*) FROM metodos_pago;")
+    if cur.fetchone()[0] == 0:
+        cur.execute("""
+            INSERT INTO metodos_pago(nombre, tipo, habilitado)
+            VALUES
+                ('Stripe (tarjeta)', 'tarjeta', TRUE),
+                ('Transferencia Bancaria', 'transferencia', TRUE);
+        """)
+
+    cur.execute("SELECT COUNT(*) FROM cursos;")
+    if cur.fetchone()[0] == 0:
+        cur.execute("SELECT id FROM usuarios WHERE correo = %s;", ("profesor@demo.test",))
+        r = cur.fetchone()
+        if not r:
+            phash = generate_password_hash("profesor123")
+            cur.execute("""
+                INSERT INTO usuarios(nombre, correo, password_hash, rol)
+                VALUES (%s, %s, %s, %s)
+                RETURNING id;
+            """, ("Profesor Demo", "profesor@demo.test", phash, "profesor"))
+            profesor_id = cur.fetchone()[0]
+        else:
+            profesor_id = r[0]
+
+        cur.execute("""
+            INSERT INTO cursos(titulo, descripcion, precio, imagen_url, profesor_id)
+            VALUES (%s, %s, %s, %s, %s);
+        """, (
+            "Mente Emprendedora",
+            "Diseñado para desarrollar la forma de pensar de quienes quieren crear, innovar y liderar proyectos propios.",
+            0.0,
+            "styles/imagenes/mente_emprendedora.png",
+            profesor_id
+        ))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+    print("Tablas creadas/verificadas y datos iniciales insertados.")
+
+
+# --------------------------
+# RUTAS DE FRONTEND (HTML)
+# --------------------------
+
+@app.route("/")
+@app.route("/home")
+def home():
+    return render_template("home.html")
+
+
+@app.route('/servicios')
+def servicios():
+    return render_template('servicios.html')
+
+
+@app.route('/sobre-nosotros')
+def sobre_nosotros():
+    return render_template("sobre-nosotros.html")
+
+
+@app.route('/Nuestros_valores')
+def Nuestros_valores():
+    return render_template("Nuestros_valores.html")
+
+
+@app.route("/index")
+def index():
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT c.id, c.titulo, c.descripcion, c.precio, c.imagen_url,
+               COALESCE(e.color_principal, '#007bff') as cp,
+               COALESCE(e.color_secundario, '#6c757d') as cs
+        FROM cursos c
+        LEFT JOIN estilos_curso e ON e.curso_id = c.id
+        ORDER BY c.creado_en DESC;
+    """)
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    cursos = [
+        {
+            "id": f[0],
+            "titulo": f[1],
+            "descripcion": f[2],
+            "precio": float(f[3]) if f[3] else 0,
+            "imagen_url": f[4],
+            "color_principal": f[5],
+            "color_secundario": f[6]
+        }
+        for f in filas
+    ]
+    return render_template("index.html", cursos=cursos, is_home=True)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+
+    correo = request.form.get("correo")
+    password = request.form.get("password")
+    conn = conectar_bd()
+    if not conn:
+        flash("No se pudo conectar a la base de datos.")
+        return redirect(url_for("login"))
+
+    cur = conn.cursor()
+    cur.execute("SELECT id, nombre, password_hash, rol FROM usuarios WHERE correo = %s;", (correo,))
+    r = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if not r:
+        flash("Usuario no encontrado.")
+        return redirect(url_for("login"))
+
+    user_id, nombre, password_hash, rol = r
+    if not check_password_hash(password_hash, password):
+        flash("Contraseña incorrecta.")
+        return redirect(url_for("login"))
+
+    session["user_id"] = user_id
+    session["nombre"] = nombre
+    session["rol"] = rol
+    flash("Bienvenido/a " + nombre)
+    return redirect(url_for("index"))
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("Sesión cerrada.")
+    return redirect(url_for("index"))
+
+
+@app.route("/registrar", methods=["GET", "POST"])
+def registrar():
+    if request.method == "GET":
+        return render_template("registrar.html")
+
+    nombre = request.form.get("nombre", "").strip()
+    apellido = request.form.get("apellido", "").strip()
+    username = request.form.get("username", "").strip()
+    correo = request.form.get("correo", "").strip()
+    password = request.form.get("password", "")
+    rol = request.form.get("rol") or "alumno"
+
+    if not nombre or not apellido or not username or not correo or not password:
+        flash("Todos los campos son obligatorios.")
+        return redirect(url_for("registrar"))
+
+    if "@" not in correo or "." not in correo:
+        flash("Correo electrónico inválido.")
+        return redirect(url_for("registrar"))
+
+    if len(password) < 6:
+        flash("La contraseña debe tener al menos 6 caracteres.")
+        return redirect(url_for("registrar"))
+
+    password_hash = generate_password_hash(password)
+
+    conn = conectar_bd()
+    if not conn:
+        flash("Error de conexión.")
+        return redirect(url_for("registrar"))
+
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT id FROM usuarios WHERE correo = %s;", (correo,))
+        if cur.fetchone():
+            flash("El correo ya está registrado.")
+            return redirect(url_for("registrar"))
+
+        cur.execute("SELECT id FROM usuarios WHERE username = %s;", (username,))
+        if cur.fetchone():
+            flash("El nombre de usuario ya está en uso.")
+            return redirect(url_for("registrar"))
+
+        cur.execute(
+            "INSERT INTO usuarios(nombre, apellido, username, correo, password_hash, rol) VALUES (%s,%s,%s,%s,%s,%s);",
+            (nombre, apellido, username, correo, password_hash, rol)
+        )
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        flash("Error al registrar: " + str(e))
+        return redirect(url_for("registrar"))
+    finally:
+        cur.close()
+        conn.close()
+
+    flash("Registrado correctamente. Inicia sesión.")
+    return redirect(url_for("login"))
+
+
+# --------------------------
+# API: Obtener cursos (JSON)
+# --------------------------
+@app.route("/cursos")
+def api_cursos():
+    conn = conectar_bd()
+    if not conn:
+        return jsonify({"error": "No hay conexión"}), 500
+    cur = conn.cursor()
+    cur.execute("SELECT id, titulo, descripcion, precio, imagen_url FROM cursos ORDER BY creado_en DESC;")
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+    cursos = [
+        {
+            "id": f[0],
+            "titulo": f[1],
+            "descripcion": f[2],
+            "precio": float(f[3]) if f[3] is not None else 0,
+            "imagen_url": f[4] or ""
+        }
+        for f in filas
+    ]
+    return jsonify(cursos)
+
+
+# --------------------------
+# Panel profesor
+# --------------------------
+def requiere_profesor():
+    return session.get("rol") == "profesor"
+
+
+@app.route("/profesor/dashboard")
+def profesor_dashboard():
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión.")
+        return redirect(url_for("login"))
+
+    if not requiere_profesor():
+        flash("Acceso solo para profesores.")
+        return redirect(url_for("index"))
+
+    profesor_id = session["user_id"]
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id, titulo, descripcion, precio, imagen_url FROM cursos WHERE profesor_id = %s;",
+        (profesor_id,)
+    )
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    cursos = [
+        {"id": f[0], "titulo": f[1], "descripcion": f[2], "precio": float(f[3]) if f[3] else 0, "imagen_url": f[4]}
+        for f in filas
+    ]
+    return render_template("dashboard_profesor.html", cursos=cursos, nombre=session.get("nombre"))
+
+
+@app.route("/profesor/crear-curso", methods=["GET", "POST"])
+def profesor_crear_curso():
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión.")
+        return redirect(url_for("login"))
+
+    if not requiere_profesor():
+        flash("Acceso solo para profesores.")
+        return redirect(url_for("index"))
+
+    if request.method == "POST":
+        titulo = request.form.get("titulo")
+        descripcion = request.form.get("descripcion")
+        precio = request.form.get("precio")
+        imagen = request.files.get("imagen")
+        imagen_url = "imagenes/default-curso.png"
+        profesor_id = session.get("user_id")
+
+        if imagen and allowed_file(imagen.filename):
+            filename = secure_filename(imagen.filename)
+            ruta = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            imagen.save(ruta)
+            imagen_url = "uploads/" + filename
+
+        conn = conectar_bd()
+        cur = conn.cursor()
+        try:
+            cur.execute("""
+                INSERT INTO cursos (titulo, descripcion, precio, imagen_url, profesor_id)
+                VALUES (%s, %s, %s, %s, %s) RETURNING id;
+            """, (titulo, descripcion, precio, imagen_url, profesor_id))
+            conn.commit()
+            flash("Curso creado exitosamente")
+            return redirect(url_for("index"))
+        except Exception as e:
+            conn.rollback()
+            flash("No se pudo crear el curso: probablemente ya existe un curso con el mismo título.")
+            return redirect(url_for("profesor_crear_curso"))
+        finally:
+            cur.close()
+            conn.close()
+
+    return render_template("crear_curso.html")
+
+
+# --------------------------
+# Añadir lección a curso
+# --------------------------
+@app.route("/profesor/curso/<int:curso_id>/anadir_leccion", methods=["GET", "POST"])
+def profesor_anadir_leccion(curso_id):
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión.")
+        return redirect(url_for("login"))
+
+    if not requiere_profesor():
+        flash("Acceso solo para profesores.")
+        return redirect(url_for("index"))
+
+    if request.method == "GET":
+        return render_template("anadir_leccion.html", curso_id=curso_id)
+
+    titulo = request.form.get("titulo")
+    video_url = request.form.get("video_url")
+    contenido = request.form.get("contenido")
+    fecha = request.form.get("fecha") or None
+    video_url = convertir_youtube(video_url)
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO lecciones(curso_id, titulo, video_url, contenido, fecha)
+        VALUES (%s,%s,%s,%s,%s) RETURNING id;
+    """, (curso_id, titulo, video_url, contenido, fecha))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("Lección añadida.")
+    return redirect(url_for("curso_detalle", curso_id=curso_id))
+
+
+# --------------------------
+# Página detalle curso (alumno)
+# --------------------------
+@app.route("/curso/<int:curso_id>")
+def curso_detalle(curso_id):
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id, titulo, descripcion, precio, imagen_url, profesor_id FROM cursos WHERE id = %s;",
+        (curso_id,)
+    )
+    curso = cur.fetchone()
+    if not curso:
+        cur.close()
+        conn.close()
+        return "Curso no encontrado", 404
+
+    cur.execute(
+        "SELECT id, titulo, video_url, contenido, fecha FROM lecciones WHERE curso_id = %s ORDER BY creado_en;",
+        (curso_id,)
+    )
+    lecciones = cur.fetchall()
+
+    profesor_id = curso[5]
+    cur.execute("SELECT nombre FROM usuarios WHERE id = %s;", (profesor_id,))
+    profesor = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    datos_curso = {
+        "id": curso[0],
+        "titulo": curso[1],
+        "descripcion": curso[2],
+        "precio": float(curso[3]) if curso[3] else 0,
+        "imagen_url": curso[4],
+        "profesor_id": profesor[0] if profesor else "Desconocido",
+        "usuario_logueado": session.get("user_id"),
+        "es_profesor": session.get("rol") == "profesor" and session.get("user_id") == profesor_id
+    }
+
+    usuario = session.get("user_id")
+    puede_acceder = False
+    if usuario:
+        conn = conectar_bd()
+        cur = conn.cursor()
+        cur.execute("SELECT rol FROM usuarios WHERE id = %s;", (usuario,))
+        rol = cur.fetchone()[0]
+        if rol == 'profesor':
+            puede_acceder = True
+        elif datos_curso["titulo"] == "Mente Emprendedora":
+            puede_acceder = True
+        else:
+            cur.execute("""
+                SELECT 1 FROM compras
+                WHERE usuario_id = %s AND curso_id = %s AND estado = 'completado' LIMIT 1;
+            """, (usuario, datos_curso["id"]))
+            if cur.fetchone():
+                puede_acceder = True
+        cur.close()
+        conn.close()
+
+    datos_curso["puede_acceder"] = puede_acceder
+
+    lista_lecciones = [
+        {"id": l[0], "titulo": l[1], "video_url": l[2], "contenido": l[3], "fecha": str(l[4]) if l[4] else None}
+        for l in lecciones
+    ]
+
+    return render_template("curso_detalle.html", curso=datos_curso, lecciones=lista_lecciones)
+
+
+# --------------------------
+# Ver lección
+# --------------------------
+@app.route("/leccion/<int:leccion_id>")
+def ver_leccion(leccion_id):
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT l.id, l.curso_id, l.titulo, l.video_url, l.contenido, l.fecha, c.titulo
+        FROM lecciones l
+        JOIN cursos c ON l.curso_id = c.id
+        WHERE l.id = %s;
+    """, (leccion_id,))
+    l = cur.fetchone()
+    if not l:
+        cur.close()
+        conn.close()
+        return "Lección no encontrada", 404
+
+    datos = {
+        "id": l[0], "curso_id": l[1], "titulo": l[2],
+        "video_url": l[3], "contenido": l[4],
+        "fecha": str(l[5]) if l[5] else None,
+        "curso_titulo": l[6]
+    }
+
+    puede_ver = False
+    usuario = session.get("user_id")
+    if usuario:
+        cur.execute("SELECT rol FROM usuarios WHERE id = %s;", (usuario,))
+        rol = cur.fetchone()[0]
+        if rol == 'profesor':
+            puede_ver = True
+        elif datos["curso_titulo"] == "Mente Emprendedora":
+            puede_ver = True
+        else:
+            cur.execute("""
+                SELECT 1 FROM compras
+                WHERE usuario_id = %s AND curso_id = %s AND estado = 'completado' LIMIT 1;
+            """, (usuario, datos["curso_id"]))
+            if cur.fetchone():
+                puede_ver = True
+
+    cur.close()
+    conn.close()
+
+    if not puede_ver:
+        flash("Debes adquirir el curso o iniciar sesión con la cuenta del profesor para ver esta lección.")
+        return redirect(url_for("curso_detalle", curso_id=datos["curso_id"]))
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM reuniones_meet WHERE hora_fin < NOW();")
+        conn.commit()
+    except Exception as e:
+        print("Error al eliminar reuniones expiradas:", e)
+
+    reuniones = []
+    try:
+        cur.execute("""
+            SELECT id, url_meet, hora_inicio, hora_fin, mensaje
+            FROM reuniones_meet
+            WHERE leccion_id = %s AND activa = TRUE;
+        """, (leccion_id,))
+        zooms = cur.fetchall()
+        reuniones = [{"id": z[0], "url": z[1], "inicio": z[2], "fin": z[3], "mensaje": z[4]} for z in zooms]
+    except Exception as e:
+        print("Error al consultar reuniones_meet:", e)
+
+    cur.close()
+    conn.close()
+
+    return render_template("leccion.html", leccion=datos, reuniones=reuniones)
+
+
+# --------------------------
+# Métodos de pago (API)
+# --------------------------
+@app.route("/metodos_pago")
+def metodos_pago():
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("SELECT id, nombre, tipo FROM metodos_pago WHERE habilitado = TRUE;")
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+    metodos = [{"id": f[0], "nombre": f[1], "tipo": f[2]} for f in filas]
+    return jsonify(metodos)
+
+
+# --------------------------
+# PASARELA DE PAGO STRIPE
+# --------------------------
+@app.route("/crear-checkout-session", methods=["POST"])
+def crear_checkout():
+    if not session.get("user_id"):
+        return jsonify({"error": "Debes iniciar sesión"}), 401
+
+    data = request.json
+    curso_id = data.get("curso_id")
+
+    if not curso_id:
+        return jsonify({"error": "curso_id es requerido"}), 400
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    # FIX: precio y nombre del curso siempre desde la BD, nunca del frontend
+    cur.execute("SELECT titulo, precio FROM cursos WHERE id = %s;", (curso_id,))
+    curso = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if not curso:
+        return jsonify({"error": "Curso no encontrado"}), 404
+
+    titulo_curso = curso[0]
+    precio = float(curso[1]) if curso[1] else 0
+
+    if precio == 0:
+        return jsonify({"error": "Este curso es gratuito"}), 400
+
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{
+                "price_data": {
+                    "currency": "usd",
+                    "product_data": {
+                        "name": titulo_curso
+                    },
+                    # FIX: precio desde BD, no del request
+                    "unit_amount": int(precio * 100),
+                },
+                "quantity": 1,
+            }],
+            mode="payment",
+            # FIX: BASE_URL desde .env + session_id para verificar después
+            success_url=f"{BASE_URL}/pago-exitoso?curso_id={curso_id}&session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{BASE_URL}/pago-cancelado",
+        )
+        return jsonify({"url": checkout_session.url})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# --------------------------
+# PAGO EXITOSO
+# --------------------------
+@app.route("/pago-exitoso")
+def pago_exitoso():
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión")
+        return redirect(url_for("login"))
+
+    stripe_session_id = request.args.get("session_id")
+    curso_id = request.args.get("curso_id")
+
+    # FIX: validar que vengan los parámetros
+    if not stripe_session_id or not curso_id:
+        flash("Solicitud inválida.")
+        return redirect(url_for("index"))
+
+    # FIX: verificar con Stripe que el pago realmente se realizó
+    try:
+        checkout = stripe.checkout.Session.retrieve(stripe_session_id)
+    except Exception as e:
+        flash("No se pudo verificar el pago con Stripe.")
+        return redirect(url_for("index"))
+
+    if checkout.payment_status != "paid":
+        flash("El pago no fue completado.")
+        return redirect(url_for("index"))
+
+    usuario_id = session["user_id"]
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    # FIX: precio real desde Stripe (en centavos → dividir entre 100)
+    monto = checkout.amount_total / 100
+
+    cur.execute("SELECT id FROM metodos_pago WHERE nombre = %s;", ("Stripe (tarjeta)",))
+    metodo = cur.fetchone()
+    metodo_pago_id = metodo[0] if metodo else None
+
+    # FIX: ON CONFLICT en stripe_session_id para evitar compras duplicadas
+    cur.execute("""
+        INSERT INTO compras(usuario_id, curso_id, metodo_pago_id, monto, estado, stripe_session_id)
+        VALUES (%s, %s, %s, %s, 'completado', %s)
+        ON CONFLICT (stripe_session_id) DO NOTHING;
+    """, (usuario_id, curso_id, metodo_pago_id, monto, stripe_session_id))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("Pago realizado correctamente ✅")
+    return redirect(url_for("mis_compras"))
+
+
+# --------------------------
+# PAGO CANCELADO
+# --------------------------
+@app.route("/pago-cancelado")
+def pago_cancelado():
+    flash("El pago fue cancelado.")
+    return redirect(url_for("index"))
+
+
+# --------------------------
+# Mis compras (alumno)
+# --------------------------
+@app.route("/mis_compras")
+def mis_compras():
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión")
+        return redirect(url_for("login"))
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT c.id, cursos.titulo, c.monto, c.estado, c.fecha
+        FROM compras c JOIN cursos ON c.curso_id = cursos.id
+        WHERE c.usuario_id = %s ORDER BY c.fecha DESC;
+    """, (session["user_id"],))
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    compras = [
+        {"id": f[0], "titulo": f[1], "monto": float(f[2]), "estado": f[3], "fecha": f[4]}
+        for f in filas
+    ]
+    return render_template("mis_compras.html", compras=compras)
+
+
+# --------------------------
+# REUNIONES JITSI MEET
+# --------------------------
+@app.route("/profesor/leccion/<int:leccion_id>/crear-meet", methods=["POST"])
+def crear_reunion_meet(leccion_id):
+    if not requiere_profesor():
+        return jsonify({"error": "No autorizado"}), 401
+
+    profesor_actual = session.get("user_id")
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT c.profesor_id FROM cursos c
+        JOIN lecciones l ON l.curso_id = c.id
+        WHERE l.id = %s;
+    """, (leccion_id,))
+    res = cur.fetchone()
+    if not res or res[0] != profesor_actual:
+        cur.close()
+        conn.close()
+        return jsonify({"error": "No autorizado (no eres el profesor de este curso)"}), 403
+
+    data = request.json
+    hora_inicio = data.get("hora_inicio")
+    hora_fin = data.get("hora_fin")
+    mensaje = data.get("mensaje")
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS reuniones_meet (
+            id SERIAL PRIMARY KEY,
+            leccion_id INTEGER REFERENCES lecciones(id),
+            url_meet TEXT NOT NULL,
+            hora_inicio TIMESTAMP NOT NULL,
+            hora_fin TIMESTAMP NOT NULL,
+            mensaje TEXT,
+            activa BOOLEAN DEFAULT TRUE,
+            creada_en TIMESTAMP DEFAULT NOW()
+        );
+    """)
+
+    sala = "emprende_" + str(uuid.uuid4())[:8]
+    url_meet = f"https://meet.jit.si/{sala}"
+
+    try:
+        cur.execute("""
+            INSERT INTO reuniones_meet (leccion_id, url_meet, hora_inicio, hora_fin, mensaje)
+            VALUES (%s,%s,%s,%s,%s) RETURNING id;
+        """, (leccion_id, url_meet, hora_inicio, hora_fin, mensaje))
+        meet_id = cur.fetchone()[0]
+        conn.commit()
+    except Exception as e:
+        cur.close()
+        conn.close()
+        return jsonify({"error": "Error al crear reunión: " + str(e)}), 500
+
+    cur.close()
+    conn.close()
+    return jsonify({"mensaje": "Reunión creada", "url": url_meet, "id": meet_id})
+
+
+@app.route("/meet/<int:meet_id>/eliminar", methods=["POST"])
+def eliminar_meet(meet_id):
+    if not requiere_profesor():
+        return jsonify({"error": "No autorizado"}), 401
+
+    profesor_actual = session.get("user_id")
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT c.profesor_id FROM cursos c
+        JOIN lecciones l ON l.curso_id = c.id
+        JOIN reuniones_meet m ON m.leccion_id = l.id
+        WHERE m.id = %s;
+    """, (meet_id,))
+    res = cur.fetchone()
+    if not res or res[0] != profesor_actual:
+        cur.close()
+        conn.close()
+        return jsonify({"error": "No autorizado"}), 403
+
+    cur.execute("DELETE FROM reuniones_meet WHERE id = %s;", (meet_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"mensaje": "Reunión eliminada correctamente"}), 200
+
+
+@app.route("/leccion/<int:leccion_id>/meet")
+def obtener_meet_leccion(leccion_id):
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, url_meet, hora_inicio, hora_fin, mensaje
+        FROM reuniones_meet
+        WHERE leccion_id = %s AND activa = TRUE;
+    """, (leccion_id,))
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    zooms = [
+        {"id": f[0], "url": f[1], "inicio": str(f[2]), "fin": str(f[3]), "mensaje": f[4]}
+        for f in filas
+    ]
+    return jsonify(zooms)
+
+
+# --------------------------
+# NOTIFICACIONES
+# --------------------------
+@app.route("/notificaciones")
+def obtener_notificaciones():
+    if not session.get("user_id"):
+        return jsonify({"error": "No autenticado"}), 401
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, tipo, titulo, mensaje, leccion_id, leida, creada_en
+        FROM notificaciones
+        WHERE usuario_id = %s
+        ORDER BY creada_en DESC
+        LIMIT 20;
+    """, (session["user_id"],))
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    notificaciones = [
+        {
+            "id": f[0], "tipo": f[1], "titulo": f[2], "mensaje": f[3],
+            "leccion_id": f[4], "leida": f[5], "fecha": str(f[6])
+        }
+        for f in filas
+    ]
+    return jsonify(notificaciones)
+
+
+@app.route("/notificacion/<int:notif_id>/marcar-leida", methods=["POST"])
+def marcar_notificacion_leida(notif_id):
+    if not session.get("user_id"):
+        return jsonify({"error": "No autenticado"}), 401
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("UPDATE notificaciones SET leida = TRUE WHERE id = %s;", (notif_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"mensaje": "Notificación marcada como leída"})
+
+
+# --------------------------
+# ESTILOS PERSONALIZADOS POR CURSO
+# --------------------------
+@app.route("/profesor/curso/<int:curso_id>/estilos", methods=["GET", "POST"])
+def editar_estilos_curso(curso_id):
+    if not requiere_profesor():
+        return jsonify({"error": "No autorizado"}), 401
+
+    if request.method == "POST":
+        data = request.json
+        color_principal = data.get("color_principal", "#007bff")
+        color_secundario = data.get("color_secundario", "#6c757d")
+        fuente = data.get("fuente", "Lato")
+        css_personalizado = data.get("css_personalizado", "")
+
+        conn = conectar_bd()
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM estilos_curso WHERE curso_id = %s;", (curso_id,))
+        existe = cur.fetchone()
+
+        if existe:
+            cur.execute("""
+                UPDATE estilos_curso
+                SET color_principal = %s, color_secundario = %s, fuente = %s, css_personalizado = %s
+                WHERE curso_id = %s;
+            """, (color_principal, color_secundario, fuente, css_personalizado, curso_id))
+        else:
+            cur.execute("""
+                INSERT INTO estilos_curso (curso_id, color_principal, color_secundario, fuente, css_personalizado)
+                VALUES (%s, %s, %s, %s, %s);
+            """, (curso_id, color_principal, color_secundario, fuente, css_personalizado))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"mensaje": "Estilos actualizados"})
+
+    else:
+        conn = conectar_bd()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT color_principal, color_secundario, fuente, css_personalizado
+            FROM estilos_curso WHERE curso_id = %s;
+        """, (curso_id,))
+        resultado = cur.fetchone()
+        cur.close()
+        conn.close()
+
+        if resultado:
+            return jsonify({
+                "color_principal": resultado[0], "color_secundario": resultado[1],
+                "fuente": resultado[2], "css_personalizado": resultado[3]
+            })
+        return jsonify({"color_principal": "#007bff", "color_secundario": "#6c757d", "fuente": "Lato", "css_personalizado": ""})
+
+
+@app.route("/curso/<int:curso_id>/estilos-datos")
+def obtener_estilos_curso(curso_id):
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT color_principal, color_secundario, fuente, css_personalizado
+        FROM estilos_curso WHERE curso_id = %s;
+    """, (curso_id,))
+    resultado = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if resultado:
+        return jsonify({
+            "color_principal": resultado[0], "color_secundario": resultado[1],
+            "fuente": resultado[2], "css_personalizado": resultado[3]
+        })
+    return jsonify({"color_principal": "#007bff", "color_secundario": "#6c757d", "fuente": "Lato", "css_personalizado": ""})
+
+
+# --------------------------
+# Perfiles
+# --------------------------
+@app.route("/perfil")
+def perfil():
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión.")
+        return redirect(url_for("login"))
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT nombre, apellido, username, correo, rol, creado_en, foto_perfil
+        FROM usuarios WHERE id = %s;
+    """, (session["user_id"],))
+    usuario = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if not usuario:
+        flash("Usuario no encontrado.")
+        return redirect(url_for("index"))
+
+    datos = {
+        "nombre": usuario[0], "apellido": usuario[1], "username": usuario[2],
+        "correo": usuario[3], "rol": usuario[4], "creado_en": usuario[5], "foto": usuario[6]
+    }
+    return render_template("perfil.html", usuario=datos)
+
+
+@app.route("/perfil/editar", methods=["GET", "POST"])
+def editar_perfil():
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión.")
+        return redirect(url_for("login"))
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        nombre = request.form.get("nombre")
+        apellido = request.form.get("apellido")
+        username = request.form.get("username")
+        foto = request.files.get("foto")
+        foto_path = None
+
+        if foto and allowed_file(foto.filename):
+            filename = secure_filename(f"user_{session['user_id']}_{foto.filename}")
+            ruta = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            foto.save(ruta)
+            foto_path = f"uploads/{filename}"
+            cur.execute("""
+                UPDATE usuarios SET nombre=%s, apellido=%s, username=%s, foto_perfil=%s
+                WHERE id=%s;
+            """, (nombre, apellido, username, foto_path, session["user_id"]))
+        else:
+            cur.execute("""
+                UPDATE usuarios SET nombre=%s, apellido=%s, username=%s
+                WHERE id=%s;
+            """, (nombre, apellido, username, session["user_id"]))
+
+        conn.commit()
+        flash("Perfil actualizado correctamente.")
+        cur.close()
+        conn.close()
+        return redirect(url_for("perfil"))
+
+    cur.execute("""
+        SELECT nombre, apellido, username, foto_perfil
+        FROM usuarios WHERE id=%s;
+    """, (session["user_id"],))
+    usuario = cur.fetchone()
+    cur.close()
+    conn.close()
+    return render_template("editar_perfil.html", usuario=usuario)
+
+
+@app.context_processor
+def inject_user():
+    if session.get("user_id"):
+        conn = conectar_bd()
+        cur = conn.cursor()
+        cur.execute("SELECT foto_perfil FROM usuarios WHERE id=%s;", (session["user_id"],))
+        r = cur.fetchone()
+        cur.close()
+        conn.close()
+        return dict(usuario_sidebar={"foto": r[0] if r else None})
+    return dict(usuario_sidebar=None)
+
+
+# --------------------------
+# FORO POR CURSO
+# --------------------------
+@app.route("/curso/<int:curso_id>/foro")
+def foro_curso(curso_id):
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión para acceder al foro.")
+        return redirect(url_for("login"))
+
+    usuario_id = session["user_id"]
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    cur.execute("SELECT rol FROM usuarios WHERE id = %s;", (usuario_id,))
+    rol = cur.fetchone()[0]
+
+    if rol != 'profesor':
+        cur.execute("""
+            SELECT 1 FROM compras
+            WHERE usuario_id = %s AND curso_id = %s AND estado = 'completado';
+        """, (usuario_id, curso_id))
+        if not cur.fetchone():
+            cur.close()
+            conn.close()
+            flash("No estás inscrito en este curso.")
+            return redirect(url_for("index"))
+
+    cur.execute("""
+        SELECT fp.id, fp.titulo, fp.contenido, fp.creado_en,
+               u.nombre, u.apellido, u.foto_perfil
+        FROM foro_posts fp
+        JOIN usuarios u ON fp.usuario_id = u.id
+        WHERE fp.curso_id = %s
+        ORDER BY fp.creado_en DESC;
+    """, (curso_id,))
+    posts = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    foro_posts = [
+        {
+            "id": p[0], "titulo": p[1], "contenido": p[2], "creado_en": p[3],
+            "autor": f"{p[4]} {p[5]}" if p[5] else p[4], "foto_autor": p[6]
+        }
+        for p in posts
+    ]
+    return render_template("foro.html", curso_id=curso_id, posts=foro_posts)
+
+
+@app.route("/curso/<int:curso_id>/foro/post", methods=["POST"])
+def crear_post_foro(curso_id):
+    if not session.get("user_id"):
+        return jsonify({"error": "No autenticado"}), 401
+
+    usuario_id = session["user_id"]
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT 1 FROM compras
+        WHERE usuario_id = %s AND curso_id = %s AND estado = 'completado';
+    """, (usuario_id, curso_id))
+    if not cur.fetchone():
+        cur.close()
+        conn.close()
+        return jsonify({"error": "No inscrito"}), 403
+
+    data = request.json
+    titulo = data.get("titulo")
+    contenido = data.get("contenido")
+
+    if not titulo or not contenido:
+        cur.close()
+        conn.close()
+        return jsonify({"error": "Título y contenido requeridos"}), 400
+
+    cur.execute("""
+        INSERT INTO foro_posts (curso_id, usuario_id, titulo, contenido)
+        VALUES (%s, %s, %s, %s);
+    """, (curso_id, usuario_id, titulo, contenido))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"mensaje": "Post creado"}), 201
+
+
+# --------------------------
+# PROGRESO DE LECCIONES
+# --------------------------
+@app.route("/leccion/<int:leccion_id>/completar", methods=["POST"])
+def completar_leccion(leccion_id):
+    if not session.get("user_id"):
+        return jsonify({"error": "No autenticado"}), 401
+
+    usuario_id = session["user_id"]
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT l.curso_id, c.titulo
+        FROM lecciones l
+        JOIN cursos c ON l.curso_id = c.id
+        WHERE l.id = %s
+    """, (leccion_id,))
+    leccion = cur.fetchone()
+    if not leccion:
+        cur.close()
+        conn.close()
+        return jsonify({"error": "Lección no encontrada"}), 404
+
+    curso_id = leccion[0]
+
+    puede_ver = False
+    cur.execute("SELECT rol FROM usuarios WHERE id = %s", (usuario_id,))
+    rol = cur.fetchone()[0]
+    if rol == 'profesor':
+        puede_ver = True
+    elif leccion[1] == "Mente Emprendedora":
+        puede_ver = True
+    else:
+        cur.execute("""
+            SELECT 1 FROM compras
+            WHERE usuario_id = %s AND curso_id = %s AND estado = 'completado'
+        """, (usuario_id, curso_id))
+        if cur.fetchone():
+            puede_ver = True
+
+    if not puede_ver:
+        cur.close()
+        conn.close()
+        return jsonify({"error": "No autorizado"}), 403
+
+    cur.execute("""
+        INSERT INTO progreso_lecciones (usuario_id, leccion_id, completada, fecha_completado, ultima_interaccion)
+        VALUES (%s, %s, TRUE, NOW(), NOW())
+        ON CONFLICT (usuario_id, leccion_id)
+        DO UPDATE SET completada = TRUE, fecha_completado = NOW(), ultima_interaccion = NOW()
+    """, (usuario_id, leccion_id))
+
+    cur.execute("SELECT COUNT(*) FROM lecciones WHERE curso_id = %s", (curso_id,))
+    total_lecciones = cur.fetchone()[0]
+
+    cur.execute("""
+        SELECT COUNT(*)
+        FROM progreso_lecciones pl
+        JOIN lecciones l ON pl.leccion_id = l.id
+        WHERE pl.usuario_id = %s AND l.curso_id = %s AND pl.completada = TRUE
+    """, (usuario_id, curso_id))
+    completadas = cur.fetchone()[0]
+
+    porcentaje = round((completadas / total_lecciones * 100) if total_lecciones > 0 else 0, 1)
+
+    cur.execute("""
+        INSERT INTO progreso_cursos (usuario_id, curso_id, porcentaje, ultima_actualizacion, completado)
+        VALUES (%s, %s, %s, NOW(), %s)
+        ON CONFLICT (usuario_id, curso_id)
+        DO UPDATE SET porcentaje = %s, ultima_actualizacion = NOW(), completado = %s
+    """, (usuario_id, curso_id, porcentaje, porcentaje >= 99.9, porcentaje, porcentaje >= 99.9))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "success": True,
+        "porcentaje_curso": porcentaje,
+        "leccion_completada": leccion_id
+    })
+
+
+@app.route("/mis-cursos/progreso")
+def mis_cursos_progreso():
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión")
+        return redirect(url_for("login"))
+
+    usuario_id = session["user_id"]
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            pc.curso_id, c.titulo, c.imagen_url, pc.porcentaje, pc.completado,
+            pc.ultima_actualizacion,
+            COUNT(l.id) AS total_lecciones,
+            SUM(CASE WHEN pl.completada THEN 1 ELSE 0 END) AS lecciones_completadas
+        FROM progreso_cursos pc
+        JOIN cursos c ON pc.curso_id = c.id
+        LEFT JOIN lecciones l ON l.curso_id = c.id
+        LEFT JOIN progreso_lecciones pl ON pl.leccion_id = l.id AND pl.usuario_id = pc.usuario_id
+        WHERE pc.usuario_id = %s
+        GROUP BY pc.curso_id, c.titulo, c.imagen_url, pc.porcentaje, pc.completado, pc.ultima_actualizacion
+        ORDER BY pc.ultima_actualizacion DESC
+    """, (usuario_id,))
+
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    cursos = [
+        {
+            "curso_id": row[0], "titulo": row[1], "imagen_url": row[2],
+            "porcentaje": float(row[3]), "completado": row[4],
+            "ultima_actualizacion": str(row[5]),
+            "total_lecciones": row[6] or 0, "lecciones_completadas": row[7] or 0
+        }
+        for row in filas
+    ]
+    return render_template("mis_cursos.html", cursos=cursos)
+
+
+# --------------------------
+# BÚSQUEDA
+# --------------------------
+@app.route("/buscar")
+def buscar():
+    query = request.args.get("q")
+    if not query:
+        return redirect(url_for("index"))
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, titulo, descripcion, precio, imagen_url
+        FROM cursos
+        WHERE LOWER(titulo) LIKE LOWER(%s)
+        OR LOWER(descripcion) LIKE LOWER(%s)
+        ORDER BY creado_en DESC;
+    """, (f"%{query}%", f"%{query}%"))
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    resultados = [
+        {
+            "id": f[0], "titulo": f[1], "descripcion": f[2],
+            "precio": float(f[3]) if f[3] else 0, "imagen_url": f[4]
+        }
+        for f in filas
+    ]
+    return render_template("resultados.html", query=query, resultados=resultados)
+
+
+# --------------------------
+# Ejecutar app
+# --------------------------
+if __name__ == "__main__":
+    crear_tablas()
+    app.run(host="0.0.0.0", port=5000, debug=True)

@@ -1,0 +1,18 @@
+{
+  "2": [
+    {
+      "id": 1,
+      "titulo": "programacion basica ",
+      "video_url": "https://youtu.be/Q1BLug7B_3A",
+      "contenido": "esto es una guia del primera leccion la veran despues de tomar la videollamada por meet \r\n",
+      "fecha": "2026-03-10T18:05"
+    },
+    {
+      "id": 2,
+      "titulo": "programacion basica ",
+      "video_url": "https://www.youtube.com/watch?reload=9&embeds_referring_euri=https%3A%2F%2Fwww.bing.com%2F&embeds_referring_origin=https%3A%2F%2Fwww.bing.com&source_ve_path=MTY0OTksMTY0OTksMjg2NjQsMTY0NTAz&v=QvmjNtrFiuk&feature=youtu.be",
+      "contenido": "",
+      "fecha": "2026-03-10T15:06"
+    }
+  ]
+}

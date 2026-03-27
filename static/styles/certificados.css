@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@300;400;700&display=swap');
+
+:root {
+    --azul-oscuro: #0a2e36;
+    --crema-fondo: #fdfaf1;
+    --dorado: #a68b5a;
+}
+
+.certificado-container {
+    width: 850px;
+    height: 600px;
+    background-color: var(--azul-oscuro);
+    padding: 25px;
+    color: var(--azul-oscuro);
+    font-family: 'Montserrat', sans-serif;
+    margin: 20px auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.certificado-border {
+    border: 4px double var(--dorado);
+    height: 100%;
+    background-color: var(--crema-fondo);
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: var(--azul-oscuro);
+    color: white;
+    padding: 30px 40px;
+    text-align: center;
+    position: relative;
+}
+
+.logo-placeholder {
+    width: 80px;
+    height: 100px;
+    background: white;
+    position: absolute;
+    top: -10px;
+    left: 40px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+h1 {
+    font-family: 'Libre+Baskerville', serif;
+    font-size: 42px;
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+.folio-fecha {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+    font-size: 13px;
+    border-top: 1px solid rgba(255,255,255,0.3);
+    padding-top: 10px;
+}
+
+main {
+    text-align: center;
+    padding: 40px 60px;
+    flex-grow: 1;
+}
+
+.concesion {
+    font-size: 18px;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.nombre-participante {
+    font-family: 'Libre+Baskerville', serif;
+    font-size: 55px;
+    margin: 10px 0;
+    color: var(--azul-oscuro);
+    border-bottom: 2px solid var(--dorado);
+    display: inline-block;
+}
+
+.descripcion {
+    margin-top: 30px;
+    line-height: 1.6;
+    font-size: 16px;
+    color: #444;
+}
+
+.sello {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.award-icon {
+    font-size: 40px;
+    color: var(--dorado);
+}
+
+footer {
+    display: flex;
+    justify-content: space-around;
+    padding-bottom: 40px;
+}
+
+.firma {
+    text-align: center;
+}
+
+.linea-firma { margin-bottom: 5px; }
+.puesto { font-weight: bold; font-size: 14px; color: var(--azul-oscuro); }

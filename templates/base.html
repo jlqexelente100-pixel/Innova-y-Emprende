@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Academia Online{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/inicio.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/catalogo.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/darkmode.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/f_cursos.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/certificados.css') }}">
+
+    <script src="{{ url_for('static', filename='darkmode.js') }}"></script>
+
+    {% block extra_css %}{% endblock %}
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/logo.jpeg') }}">
+</head>
+<body>
+
+<button
+    id="mobileSidebarToggle"
+    class="mobile-sidebar-toggle btn btn-dark"
+    type="button"
+    aria-controls="sidebar"
+    aria-expanded="false"
+>
+    Menu
+</button>
+
+<div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+<div class="layout">
+    <nav id="sidebar" class="sidebar bg-dark text-white p-3">
+        <button id="toggleSidebar" class="btn btn-outline-light btn-sm mb-3 w-100" type="button">
+            <span class="sidebar-button-icon">☰</span>
+            <span class="sidebar-button-label">Menu</span>
+        </button>
+
+        <button class="btn-darkmode-sidebar btn btn-secondary btn-sm w-100 mb-4" type="button">
+            <span class="sidebar-button-icon">🌙</span>
+            <span class="sidebar-button-label">Oscuro</span>
+        </button>
+
+        {% if session.get('user_id') %}
+        <div class="user-box text-center mb-3">
+            <div class="mb-2">
+                <img
+                    src="{% if usuario_sidebar and usuario_sidebar.foto %}
+                            {{ url_for('static', filename=usuario_sidebar.foto) }}
+                         {% else %}
+                            {{ url_for('static', filename='imagenes/default-user.png') }}
+                         {% endif %}"
+                    class="rounded-circle shadow"
+                    width="85" height="85"
+                    style="object-fit: cover; border: 3px solid rgba(255,255,255,0.2);"
+                    alt="Foto de perfil"
+                >
+            </div>
+
+            <div class="user-meta">
+                <div class="fw-bold">
+                    <a href="{{ url_for('perfil') }}" class="text-white text-decoration-none">
+                        {{ session.get('nombre') }}
+                    </a>
+                </div>
+
+                <small class="text-light">
+                    {% if session.get('rol') == 'profesor' %}
+                        Profesor
+                    {% else %}
+                        Estudiante
+                    {% endif %}
+                </small>
+            </div>
+        </div>
+
+        <!-- 🔍 BUSCADOR -->
+        <form action="/buscar" method="GET" style="display:flex; align-items:center; gap:8px;">
+        <input 
+            type="text" 
+            name="q" 
+            placeholder="Buscar cursos..." 
+            required
+            style="padding: 6px 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px;"
+        />
+        <button type="submit" style="padding: 6px 14px; border-radius: 8px; background:#007bff; color:#fff; border:none; cursor:pointer;">
+            Buscar
+        </button>
+        </form>
+        {% endif %}
+
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{{ url_for('index') }}">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Inicio</span>
+                </a>
+            </li>
+
+            {% if session.get('user_id') %}
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{{ url_for('perfil') }}">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">Mi Perfil</span>
+                </a>
+            </li>
+
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{{ url_for('mis_compras') }}">
+                    <span class="nav-icon">🛒</span>
+                    <span class="nav-label">Mis Compras</span>
+                </a>
+            </li>
+
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{{ url_for('mis_cursos_progreso') }}">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-label">Mis Cursos</span>
+                </a>
+            </li>
+
+            <li class="nav-item mb-3">
+                <a class="nav-link text-white d-flex justify-content-between align-items-center" href="#">
+                    <span class="d-flex align-items-center gap-2">
+                        <span class="nav-icon">🔔</span>
+                        <span class="nav-label">Notificaciones</span>
+                    </span>
+                    <span id="notifCount" class="badge bg-danger d-none">0</span>
+                </a>
+            </li>
+
+            {% if session.get('rol') == 'profesor' %}
+            <hr class="bg-light">
+
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{{ url_for('profesor_dashboard') }}">
+                    <span class="nav-icon">👨‍🏫</span>
+                    <span class="nav-label">Panel Profesor</span>
+                </a>
+            </li>
+            {% endif %}
+
+            <hr class="bg-light">
+
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{{ url_for('logout') }}">
+                    <span class="nav-icon">🚪</span>
+                    <span class="nav-label">Cerrar sesion</span>
+                </a>
+            </li>
+
+            {% else %}
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{{ url_for('login') }}">
+                    <span class="nav-icon">🔐</span>
+                    <span class="nav-label">Iniciar sesion</span>
+                </a>
+            </li>
+
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{{ url_for('registrar') }}">
+                    <span class="nav-icon">✍️</span>
+                    <span class="nav-label">Registrarse</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <main class="content flex-fill pt-0 px-4 pb-4">
+        {% if is_home|default(False) %}
+        <header class="barra-superior">
+            <h2 class="ms-3 m-0 fw-bold">Cursos disponibles</h2>
+            <div class="clouds">
+                <div class="cloud cloud1"></div>
+                <div class="cloud cloud2"></div>
+                <div class="cloud cloud3"></div>
+                <div class="cloud cloud4"></div>
+            </div>
+        </header>
+        {% endif %}
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- 🔍 SCRIPT BUSCADOR -->
+<script>
+function filtrarCursos() {
+    let input = document.getElementById("buscadorCursos").value.toLowerCase();
+    let cursos = document.querySelectorAll(".curso-card");
+
+    cursos.forEach(curso => {
+        let titulo = curso.innerText.toLowerCase();
+        curso.style.display = titulo.includes(input) ? "block" : "none";
+    });
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const sidebar = document.getElementById("sidebar");
+    const toggleSidebar = document.getElementById("toggleSidebar");
+    const mobileSidebarToggle = document.getElementById("mobileSidebarToggle");
+    const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+    const mobileBreakpoint = window.matchMedia("(max-width: 767.98px)");
+
+    function syncMobileState(isOpen) {
+        sidebar.classList.toggle("is-open", isOpen);
+        document.body.classList.toggle("sidebar-open", isOpen);
+        mobileSidebarToggle.setAttribute("aria-expanded", String(isOpen));
+    }
+
+    function handleSidebarToggle() {
+        if (mobileBreakpoint.matches) {
+            syncMobileState(!sidebar.classList.contains("is-open"));
+            return;
+        }
+        sidebar.classList.toggle("collapsed");
+    }
+
+    function closeMobileSidebar() {
+        if (mobileBreakpoint.matches) {
+            syncMobileState(false);
+        }
+    }
+
+    toggleSidebar.addEventListener("click", handleSidebarToggle);
+    mobileSidebarToggle.addEventListener("click", handleSidebarToggle);
+    sidebarBackdrop.addEventListener("click", closeMobileSidebar);
+
+    window.addEventListener("resize", function() {
+        if (!mobileBreakpoint.matches) {
+            syncMobileState(false);
+        }
+    });
+});
+</script>
+
+{% if session.get('user_id') %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    fetch("/notificaciones")
+    .then(res => res.json())
+    .then(data => {
+        if (Array.isArray(data)) {
+            const noLeidas = data.filter(n => !n.leida).length;
+            if (noLeidas > 0) {
+                const badge = document.getElementById("notifCount");
+                badge.textContent = noLeidas;
+                badge.classList.remove("d-none");
+            }
+        }
+    });
+});
+</script>
+{% endif %}
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>
+
+

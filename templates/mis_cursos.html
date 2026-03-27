@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Cursos y Progreso{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Mis Cursos</h1>
+
+    {% if cursos|length == 0 %}
+        <div class="alert alert-info">
+            Aún no estás inscrito en ningún curso. 
+            <a href="{{ url_for('index') }}" class="alert-link">Explorar cursos</a>
+        </div>
+    {% else %}
+        <div class="row">
+            {% for curso in cursos %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if curso.imagen_url %}
+                    <img src="/static/{{ curso.imagen_url }}" class="card-img-top" alt="{{ curso.titulo }}" style="height:180px; object-fit:cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ curso.titulo }}</h5>
+                        
+                        <div class="progress mb-2" style="height: 20px;">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: {{ curso.porcentaje }}%;" 
+                                 aria-valuenow="{{ curso.porcentaje }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ curso.porcentaje|round(1) }}%
+                            </div>
+                        </div>
+                        
+                        <p class="card-text">
+                            <small>
+                                {{ curso.lecciones_completadas }} de {{ curso.total_lecciones }} lecciones
+                                {% if curso.completado %} · <strong>¡Completado! 🎉</strong>{% endif %}
+                            </small>
+                        </p>
+                        
+                        <a href="{{ url_for('curso_detalle', curso_id=curso.curso_id) }}" 
+                           class="btn btn-primary">Continuar</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

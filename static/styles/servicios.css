@@ -1,0 +1,148 @@
+body {
+    font-family: "Lato", sans-serif;
+    background: linear-gradient(180deg, #007b91 0%, #006172 30%, #003842 60%, #001a1f 100%);
+    color: white;
+    min-height: 100vh;
+}
+
+.hero-shell {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section {
+    position: relative;
+    text-align: center;
+    padding: clamp(4rem, 8vw, 5rem) 20px clamp(3rem, 6vw, 4rem);
+    z-index: 2;
+}
+
+.hero-section h1 {
+    font-size: clamp(2.2rem, 4.4vw, 3.2rem);
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.hero-section p {
+    font-size: clamp(1rem, 2vw, 1.1rem);
+    color: #b2e0ea;
+    max-width: 550px;
+    margin: auto;
+    line-height: 1.7;
+}
+
+.fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.7s ease forwards;
+}
+
+.fade-up:nth-child(2) { animation-delay: 0.15s; }
+.fade-up:nth-child(3) { animation-delay: 0.3s; }
+.fade-up:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.servicios-section {
+    position: relative;
+    z-index: 2;
+    padding: clamp(2.5rem, 7vw, 4rem) 20px;
+}
+
+.card-servicio {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 18px;
+    padding: 30px 24px;
+    backdrop-filter: blur(8px);
+    transition: 0.3s;
+    height: 100%;
+}
+
+.card-servicio:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-servicio .icon {
+    font-size: 3rem;
+    margin-bottom: 18px;
+}
+
+.card-servicio h5 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.card-servicio p {
+    font-size: 0.95rem;
+    color: #b2dce6;
+    line-height: 1.7;
+    margin: 0;
+}
+
+footer {
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.45);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 50px 0 0;
+    margin-top: 100px;
+}
+
+footer h5 {
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+footer p,
+footer small {
+    color: #8fc8d4;
+    font-size: 0.95rem;
+}
+
+footer a {
+    color: #a8d8e2;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 7px;
+    font-size: 0.95rem;
+}
+
+footer a:hover {
+    color: #0d6efd;
+}
+
+.footer-bottom {
+    background: rgba(0, 0, 0, 0.4);
+    text-align: center;
+    padding: 14px;
+    margin-top: 40px;
+}
+
+.footer-bottom small {
+    color: #6a9eaa;
+    font-size: 0.82rem;
+}
+
+@media (max-width: 768px) {
+    .servicios-section {
+        padding-inline: 15px;
+    }
+
+    .card-servicio {
+        padding: 24px 18px;
+    }
+
+    footer {
+        padding: 40px 20px 0;
+        text-align: center;
+    }
+}

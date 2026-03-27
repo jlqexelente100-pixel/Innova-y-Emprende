@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restablecer contrasena</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='imagenes/logo.jpeg') }}" type="image/x-icon">
+</head>
+
+<body>
+  <div class="clouds">
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+    <div class="cloud cloud4"></div>
+    <div class="cloud cloud5"></div>
+    <div class="cloud cloud6"></div>
+    <div class="cloud cloud7"></div>
+    <div class="cloud cloud8"></div>
+  </div>
+
+  <div class="simple-auth-shell">
+    <div class="fondo">
+      <div class="contenedor">
+        <div class="auth-logo-inline">
+          <img src="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}" alt="Logo">
+        </div>
+
+        <h1 class="titulo-bienvenida">Restablecer contrasena</h1>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert alert-info">
+              {% for message in messages %}
+                <p class="mb-0">{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+          <div class="mb-3">
+            <label for="password" class="form-label">Nueva contrasena</label>
+            <input type="password"
+                   class="form-control"
+                   id="password"
+                   name="password"
+                   placeholder="Ingresa tu nueva contrasena"
+                   required>
+          </div>
+
+          <div class="btn-container">
+            <button type="submit" class="btn btn-primary btn-lg">
+              Actualizar contrasena
+            </button>
+            <a class="link-lateral" href="{{ url_for('login') }}">Volver al login</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

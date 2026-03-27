@@ -1,0 +1,100 @@
+body {
+    font-family: "Inter", "Lato", sans-serif;
+    background: #f0f2f5 !important;
+    margin: 0;
+    padding: 0;
+}
+
+.perfil-container {
+    width: min(100%, 820px);
+    margin: clamp(1rem, 3vw, 2rem) auto;
+    background: #ffffff;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    border-top: 8px solid #1f616d;
+}
+
+.perfil-container h3 {
+    text-align: center;
+    color: #1e293b;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3vw, 1.9rem);
+    margin-bottom: 1.75rem;
+}
+
+form label {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+form .form-control {
+    width: 100%;
+    padding: 0.8rem 0.95rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    font-size: 1rem;
+    color: #1e293b;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+form .form-control:focus {
+    outline: none;
+    border-color: #1f616d;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(31, 97, 109, 0.1);
+}
+
+form button {
+    display: block;
+    width: 100%;
+    padding: 0.9rem 1rem;
+    background: #1f616d;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(31, 97, 109, 0.2);
+}
+
+form button:hover {
+    background: #164a53;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(31, 97, 109, 0.3);
+}
+
+input[type="file"] {
+    background: transparent;
+    border: 1px dashed #cbd5e1;
+    padding: 0.8rem;
+}
+
+.rounded-circle.shadow {
+    border: 4px solid #1f616d !important;
+    padding: 3px;
+    background-color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.rounded-circle.shadow:hover {
+    transform: scale(1.05);
+    border-color: #164a53 !important;
+}
+
+@media (max-width: 768px) {
+    .perfil-container {
+        padding: 1.35rem;
+    }
+}

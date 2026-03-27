@@ -1,0 +1,7 @@
+body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: rgb(243, 243, 243);
+            color: black;
+            min-height: 100vh;
+        }

@@ -1,0 +1,17 @@
+body {
+    background: #f5f7fb;
+}
+
+.table-responsive {
+    border-radius: 16px;
+}
+
+.card.shadow-sm {
+    border-radius: 18px;
+}
+
+@media (max-width: 576px) {
+    .table {
+        min-width: 560px;
+    }
+}

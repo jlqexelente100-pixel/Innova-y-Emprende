@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestros Valores</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/sobreNosotros.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/Nuestros_valores.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/darkmode.css') }}">
+    <script src="{{ url_for('static', filename='darkmode.js') }}"></script>
+</head>
+<body>
+    <nav class="public-nav">
+        <div class="logo-area">
+            <a href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}" alt="logo">
+            </a>
+            <span>Innova y Emprende</span>
+        </div>
+
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="publicNavMenu">
+            Menu
+        </button>
+
+        <div class="nav-links-wrapper" id="publicNavMenu">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('servicios') }}">Servicios</a></li>
+                <li><a href="{{ url_for('sobre_nosotros') }}">Sobre Nosotros</a></li>
+                <li><a href="{{ url_for('Nuestros_valores') }}">Nuestros Valores</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a class="btn-nav" href="{{ url_for('login') }}">Iniciar sesion</a>
+                <a class="btn-nav" href="{{ url_for('registrar') }}">Registrarse</a>
+                <button class="btn-darkmode" id="btnDarkMode" title="Cambiar tema" type="button">🌙 Oscuro</button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-shell">
+        <div class="clouds">
+            <div class="cloud cloud1"></div>
+            <div class="cloud cloud2"></div>
+            <div class="cloud cloud3"></div>
+            <div class="cloud cloud4"></div>
+            <div class="cloud cloud5"></div>
+            <div class="cloud cloud6"></div>
+        </div>
+
+        <div class="hero-section">
+            <h1 class="fade-up">Nuestros Valores</h1>
+            <p class="fade-up">Los principios que guian nuestra mision de impulsar el emprendimiento.</p>
+        </div>
+    </section>
+
+    <section id="valores" class="valores-section">
+        <div class="container text-center">
+            <div class="row g-4 justify-content-center">
+                <div class="col-sm-6 col-xl-3 fade-up">
+                    <div class="card">
+                        <div class="card-icon">🚀</div>
+                        <h3>Innovacion</h3>
+                        <p>Buscamos nuevas formas de resolver problemas y superar expectativas.</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 fade-up">
+                    <div class="card">
+                        <div class="card-icon">🤝</div>
+                        <h3>Compromiso</h3>
+                        <p>Nos dedicamos al exito de nuestros clientes con honestidad y transparencia.</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 fade-up">
+                    <div class="card">
+                        <div class="card-icon">⭐</div>
+                        <h3>Excelencia</h3>
+                        <p>Elevamos la calidad en cada detalle para entregar resultados duraderos.</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 fade-up">
+                    <div class="card">
+                        <div class="card-icon">🌍</div>
+                        <h3>Impacto</h3>
+                        <p>Creamos soluciones que generan un cambio positivo en las personas y su entorno.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="row text-start">
+                <div class="col-md-4 mb-4">
+                    <h5>Nuestros Valores</h5>
+                    <p>Valores que guian nuestra mision y vision en el emprendimiento.</p>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h5>Enlaces</h5>
+                    <a href="{{ url_for('home') }}">Inicio</a>
+                    <a href="{{ url_for('servicios') }}">Servicios</a>
+                    <a href="{{ url_for('sobre_nosotros') }}">Sobre Nosotros</a>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h5>Contacto</h5>
+                    <a href="mailto:contacto@empresa.com">contacto@empresa.com</a>
+                    <a href="tel:+573001234567">+57 300 123 4567</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <small>&copy; 2026 Innova y Emprende | Todos los derechos reservados</small>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/573241869341" class="logo-whatsapp" target="_blank" rel="noopener noreferrer">
+        <img src="{{ url_for('static', filename='styles/imagenes/logo_whatsapp.png') }}" alt="WhatsApp">
+    </a>
+
+    <script src="{{ url_for('static', filename='public-nav.js') }}"></script>
+</body>
+</html>

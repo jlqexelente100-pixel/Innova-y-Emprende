@@ -1,0 +1,138 @@
+@import url("home.css");
+
+body {
+    margin: 0;
+    font-family: "Lato", sans-serif !important;
+    background: linear-gradient(180deg, #007b91 0%, #006172 30%, #003842 60%, #001a1f 100%);
+    color: white;
+    min-height: 100vh;
+}
+
+.sobre-nosotros {
+    background: linear-gradient(180deg, #007b91 0%, #006172 30%, #003842 60%, rgba(0, 26, 31, 0.23) 100%);
+    color: white;
+    padding: clamp(3rem, 8vw, 5rem) clamp(1rem, 4vw, 3rem);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: calc(100vh - 96px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.sobre-nosotros h1 {
+    font-size: clamp(2.2rem, 4.8vw, 3rem);
+    margin-bottom: 1.75rem;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.contenedor-parrafos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    justify-content: center;
+    align-items: stretch;
+    width: min(100%, 1100px);
+    margin: 30px auto 0;
+    position: relative;
+    z-index: 2;
+}
+
+.parrafo1,
+.parrafo2 {
+    font-size: clamp(1rem, 2vw, 1.08rem);
+    line-height: 1.8;
+    font-weight: 300;
+    margin: 0;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 3vw, 2rem);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.7s ease forwards;
+}
+
+.fade-up:nth-child(1) { animation-delay: 0s; }
+.fade-up:nth-child(2) { animation-delay: 0.2s; }
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+footer {
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.45);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 50px 0 0;
+}
+
+footer h5 {
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: white;
+}
+
+footer p,
+footer small {
+    color: #8fc8d4;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #a8d8e2;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 7px;
+    font-size: 0.9rem;
+}
+
+footer a:hover {
+    color: #0d6efd;
+}
+
+.footer-bottom {
+    background: rgba(0, 0, 0, 0.4);
+    text-align: center;
+    padding: 14px;
+    margin-top: 40px;
+}
+
+.footer-bottom small {
+    color: #6a9eaa;
+    font-size: 0.82rem;
+}
+
+@media (max-width: 991.98px) {
+    .contenedor-parrafos {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .sobre-nosotros {
+        min-height: auto;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+
+    footer {
+        padding: 40px 20px 0;
+        text-align: center;
+    }
+}

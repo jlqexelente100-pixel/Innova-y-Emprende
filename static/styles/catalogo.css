@@ -1,0 +1,92 @@
+/* ============================= */
+/*   CONTENEDOR DE CURSOS        */
+/* ============================= */
+
+.container h2 {
+    font-weight: 800;
+    margin-bottom: 30px;
+}
+
+/* ============================= */
+/*   TARJETAS DE CURSOS          */
+/* ============================= */
+
+.card {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.15);
+}
+
+/* Imagen del curso */
+.card-img-top {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* Título */
+.card-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Texto */
+.card-text {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Footer */
+.card-footer {
+    border: none;
+    font-weight: 600;
+}
+
+/* Botón */
+.btn-primary {
+    border-radius: 30px;
+    font-weight: 600;
+    padding: 6px 16px;
+    transition: 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+}
+
+/* ============================= */
+/*        DARK MODE              */
+/* ============================= */
+
+html[data-theme="dark"] .card {
+    background: #1e1e1e;
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .card-text {
+    color: #cfcfcf;
+}
+
+html[data-theme="dark"] .card-footer {
+    background-color: #2b2b2b !important;
+}
+
+html[data-theme="dark"] .btn-primary {
+    background-color: #4e73df;
+    border: none;
+}
+
+html[data-theme="dark"] .btn-primary:hover {
+    background-color: #2e59d9;
+}

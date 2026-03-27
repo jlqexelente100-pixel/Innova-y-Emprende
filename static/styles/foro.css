@@ -1,0 +1,287 @@
+/* ========================================
+   FORO DEL CURSO - ESTILOS
+   ======================================== */
+
+.container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Encabezado del foro */
+h2 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.container > p {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Card para nuevo post */
+.card {
+    border: none;
+    border-radius: 12px;
+    background: white;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-title {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Formulario de nuevo post */
+.form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 1px solid #e0e6ed;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    background-color: white;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+    outline: none;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+textarea.form-control:focus {
+    min-height: 120px;
+}
+
+/* Botón publicar */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Posts del foro */
+.card:not(:first-child) {
+    border-left: 4px solid #007bff;
+}
+
+.card .d-flex {
+    gap: 1.5rem;
+}
+
+/* Avatar del autor */
+.rounded-circle {
+    border: 2px solid #e0e6ed;
+    object-fit: cover;
+    background-color: #f0f2f5;
+    transition: all 0.3s ease;
+}
+
+.rounded-circle:hover {
+    border-color: #007bff;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+/* Contenido del post */
+.card-body h5 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    word-break: break-word;
+}
+
+.card-body .card-text {
+    color: #495057;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.card-body small {
+    color: #adb5bd;
+    display: block;
+    font-size: 0.85rem;
+}
+
+.card-body small strong {
+    color: #6c757d;
+    font-weight: 600;
+}
+
+/* Alert sin posts */
+.alert {
+    border-radius: 8px;
+    border: none;
+    margin: 2rem 0;
+    padding: 1.5rem;
+}
+
+.alert-info {
+    background-color: #e7f3ff;
+    color: #0056b3;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .card .d-flex {
+        gap: 1rem;
+    }
+
+    .rounded-circle {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .btn-primary {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .form-control {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.75rem;
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+    }
+
+    .card-body h5 {
+        font-size: 0.95rem;
+    }
+
+    .card-body .card-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Tema oscuro */
+:root[data-theme="dark"] .card {
+    background-color: #1e1e1e;
+    border-color: #333;
+}
+
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] .card-title {
+    color: #e0e0e0;
+}
+
+:root[data-theme="dark"] .container > p {
+    color: #b0b0b0;
+}
+
+:root[data-theme="dark"] .form-label {
+    color: #e0e0e0;
+}
+
+:root[data-theme="dark"] .form-control {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #e0e0e0;
+}
+
+:root[data-theme="dark"] .form-control:focus {
+    background-color: #333;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+:root[data-theme="dark"] .card-body h5,
+:root[data-theme="dark"] .card-body .card-text {
+    color: #d0d0d0;
+}
+
+:root[data-theme="dark"] .rounded-circle {
+    border-color: #444;
+    background-color: #333;
+}
+
+:root[data-theme="dark"] .alert-info {
+    background-color: #1a3a52;
+    color: #a8d5ff;
+}
+
+:root[data-theme="dark"] .alert-success {
+    background-color: #1e3a1f;
+    color: #c3e6cb;
+}
+
+:root[data-theme="dark"] small {
+    color: #888;
+}
+
+:root[data-theme="dark"] small strong {
+    color: #aaa;
+}

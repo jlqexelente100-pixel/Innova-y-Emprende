@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Agregar Lección{% endblock %}
+
+{% block extra_css %}
+<style>
+.card-form {
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.video-preview {
+    display: none;
+    margin-top: 15px;
+}
+
+.video-preview iframe {
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+}
+
+.btn-guardar {
+    font-weight: bold;
+    padding: 10px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">📚 Agregar lección</h2>
+
+    <div class="card p-4 card-form">
+        <form method="POST" action="{{ url_for('profesor_anadir_leccion', curso_id=curso_id) }}">
+
+            <!-- TITULO -->
+            <div class="mb-3">
+                <label class="form-label">Título de la lección</label>
+                <input type="text" class="form-control" name="titulo" required>
+            </div>
+
+            <!-- VIDEO -->
+            <div class="mb-3">
+                <label class="form-label">URL del video (YouTube)</label>
+                <input type="text" class="form-control" name="video_url" id="video_url" placeholder="https://www.youtube.com/watch?v=..." oninput="previewVideo()">
+                <small class="text-muted">Solo enlaces de YouTube</small>
+
+                <!-- PREVIEW -->
+                <div class="video-preview" id="videoPreview">
+                    <iframe id="videoFrame" src="" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- FECHA -->
+            <div class="mb-3">
+                <label class="form-label">Fecha de disponibilidad</label>
+                <input type="datetime-local" class="form-control" name="fecha">
+            </div>
+
+            <!-- CONTENIDO -->
+            <div class="mb-3">
+                <label class="form-label">Contenido adicional</label>
+                <textarea class="form-control" name="contenido" rows="4"></textarea>
+            </div>
+
+            <!-- BOTON -->
+            <button type="submit" class="btn btn-primary w-100 btn-guardar">
+                💾 Guardar lección
+            </button>
+        </form>
+    </div>
+
+    <div class="mt-3">
+        <a href="{{ url_for('profesor_dashboard') }}" class="btn btn-secondary">
+            ← Volver al panel
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function convertirYoutube(url) {
+    if (!url) return null;
+
+    if (url.includes("watch?v=")) {
+        return url.replace("watch?v=", "embed/");
+    }
+
+    if (url.includes("youtu.be/")) {
+        let id = url.split("youtu.be/")[1];
+        return "https://www.youtube.com/embed/" + id;
+    }
+
+    return null;
+}
+
+function previewVideo() {
+    const input = document.getElementById("video_url").value;
+    const frame = document.getElementById("videoFrame");
+    const preview = document.getElementById("videoPreview");
+
+    let embed = convertirYoutube(input);
+
+    if (embed) {
+        frame.src = embed;
+        preview.style.display = "block";
+    } else {
+        preview.style.display = "none";
+        frame.src = "";
+    }
+}
+</script>
+{% endblock %}

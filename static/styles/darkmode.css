@@ -1,0 +1,420 @@
+
+.btn-darkmode {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.3s, border-color 0.3s;
+    white-space: nowrap;
+    font-family: 'Lato', sans-serif;
+    line-height: 1;
+}
+
+.btn-darkmode:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: white;
+}
+
+.btn-darkmode-flotante {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.3s, border-color 0.3s;
+    backdrop-filter: blur(8px);
+    font-family: 'Lato', sans-serif;
+}
+
+.btn-darkmode-flotante:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-darkmode-sidebar {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #ccc;
+    cursor: pointer;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s;
+    font-family: 'Lato', sans-serif;
+    margin-top: 4px;
+}
+
+.btn-darkmode-sidebar:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+
+/* ============================================================
+   MODO OSCURO 
+   ============================================================ */
+
+[data-theme="dark"] body {
+    background: linear-gradient(180deg, #05080d 0%, #0a0f18 40%, #070b12 70%, #020407 100%) !important;
+    color: #e6edf3 !important;
+}
+
+/* Navbar */
+[data-theme="dark"] nav {
+    background: rgba(0, 0, 0, 0.75) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-theme="dark"] nav ul li a {
+    color: #8b949e !important;
+}
+
+[data-theme="dark"] nav ul li a:hover {
+    color: #e6edf3 !important;
+}
+
+[data-theme="dark"] .btn-nav {
+    border-color: #30363d !important;
+    color: #8b949e !important;
+}
+
+[data-theme="dark"] .btn-nav:hover {
+    background: #21262d !important;
+    color: #e6edf3 !important;
+}
+
+[data-theme="dark"] .btn-darkmode {
+    border-color: #30363d !important;
+    color: #8b949e !important;
+}
+
+[data-theme="dark"] .btn-darkmode:hover {
+    background: #21262d !important;
+    color: #e6edf3 !important;
+}
+
+/* Span del logo */
+[data-theme="dark"] nav span,
+[data-theme="dark"] .logo-area span {
+    color: #8b949e !important;
+}
+
+/* Cards de servicios */
+[data-theme="dark"] .card-servicio {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="dark"] .card-servicio p {
+    color: #6a7882 !important;
+}
+
+[data-theme="dark"] .card-servicio:hover {
+    background: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* Sección hero */
+[data-theme="dark"] .hero h1,
+[data-theme="dark"] .hero-section h1 {
+    color: #e6edf3 !important;
+}
+
+[data-theme="dark"] .hero p,
+[data-theme="dark"] .hero-section p {
+    color: #6a7882 !important;
+}
+
+/* ── Sobre Nosotros ──
+   #marianna modifico este bloque: dark mode para sección sobre-nosotros
+   El background está hardcodeado en sobreNosotros.css, se sobreescribe aquí */
+[data-theme="dark"] .sobre-nosotros {
+    background: linear-gradient(180deg, #05080d 0%, #0a0f18 40%, #070b12 70%, #020407 100%) !important;
+    color: #e6edf3 !important;
+}
+
+[data-theme="dark"] .sobre-nosotros h1 {
+    color: #e6edf3 !important;
+}
+
+/* Recuadros de párrafos en sobre-nosotros */
+/* #marianna modifico este bloque: fondo y texto de los recuadros de párrafo */
+[data-theme="dark"] .parrafo1,
+[data-theme="dark"] .parrafo2 {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #c9d1d9 !important;
+}
+
+[data-theme="dark"] .parrafo1 p,
+[data-theme="dark"] .parrafo2 p {
+    color: #c9d1d9 !important;
+}
+
+/* ── Nuestros Valores ──
+   #marianna modifico este bloque: dark mode para sección de valores
+   .valores tiene background blanco hardcodeado en Nuestros_valores.css */
+[data-theme="dark"] .valores {
+    background: linear-gradient(180deg, #05080d 0%, #0a0f18 40%, #070b12 70%, #020407 100%) !important;
+    color: #e6edf3 !important;
+}
+
+[data-theme="dark"] .valores h2 {
+    color: #e6edf3 !important;
+}
+
+/* Cards de valores — fondo gris claro hardcodeado en CSS */
+/* #marianna modifico este bloque: cards de valores en modo oscuro */
+[data-theme="dark"] .valores .card {
+    background-color: #21262d !important;
+    border-color: #30363d !important;
+    color: #e6edf3 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .valores .card:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="dark"] .valores .card h3 {
+    color: #00c2d4 !important;
+}
+
+[data-theme="dark"] .valores .card p {
+    color: #8b949e !important;
+}
+
+/* Footer páginas públicas */
+[data-theme="dark"] footer,
+[data-theme="dark"] .footer {
+    background: rgba(0, 0, 0, 0.8) !important;
+    border-top-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="dark"] footer h5,
+[data-theme="dark"] .footer-section h3 {
+    color: #8b949e !important;
+}
+
+[data-theme="dark"] footer a,
+[data-theme="dark"] .footer-section a {
+    color: #6a7882 !important;
+}
+
+[data-theme="dark"] footer a:hover,
+[data-theme="dark"] .footer-section a:hover {
+    color: #00c2d4 !important;
+}
+
+[data-theme="dark"] footer p,
+[data-theme="dark"] footer small,
+[data-theme="dark"] .footer-section p {
+    color: #6a7882 !important;
+}
+
+[data-theme="dark"] .footer-bottom {
+    background: rgba(0, 0, 0, 0.7) !important;
+}
+
+
+/* ============================================================
+   MODO OSCURO 
+   ============================================================ */
+
+/* Fondo del body */
+[data-theme="dark"] .fondo {
+    background-color: #0d1117 !important;
+    background-image: none !important;
+}
+
+/* Tarjeta de dos paneles */
+/* #marianna modifico este bloque: card de dos paneles en modo oscuro */
+[data-theme="dark"] .main-container {
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Panel izquierdo (mantiene gradiente pero más oscuro) */
+[data-theme="dark"] .left-panel {
+    background: linear-gradient(180deg, #004a55, #002b32) !important;
+}
+
+/* Panel derecho (ahora oscuro en vez de blanco) */
+[data-theme="dark"] .right-panel {
+    background: #161b22 !important;
+}
+
+/* Formulario dentro del panel derecho */
+[data-theme="dark"] .right-panel .contenedor,
+[data-theme="dark"] .right-panel .fondo {
+    background: transparent !important;
+}
+
+/* Título del formulario */
+[data-theme="dark"] .titulo-bienvenida {
+    color: #00c2d4 !important;
+}
+
+/* Labels e inputs */
+[data-theme="dark"] .right-panel .form-label,
+[data-theme="dark"] .right-panel label {
+    color: #8b949e !important;
+}
+
+[data-theme="dark"] .right-panel .form-control {
+    background-color: #21262d !important;
+    border-color: #30363d !important;
+    color: #e6edf3 !important;
+}
+
+[data-theme="dark"] .right-panel .form-control::placeholder {
+    color: #484f58 !important;
+}
+
+[data-theme="dark"] .right-panel .form-check-label,
+[data-theme="dark"] .right-panel .form-text {
+    color: #6a7882 !important;
+}
+
+/* Select de rol */
+[data-theme="dark"] .right-panel .Rol {
+    background-color: #21262d !important;
+    border-color: #30363d !important;
+    color: #e6edf3 !important;
+}
+
+/* Links */
+[data-theme="dark"] .link-lateral,
+[data-theme="dark"] .link-recuperar {
+    color: #00c2d4 !important;
+}
+
+[data-theme="dark"] .link-lateral:hover,
+[data-theme="dark"] .link-recuperar:hover {
+    color: #5de0ea !important;
+}
+
+/* Link dentro de .link-lateral (registrar.html) */
+[data-theme="dark"] .link-lateral a {
+    color: #00c2d4 !important;
+}
+
+/* Botón primario en dark mode */
+[data-theme="dark"] .right-panel .btn-primary {
+    background: linear-gradient(90deg, #005566, #003d47) !important;
+}
+
+[data-theme="dark"] .right-panel .btn-primary:hover {
+    background: linear-gradient(90deg, #007b91, #006172) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Alert info (mensajes flash) */
+[data-theme="dark"] .right-panel .alert-info {
+    background-color: #0d2f3f !important;
+    border-color: #1a5f7a !important;
+    color: #a8d8e2 !important;
+}
+
+/* Nubes: un poco más tenues en dark mode */
+[data-theme="dark"] .cloud {
+    opacity: 0.3 !important;
+}
+
+
+/* ============================================================
+   MODO OSCUROo
+   ============================================================ */
+
+[data-theme="dark"] .layout {
+    background-color: #0d1117 !important;
+}
+
+[data-theme="dark"] #sidebar {
+    background-color: #0d1117 !important;
+    border-right: 1px solid #21262d !important;
+}
+
+[data-theme="dark"] #sidebar .nav-link {
+    color: #8b949e !important;
+}
+
+[data-theme="dark"] #sidebar .nav-link:hover {
+    color: #e6edf3 !important;
+}
+
+[data-theme="dark"] #sidebar .alert-info {
+    background-color: #161b22 !important;
+    border-color: #30363d !important;
+    color: #8b949e !important;
+}
+
+[data-theme="dark"] .content {
+    background-color: #161b22 !important;
+    color: #e6edf3 !important;
+}
+
+/* Cards de Bootstrap en el área autenticada */
+[data-theme="dark"] .card {
+    background-color: #21262d !important;
+    border-color: #30363d !important;
+    color: #e6edf3 !important;
+}
+
+[data-theme="dark"] .card-header {
+    background-color: #161b22 !important;
+    border-bottom-color: #30363d !important;
+    color: #e6edf3 !important;
+}
+
+[data-theme="dark"] .card-footer {
+    background-color: #161b22 !important;
+    border-top-color: #30363d !important;
+}
+
+[data-theme="dark"] .card-title {
+    color: #e6edf3 !important;
+}
+
+[data-theme="dark"] .card-text {
+    color: #8b949e !important;
+}
+
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4 {
+    color: #e6edf3 !important;
+}
+
+/* Botón de sidebar colapsado en modo oscuro */
+[data-theme="dark"] .btn-outline-light {
+    border-color: #30363d !important;
+    color: #8b949e !important;
+}
+
+[data-theme="dark"] .btn-darkmode-sidebar {
+    border-color: #30363d !important;
+    color: #8b949e !important;
+}
+
+[data-theme="dark"] .btn-darkmode-sidebar:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #e6edf3 !important;
+}

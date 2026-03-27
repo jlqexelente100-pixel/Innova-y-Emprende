@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Foro del Curso - Academia Online{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/foro.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>Foro de Discusion</h2>
+    <p>Comparte tus dudas, ideas y experiencias con otros estudiantes del curso.</p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Crear un nuevo tema</h5>
+            <form id="formPost">
+                <div class="mb-3">
+                    <label class="form-label" for="titulo">Titulo del tema</label>
+                    <input type="text" class="form-control" id="titulo" placeholder="Cual es tu pregunta o tema?" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="contenido">Mensaje</label>
+                    <textarea class="form-control" id="contenido" placeholder="Cuentanos mas detalles..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Publicar tema</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="postsContainer">
+        {% if posts %}
+            {% for post in posts %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-start flex-column flex-sm-row">
+                        <img src="{{ url_for('static', filename=post.foto_autor or 'imagenes/default-user.png') }}"
+                             class="rounded-circle me-sm-3 mb-3 mb-sm-0"
+                             style="width: 50px; height: 50px; object-fit: cover;"
+                             alt="Avatar de {{ post.autor }}">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title">{{ post.titulo }}</h5>
+                            <p class="card-text">{{ post.contenido }}</p>
+                            <small>
+                                <strong>{{ post.autor }}</strong> • {{ post.creado_en.strftime('%d/%m/%Y a las %H:%M') if post.creado_en else 'hace poco' }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="alert alert-info">
+            Aun no hay posts en este foro. Se el primero en compartir tu pregunta o idea.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const cursoId = {{ curso_id }};
+
+document.getElementById("formPost").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const titulo = document.getElementById("titulo").value;
+    const contenido = document.getElementById("contenido").value;
+
+    try {
+        const res = await fetch(`/curso/${cursoId}/foro/post`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ titulo, contenido })
+        });
+
+        if (res.ok) {
+            alert("Post publicado exitosamente");
+            location.reload();
+        } else {
+            const error = await res.json();
+            alert("Error: " + error.error);
+        }
+    } catch (e) {
+        alert("Error: " + e);
+    }
+});
+</script>
+{% endblock %}

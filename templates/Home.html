@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innova y Emprende</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/darkmode.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}" type="image/x-icon">
+    <script src="{{ url_for('static', filename='darkmode.js') }}"></script>
+</head>
+<body>
+    <div class="clouds">
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+        <div class="cloud cloud4"></div>
+        <div class="cloud cloud5"></div>
+        <div class="cloud cloud6"></div>
+        <div class="cloud cloud7"></div>
+        <div class="cloud cloud8"></div>
+    </div>
+
+    <nav class="public-nav">
+        <div class="logo-area">
+            <a href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}" alt="logo">
+            </a>
+            <span>Innova y Emprende</span>
+        </div>
+
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="publicNavMenu">
+            Menu
+        </button>
+
+        <div class="nav-links-wrapper" id="publicNavMenu">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('servicios') }}">Servicios</a></li>
+                <li><a href="{{ url_for('sobre_nosotros') }}">Sobre Nosotros</a></li>
+                <li><a href="{{ url_for('Nuestros_valores') }}">Nuestros Valores</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a class="btn-nav" href="{{ url_for('login') }}">Iniciar sesion</a>
+                <a class="btn-nav" href="{{ url_for('registrar') }}">Registrarse</a>
+                <button class="btn-darkmode" id="btnDarkMode" title="Cambiar tema" type="button">🌙 Oscuro</button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>El futuro del emprendimiento comienza aqui</h1>
+        <p>Impulsa tus ideas, crea oportunidades y transforma tu proyecto con la ayuda de herramientas modernas y vision innovadora.</p>
+        <img src="{{ url_for('static', filename='styles/imagenes/buho.png') }}" alt="Buho de la plataforma">
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Innova y Emprende</h3>
+                <p>Plataforma educativa para impulsar ideas de negocio y proyectos innovadores.</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Enlaces</h3>
+                <ul>
+                    <li><a href="{{ url_for('servicios') }}">Servicios</a></li>
+                    <li><a href="{{ url_for('sobre_nosotros') }}">Sobre Nosotros</a></li>
+                    <li><a href="{{ url_for('Nuestros_valores') }}">Nuestros Valores</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <p>Email: contacto@innova.com</p>
+                <p>Tel: +57 300 123 4567</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Innova y Emprende | Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/573241869341" class="logo-whatsapp" target="_blank" rel="noopener noreferrer">
+        <img src="{{ url_for('static', filename='styles/imagenes/logo_whatsapp.png') }}" alt="WhatsApp">
+    </a>
+
+    <script src="{{ url_for('static', filename='public-nav.js') }}"></script>
+</body>
+</html>
