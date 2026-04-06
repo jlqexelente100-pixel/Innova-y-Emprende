@@ -10,11 +10,17 @@
     margin-bottom: 2rem;
     box-shadow: 0 4px 15px rgba(13, 110, 253, 0.25);
     border-bottom: 3px solid #0a58ca;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    width: 100vw !important;
 }
 
 .header-content {
-    max-width: 960px;
-    margin: 0 auto;
+    max-width: 100% !important;
+    padding: 0 1rem;
 }
 
 .leccion-header-bar h1 {
@@ -107,6 +113,8 @@
     animation: moveCloud 28s linear infinite;
     animation-delay: 2s;
 }
+
+
 
 /* ── LÍNEA DIVISORIA ── */
 .content-divider {
@@ -243,13 +251,25 @@
     color: #6c757d;
 }
 
-
+body {
+    overflow-x: hidden !important;
+}
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
+    .leccion-header-bar {
+        padding: 1.5rem 0.5rem;
+        margin-top: -4.8rem;
+    }
+
+    .leccion-header-bar h1 {
+        font-size: 1.8rem;
+    }
+
     .leccion-bottom-actions {
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 0.75rem;
     }
+
 
     .action-card,
     .action-button,
