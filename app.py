@@ -784,11 +784,17 @@ def ver_leccion(leccion_id):
     }
 
     puede_ver = False
+    es_profesor = False
     usuario = session.get("user_id")
     if usuario:
         cur.execute("SELECT rol FROM usuarios WHERE id = %s;", (usuario,))
         rol = cur.fetchone()[0]
         if rol == 'profesor':
+            # Verificar si es el profesor del curso
+            cur.execute("SELECT profesor_id FROM cursos WHERE id = %s;", (datos["curso_id"],))
+            profesor_curso = cur.fetchone()[0]
+            if profesor_curso == usuario:
+                es_profesor = True
             puede_ver = True
         elif datos["curso_titulo"] == "Mente Emprendedora":
             puede_ver = True
@@ -806,6 +812,8 @@ def ver_leccion(leccion_id):
     if not puede_ver:
         flash("Debes adquirir el curso o iniciar sesión con la cuenta del profesor para ver esta lección.")
         return redirect(url_for("curso_detalle", curso_id=datos["curso_id"]))
+
+    # ... resto del código ...
 
     conn = conectar_bd()
     cur = conn.cursor()
@@ -830,7 +838,7 @@ def ver_leccion(leccion_id):
     cur.close()
     conn.close()
 
-    return render_template("leccion.html", leccion=datos, reuniones=reuniones)
+    return render_template("leccion.html", leccion=datos, reuniones=reuniones, es_profesor=es_profesor)
 
 
 # --------------------------
@@ -1571,6 +1579,47 @@ def buscar():
         for f in filas
     ]
     return render_template("resultados.html", query=query, resultados=resultados)
+
+
+# --------------------------
+# Eliminar lección (solo profesor)
+# --------------------------
+@app.route("/profesor/leccion/<int:leccion_id>/eliminar", methods=["POST"])
+def profesor_eliminar_leccion(leccion_id):
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión.")
+        return redirect(url_for("login"))
+
+    if not requiere_profesor():
+        flash("Acceso solo para profesores.")
+        return redirect(url_for("index"))
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+    
+    # Verificar que la lección pertenece a un curso del profesor y obtener curso_id
+    cur.execute("""
+        SELECT c.profesor_id, l.curso_id FROM lecciones l
+        JOIN cursos c ON l.curso_id = c.id
+        WHERE l.id = %s;
+    """, (leccion_id,))
+    fila = cur.fetchone()
+    if not fila or fila[0] != session["user_id"]:
+        cur.close()
+        conn.close()
+        flash("No tienes permiso para eliminar esta lección.")
+        return redirect(url_for("dashboard_profesor"))
+
+    curso_id = fila[1]
+
+    # Eliminar la lección (las referencias se eliminan en cascada)
+    cur.execute("DELETE FROM lecciones WHERE id = %s;", (leccion_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash("Lección eliminada correctamente.")
+    return redirect(url_for("curso_detalle", curso_id=curso_id))
 
 
 # --------------------------

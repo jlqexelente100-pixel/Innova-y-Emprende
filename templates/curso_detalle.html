@@ -57,12 +57,20 @@
 
                     {% for leccion in lecciones %}
                     <div class="leccion-item" onclick="irALeccion({{ leccion.id }})">
-                        <strong>{{ leccion.titulo }}</strong>
-
-                        {% if leccion.video_url %}
-                        <br>
-                        <small class="text-muted">Tiene video</small>
-                        {% endif %}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ leccion.titulo }}</strong>
+                                {% if leccion.video_url %}
+                                <br>
+                                <small class="text-muted">Tiene video</small>
+                                {% endif %}
+                            </div>
+                            {% if curso.es_profesor %}
+                            <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); eliminarLeccion({{ leccion.id }})">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                            {% endif %}
+                        </div>
                     </div>
                     {% else %}
                     <p class="mb-0">No hay lecciones aun.</p>
@@ -112,6 +120,28 @@ const cursoId = {{ curso.id }};
 
 function irALeccion(id) {
     window.location.href = `/leccion/${id}`;
+}
+
+function eliminarLeccion(id) {
+    if (confirm("¿Estás seguro de que quieres eliminar esta lección? Esta acción no se puede deshacer.")) {
+        fetch(`/profesor/leccion/${id}/eliminar`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = `/curso/${cursoId}`;
+            } else {
+                alert("Error al eliminar la lección");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Error al eliminar la lección");
+        });
+    }
 }
 
 async function comprarCurso(curso_id, precio) {
