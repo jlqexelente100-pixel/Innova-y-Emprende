@@ -2,6 +2,121 @@
     max-width: 960px;
 }
 
+/* ── BARRA SUPERIOR CON TÍTULO ── */
+.leccion-header-bar {
+    background: linear-gradient(180deg, #003842, #001a1f);
+    color: white;
+    padding: 2.5rem 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.25);
+    border-bottom: 3px solid #0a58ca;
+}
+
+.header-content {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.leccion-header-bar h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.leccion-fecha {
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.95;
+    font-weight: 500;
+}
+
+.content {
+    padding-top: 0 ;
+}
+
+.clouds {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.cloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    opacity: 0.6;
+}
+
+.cloud::before,
+.cloud::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+}
+
+.cloud::before {
+    width: 30px;
+    height: 30px;
+    top: -15px;
+    left: 10px;
+}
+
+.cloud::after {
+    width: 50px;
+    height: 50px;
+    top: -25px;
+    right: 10px;
+}
+
+.cloud1 {
+    width: 80px;
+    height: 30px;
+    top: 15px;
+    left: -80px;
+    animation: moveCloud 20s linear infinite;
+}
+
+.cloud2 {
+    width: 100px;
+    height: 35px;
+    top: 55px;
+    left: -100px;
+    animation: moveCloud 25s linear infinite;
+    animation-delay: 5s;
+}
+
+.cloud3 {
+    width: 90px;
+    height: 32px;
+    top: 35px;
+    left: -90px;
+    animation: moveCloud 30s linear infinite;
+    animation-delay: 10s;
+}
+
+.cloud4 {
+    width: 95px;
+    height: 33px;
+    top: 75px;
+    left: -95px;
+    animation: moveCloud 28s linear infinite;
+    animation-delay: 2s;
+}
+
+/* ── LÍNEA DIVISORIA ── */
+.content-divider {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, #e9ecef 0%, #0d6efd 50%, #e9ecef 100%);
+    margin: 2rem 0;
+    border-radius: 1px;
+}
+
 .reunion {
     background: #fff8e6;
     border-left: 4px solid #ffc107;
@@ -39,5 +154,116 @@
 @media (max-width: 576px) {
     .btn-crear-reunion {
         width: 100%;
+    }
+}
+
+/* ── SECCIÓN INFERIOR CON ACCIONES ── */
+.leccion-bottom-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+.action-card {
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-card:hover {
+    background: #e9ecef;
+    border-color: #0d6efd;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+}
+
+.action-card.action-interactive {
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+.action-button,
+.action-link {
+    width: 100%;
+    height: 100%;
+    padding: 1.5rem;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    background: #f8f9fa;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+.action-button:hover,
+.action-link:hover {
+    background: #e9ecef;
+    border-color: #0d6efd;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+    text-decoration: none;
+    color: inherit;
+}
+
+.action-button:active,
+.action-link:active {
+    transform: scale(0.98);
+}
+
+.action-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.action-content h5 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0.5rem 0 0.25rem 0;
+    color: #212529;
+}
+
+.action-content p {
+    font-size: 0.85rem;
+    margin: 0;
+    color: #6c757d;
+}
+
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+    .leccion-bottom-actions {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .action-card,
+    .action-button,
+    .action-link {
+        padding: 1rem;
+    }
+
+    .action-icon {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .leccion-bottom-actions {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

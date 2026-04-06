@@ -8,13 +8,23 @@
 {% endblock %}
 
 {% block content %}
+<!-- BARRA SUPERIOR CON TÍTULO -->
+<header class="leccion-header-bar">
+    <div class="header-content">
+        <h1>{{ leccion.titulo }}</h1>
+        {% if leccion.fecha %}
+            <p class="leccion-fecha">Fecha: {{ leccion.fecha }}</p>
+        {% endif %}
+        <div class="clouds">
+                <div class="cloud cloud1"></div>
+                <div class="cloud cloud2"></div>
+                <div class="cloud cloud3"></div>
+                <div class="cloud cloud4"></div>
+            </div>
+    </div>
+</header>
+
 <div class="container mt-4 leccion-container">
-
-    <h2>{{ leccion.titulo }}</h2>
-
-    {% if leccion.fecha %}
-        <p><small class="text-muted">Fecha: {{ leccion.fecha }}</small></p>
-    {% endif %}
 
     <!-- REUNIONES -->
     {% if reuniones %}
@@ -36,11 +46,6 @@
     {% endif %}
 
     <!-- CREAR REUNION -->
-    {% if session.get('rol') == 'profesor' %}
-        <button onclick="crearMeet()" class="btn btn-warning mt-2">Crear reunión</button>
-        <div id="nueva-reunion" class="mt-3"></div>
-    {% endif %}
-
     <!-- VIDEO -->
     {% if leccion.video_url %}
     <div class="mb-4">
@@ -50,26 +55,72 @@
     </div>
     {% endif %}
 
-    <!-- CONTENIDO -->
-    <div class="mb-4">
-        <h4>Contenido</h4>
-        <p>{{ leccion.contenido }}</p>
+    <div class="content-divider"></div>
+
+    <!-- Contenido -->
+        <div class="action-card">
+            <div class="action-icon">📚</div>
+            <div class="action-content">
+                <h5>Contenido</h5>
+                <p>{{ leccion.contenido }}</p>
+            </div>
+        </div>
+
+
+    <!-- SECCIÓN INFERIOR CON ACCIONES -->
+    <div class="leccion-bottom-actions mt-5">
+        
+        <!-- Marcar como completada -->
+        <div class="action-card action-interactive">
+            <button id="btn-completar" onclick="completarLeccion({{ leccion.id }})" class="action-button">
+                <div class="action-icon">✅</div>
+                <div class="action-content">
+                    <h5>Marcar completada</h5>
+                    <p>Finalizar lección</p>
+                </div>
+            </button>
+        </div>
+
+        <!-- Progreso -->
+        <div class="action-card">
+            <div class="action-icon">📊</div>
+            <div class="action-content">
+                <h5>Progreso</h5>
+                <p><span id="progreso">--%</span></p>
+            </div>
+        </div>
+
+        <!-- Crear reunión (solo profesor) -->
+        {% if session.get('rol') == 'profesor' %}
+        <div class="action-card action-interactive">
+            <button onclick="crearMeet()" class="action-button">
+                <div class="action-icon">📹</div>
+                <div class="action-content">
+                    <h5>Crear reunión</h5>
+                    <p>Clase en vivo</p>
+                </div>
+            </button>
+        </div>
+        {% endif %}
+
+        <!-- Volver al curso -->
+        <div class="action-card action-interactive">
+            <a href="/curso/{{ leccion.curso_id }}" class="action-link">
+                <div class="action-icon">⬅️</div>
+                <div class="action-content">
+                    <h5>Volver</h5>
+                    <p>Al curso</p>
+                </div>
+            </a>
+        </div>
+
+
+
     </div>
 
-    <!-- BOTÓN COMPLETAR -->
-    <div class="mb-4">
-        <button id="btn-completar" onclick="completarLeccion({{ leccion.id }})" class="btn btn-success">
-            Marcar como completada
-        </button>
-        <p class="mt-2">
-            Progreso del curso: <span id="progreso">--%</span>
-        </p>
-    </div>
-
-    <!-- VOLVER -->
-    <a href="/curso/{{ leccion.curso_id }}" class="btn btn-secondary">
-        Volver al curso
-    </a>
+    {% if session.get('rol') == 'profesor' %}
+        <div id="nueva-reunion" class="mt-3"></div>
+    {% endif %}
 
 </div>
 {% endblock %}
