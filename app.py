@@ -1061,8 +1061,14 @@ def pago_exitoso():
         return redirect(url_for("index"))
 
     # ✅ Recuperar datos desde los metadatos de Stripe
-    usuario_id = checkout.metadata.get("usuario_id")
-    curso_id = checkout.metadata.get("curso_id")
+    usuario_id = None
+    curso_id = None
+
+    if checkout.metadata:
+        if "usuario_id" in checkout.metadata:
+            usuario_id = checkout.metadata["usuario_id"]
+        if "curso_id" in checkout.metadata:
+            curso_id = checkout.metadata["curso_id"]
 
     if not usuario_id or not curso_id:
         flash("Error al procesar la compra.")
