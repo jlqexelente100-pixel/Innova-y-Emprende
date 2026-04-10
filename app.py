@@ -370,16 +370,132 @@ def crear_tablas():
         else:
             profesor_id = r[0]
 
+    # ✅ AQUÍ VA EL CÓDIGO NUEVO
+    cur.execute("SELECT id FROM cursos WHERE titulo = %s;", ("Marketing Digital para Emprendedores",))
+    if not cur.fetchone():
         cur.execute("""
             INSERT INTO cursos(titulo, descripcion, precio, imagen_url, profesor_id)
-            VALUES (%s, %s, %s, %s, %s);
+            VALUES (%s, %s, %s, %s, %s) RETURNING id;
         """, (
-            "Mente Emprendedora",
-            "Diseñado para desarrollar la forma de pensar de quienes quieren crear, innovar y liderar proyectos propios.",
-            0.0,
+            "Marketing Digital para Emprendedores",
+            "Aprende estrategias de marketing digital para hacer crecer tu negocio desde cero.",
+            29.99,
             "styles/imagenes/mente_emprendedora.png",
             profesor_id
         ))
+        curso_pago_id = cur.fetchone()[0]
+
+        lecciones_demo = [
+            ("Introducción al Marketing Digital", "https://www.youtube.com/embed/dQw4w9WgXcQ", "En esta lección verás los fundamentos del marketing digital."),
+            ("Redes Sociales y Marca Personal", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Cómo construir tu presencia en redes sociales."),
+            ("SEO y Posicionamiento Web", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Aprende a posicionar tu sitio web en Google."),
+            ("Email Marketing Efectivo", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Estrategias para campañas de email marketing."),
+            ("Publicidad en Google Ads", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Crea y optimiza campañas de publicidad pagada."),
+        ]
+
+        for titulo_lec, video_lec, contenido_lec in lecciones_demo:
+            cur.execute("""
+                INSERT INTO lecciones(curso_id, titulo, video_url, contenido)
+                VALUES (%s, %s, %s, %s);
+            """, (curso_pago_id, titulo_lec, video_lec, contenido_lec))
+#
+    cur.execute("SELECT id FROM cursos WHERE titulo = %s;", ("Desarrollo Web con Python",))
+    resultado = cur.fetchone()
+
+    if resultado:
+        curso_id = resultado[0]
+    else:
+        cur.execute("""
+            INSERT INTO cursos(titulo, descripcion, precio, imagen_url, profesor_id)
+            VALUES (%s, %s, %s, %s, %s) RETURNING id;
+        """, (
+            "Desarrollo Web con Python",
+            "Aprende a crear aplicaciones web desde cero usando Python y Flask.",
+            39.99,
+            "styles/imagenes/mente_emprendedora.png",
+            profesor_id
+        ))
+        curso_id = cur.fetchone()[0]
+
+        lecciones = [
+            ("Introducción a Python Web", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Conceptos básicos de desarrollo web con Python."),
+            ("Primeros pasos con Flask", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Creación de tu primera aplicación web."),
+            ("Rutas y Templates", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Manejo de rutas y plantillas HTML."),
+            ("Bases de Datos", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Integración con bases de datos."),
+            ("Deploy de la App", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Publica tu aplicación en internet."),
+        ]
+
+        for t, v, c in lecciones:
+            cur.execute("""
+                INSERT INTO lecciones(curso_id, titulo, video_url, contenido)
+                VALUES (%s, %s, %s, %s);
+            """, (curso_id, t, v, c))
+#
+    cur.execute("SELECT id FROM cursos WHERE titulo = %s;", ("Diseño Gráfico para Principiantes",))
+    resultado = cur.fetchone()
+
+    if resultado:
+        curso_id = resultado[0]
+    else:
+        cur.execute("""
+            INSERT INTO cursos(titulo, descripcion, precio, imagen_url, profesor_id)
+            VALUES (%s, %s, %s, %s, %s) RETURNING id;
+        """, (
+            "Diseño Gráfico para Principiantes",
+            "Aprende los fundamentos del diseño gráfico y crea piezas visuales impactantes.",
+            24.99,
+            "styles/imagenes/mente_emprendedora.png",
+            profesor_id
+        ))
+        curso_id = cur.fetchone()[0]
+
+        lecciones = [
+            ("Fundamentos del Diseño", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Principios básicos del diseño visual."),
+            ("Teoría del Color", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Uso adecuado de colores."),
+            ("Tipografía", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Cómo elegir fuentes correctamente."),
+            ("Diseño para Redes Sociales", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Crea contenido visual atractivo."),
+            ("Herramientas Digitales", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Uso de software de diseño."),
+        ]
+
+        for t, v, c in lecciones:
+            cur.execute("""
+                INSERT INTO lecciones(curso_id, titulo, video_url, contenido)
+                VALUES (%s, %s, %s, %s);
+            """, (curso_id, t, v, c))
+#
+    cur.execute("SELECT id FROM cursos WHERE titulo = %s;", ("Finanzas Personales",))
+    resultado = cur.fetchone()
+
+    if resultado:
+        curso_id = resultado[0]
+    else:
+        cur.execute("""
+            INSERT INTO cursos(titulo, descripcion, precio, imagen_url, profesor_id)
+            VALUES (%s, %s, %s, %s, %s) RETURNING id;
+        """, (
+            "Finanzas Personales",
+            "Aprende a gestionar tu dinero, ahorrar e invertir inteligentemente.",
+            19.99,
+            "styles/imagenes/mente_emprendedora.png",
+            profesor_id
+        ))
+        curso_id = cur.fetchone()[0]
+
+        lecciones = [
+            ("Introducción a las Finanzas", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Conceptos básicos financieros."),
+            ("Presupuesto Personal", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Cómo organizar tus ingresos y gastos."),
+            ("Ahorro Inteligente", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Estrategias para ahorrar."),
+            ("Inversiones Básicas", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Primeros pasos para invertir."),
+            ("Libertad Financiera", "https://www.youtube.com/embed/dQw4w9WgXcQ", "Planificación a largo plazo."),
+        ]
+
+        for t, v, c in lecciones:
+            cur.execute("""
+                INSERT INTO lecciones(curso_id, titulo, video_url, contenido)
+                VALUES (%s, %s, %s, %s);
+            """, (curso_id, t, v, c))
+
+
 
     conn.commit()
     cur.close()
@@ -732,7 +848,17 @@ def curso_detalle(curso_id):
         conn = conectar_bd()
         cur = conn.cursor()
         cur.execute("SELECT rol FROM usuarios WHERE id = %s;", (usuario,))
-        rol = cur.fetchone()[0]
+        fila_rol = cur.fetchone()
+
+        if not fila_rol:
+            # El user_id en sesión no existe en la BD, limpiar sesión
+            cur.close()
+            conn.close()
+            session.clear()
+            flash("Tu sesión expiró. Inicia sesión nuevamente.")
+            return redirect(url_for("login"))
+
+        rol = fila_rol[0]
         if rol == 'profesor':
             puede_acceder = True
         elif datos_curso["titulo"] == "Mente Emprendedora":

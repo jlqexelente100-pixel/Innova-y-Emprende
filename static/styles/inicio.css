@@ -1,77 +1,51 @@
-.cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
-    padding: 40px;
-}
-
-.card {
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-}
-
-.card-img-top {
-    height: 180px;
-    object-fit: cover;
-}
-
-.card-title {
-    font-weight: bold;
-    text-align: center;
-}
-
-.card-text {
-    font-size: 14px;
-    text-align: justify;
-}
-
-.card .btn {
-    display: block;
-    margin: 15px auto 0;
-    border-radius: 20px;
+/* =============================================
+   RESET & BASE
+   ============================================= */
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    font-family: "Lato", sans-serif;
-    background: #ffffff;
+    font-family: "Lato", "Segoe UI", system-ui, sans-serif;
+    background: #f4f6f9;
     color: #0f172a;
     min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
-section {
-    flex: 1;
-    padding: 0 20px 20px;
-    transition: all 0.3s ease;
-}
-
+/* =============================================
+   BARRA SUPERIOR
+   ============================================= */
 .barra-superior {
     width: calc(100% + 3rem);
-    min-height: 120px;
-    background: linear-gradient(180deg, #003842, #001a1f);
-    color: white;
+    min-height: 130px;
+    background: linear-gradient(135deg, #003842 0%, #005c6b 50%, #00434f 100%);
+    color: #ffffff;
     display: flex;
     align-items: center;
-    padding: 1rem 1.5rem;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    padding: 1.25rem 2rem;
     margin: 0 0 0 -1.5rem;
     position: relative;
     overflow: hidden;
-    
+    box-shadow: 0 4px 20px rgba(0, 56, 66, 0.25);
 }
 
-.content {
-    padding-top: 0 ;
+.barra-superior::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #00c9a7, #005c6b, #00c9a7);
+    opacity: 0.6;
 }
 
+/* =============================================
+   NUBES (animación)
+   ============================================= */
 .clouds {
     position: absolute;
     inset: 0;
@@ -82,16 +56,16 @@ section {
 
 .cloud {
     position: absolute;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 50px;
-    opacity: 0.6;
+    filter: blur(2px);
 }
 
 .cloud::before,
 .cloud::after {
     content: "";
     position: absolute;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 50%;
 }
 
@@ -109,82 +83,266 @@ section {
     right: 10px;
 }
 
-.cloud1 {
-    width: 80px;
-    height: 30px;
-    top: 15px;
-    left: -80px;
-    animation: moveCloud 20s linear infinite;
+.cloud1 { width: 80px;  height: 30px; top: 15px; left: -80px;  animation: moveCloud 22s linear infinite; }
+.cloud2 { width: 100px; height: 35px; top: 55px; left: -100px; animation: moveCloud 28s linear infinite; animation-delay: 5s; }
+.cloud3 { width: 90px;  height: 32px; top: 35px; left: -90px;  animation: moveCloud 34s linear infinite; animation-delay: 10s; }
+.cloud4 { width: 95px;  height: 33px; top: 75px; left: -95px;  animation: moveCloud 30s linear infinite; animation-delay: 2s; }
+
+@keyframes moveCloud {
+    0%   { left: -120px; opacity: 0; }
+    5%   { opacity: 1; }
+    95%  { opacity: 1; }
+    100% { left: 100vw; opacity: 0; }
 }
 
-.cloud2 {
-    width: 100px;
-    height: 35px;
-    top: 55px;
-    left: -100px;
-    animation: moveCloud 25s linear infinite;
-    animation-delay: 5s;
+/* =============================================
+   CONTENIDO PRINCIPAL
+   ============================================= */
+section {
+    flex: 1;
+    padding: 0 20px 40px;
+    transition: all 0.3s ease;
 }
 
-.cloud3 {
-    width: 90px;
-    height: 32px;
-    top: 35px;
-    left: -90px;
-    animation: moveCloud 30s linear infinite;
-    animation-delay: 10s;
+.content {
+    padding-top: 0;
 }
 
-.cloud4 {
-    width: 95px;
-    height: 33px;
-    top: 75px;
-    left: -95px;
-    animation: moveCloud 28s linear infinite;
-    animation-delay: 2s;
+/* =============================================
+   CARDS CONTAINER
+   ============================================= */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+    padding: 40px 20px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
+/* =============================================
+   CARD
+   ============================================= */
+.card {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.04),
+        0 8px 24px rgba(0, 0, 0, 0.08);
+    transition:
+        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.06),
+        0 20px 40px rgba(0, 56, 66, 0.15);
+}
+
+/* =============================================
+   IMAGEN DE CARD
+   ============================================= */
+.card-img-top {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.03);
+}
+
+.card-img-wrapper {
+    overflow: hidden;
+    position: relative;
+}
+
+/* =============================================
+   CARD BODY
+   ============================================= */
+.card-body {
+    padding: 1.25rem 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: left;
+    margin: 0 0 0.5rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+}
+
+.card-text {
+    font-size: 0.875rem;
+    color: #475569;
+    line-height: 1.65;
+    text-align: left;
+    flex: 1;
+    margin: 0 0 1rem;
+}
+
+/* =============================================
+   PRECIO EN CARD
+   ============================================= */
+.card-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #003842;
+    margin: 0 0 0.75rem;
+}
+
+.card-price span {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #94a3b8;
+    margin-left: 4px;
+}
+
+/* =============================================
+   BOTÓN DE CARD
+   ============================================= */
+.card .btn {
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-align: center;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    margin-top: auto;
+}
+
+.card .btn-primary {
+    background: linear-gradient(135deg, #003842, #005c6b);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 56, 66, 0.3);
+}
+
+.card .btn-primary:hover {
+    background: linear-gradient(135deg, #005c6b, #007a8c);
+    box-shadow: 0 6px 16px rgba(0, 56, 66, 0.4);
+    transform: translateY(-1px);
+}
+
+.card .btn-primary:active {
+    transform: translateY(0);
+}
+
+.card .btn-outline-primary {
+    background: transparent;
+    color: #003842;
+    border: 1.5px solid #003842;
+}
+
+.card .btn-outline-primary:hover {
+    background: #003842;
+    color: #ffffff;
+}
+
+/* =============================================
+   BADGE / ETIQUETA EN CARD
+   ============================================= */
+.card-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+}
+
+.badge-free {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge-paid {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* =============================================
+   WHATSAPP FLOTANTE
+   ============================================= */
 .logo-whatsapp {
     position: fixed;
-    width: 60px;
-    height: 60px;
-    bottom: 20px;
-    right: 20px;
+    width: 56px;
+    height: 56px;
+    bottom: 24px;
+    right: 24px;
     z-index: 1000;
-    background-color: #003842; /* color oficial de WhatsApp */
+    background: #003842;
     border-radius: 50%;
+    box-shadow: 0 4px 16px rgba(0, 56, 66, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo-whatsapp:hover {
+    transform: scale(1.1) translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 56, 66, 0.5);
 }
 
 .logo-whatsapp img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease;
+    display: block;
 }
 
-.logo-whatsapp img:hover {
-    transform: scale(1.1);
-
+/* =============================================
+   SECCIÓN TÍTULO
+   ============================================= */
+.section-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 2.5rem 0 0.5rem;
+    letter-spacing: -0.02em;
 }
 
-@keyframes moveCloud {
-    0% { left: -100px; }
-    100% { left: 100vw; }
+.section-subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 1rem;
+    margin: 0 0 1rem;
 }
 
+.section-divider {
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #003842, #00c9a7);
+    border-radius: 4px;
+    margin: 0 auto 2rem;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
 @media (max-width: 992px) {
     .cards-container {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 20px;
-        padding: 30px;
-    }
-
-    .card {
-        width: 45%;
-    }
-
-    .card-img-top {
-        height: 150px;
+        padding: 30px 16px;
     }
 
     .barra-superior {
@@ -194,14 +352,10 @@ section {
 
 @media (max-width: 768px) {
     .cards-container {
-        flex-direction: column;
-        align-items: center;
-        padding: 20px 0;
-        gap: 20px;
-    }
-
-    .card {
-        width: min(100%, 420px);
+        grid-template-columns: 1fr;
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 20px 16px;
     }
 
     .card-img-top {
@@ -210,17 +364,14 @@ section {
 
     .barra-superior {
         min-height: 96px;
-        padding-inline: 1rem;
+        padding: 1rem;
         font-size: 0.95rem;
-        margin-top: -4.8rem ;
+        margin-left: -1rem;
+        width: calc(100% + 2rem);
     }
 
-    .cloud1,
-    .cloud2,
-    .cloud3,
-    .cloud4 {
-        transform: scale(0.6);
-        transform-origin: left center;
+    .section-title {
+        font-size: 1.6rem;
     }
 }
 
@@ -234,21 +385,23 @@ section {
     }
 
     .card-text {
-        font-size: 0.85rem;
+        font-size: 0.83rem;
     }
 
     .card .btn {
-        padding: 8px 12px;
-        font-size: 0.9rem;
+        padding: 9px 16px;
+        font-size: 0.875rem;
     }
 
     .barra-superior {
         width: calc(100% + 1.7rem);
         margin-left: -0.85rem;
     }
-}
 
-
-body {
-    overflow-x: hidden !important;
+    .logo-whatsapp {
+        width: 48px;
+        height: 48px;
+        bottom: 16px;
+        right: 16px;
+    }
 }
