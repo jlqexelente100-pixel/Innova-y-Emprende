@@ -412,7 +412,7 @@ def crear_tablas():
             "Desarrollo Web con Python",
             "Aprende a crear aplicaciones web desde cero usando Python y Flask.",
             39.99,
-            "styles/imagenes/mente_emprendedora.png",
+            "styles/imagenes/programacion.jpeg",
             profesor_id
         ))
         curso_id = cur.fetchone()[0]
@@ -444,7 +444,7 @@ def crear_tablas():
             "Diseño Gráfico para Principiantes",
             "Aprende los fundamentos del diseño gráfico y crea piezas visuales impactantes.",
             24.99,
-            "styles/imagenes/mente_emprendedora.png",
+            "styles/imagenes/diseño.jpg",
             profesor_id
         ))
         curso_id = cur.fetchone()[0]
@@ -476,7 +476,7 @@ def crear_tablas():
             "Finanzas Personales",
             "Aprende a gestionar tu dinero, ahorrar e invertir inteligentemente.",
             19.99,
-            "styles/imagenes/mente_emprendedora.png",
+            "styles/imagenes/finanzas.jpg",
             profesor_id
         ))
         curso_id = cur.fetchone()[0]
