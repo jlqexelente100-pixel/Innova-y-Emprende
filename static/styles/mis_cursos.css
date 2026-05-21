@@ -1,0 +1,422 @@
+/* =============================================
+   MIS CURSOS — Progreso
+   Paleta principal: #007b91 (teal)
+   Font: Lato (cargada en base.html)
+============================================= */
+
+.mc-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+}
+
+/* --- Encabezado --- */
+.mc-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.mc-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.dark-mode .mc-title { color: #f1f5f9; }
+
+.mc-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 4px 0 0;
+}
+
+.dark-mode .mc-subtitle { color: #94a3b8; }
+
+.mc-btn-explore {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #007b91;
+    color: #fff;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.mc-btn-explore:hover {
+    background: #005f70;
+    color: #fff;
+}
+
+/* --- Estado vacío --- */
+.mc-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.dark-mode .mc-empty {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.mc-empty-icon {
+    width: 80px;
+    height: 80px;
+    background: #e0f4f7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.mc-empty h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.dark-mode .mc-empty h3 { color: #f1f5f9; }
+
+.mc-empty p {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
+
+.mc-btn-primary {
+    display: inline-flex;
+    background: #007b91;
+    color: #fff;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.mc-btn-primary:hover {
+    background: #005f70;
+    color: #fff;
+}
+
+/* --- Métricas resumen --- */
+.mc-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 1.25rem;
+}
+
+@media (max-width: 640px) {
+    .mc-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+.mc-stat-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dark-mode .mc-stat-card {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.mc-stat-num {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1;
+}
+
+.dark-mode .mc-stat-num { color: #f1f5f9; }
+
+.mc-stat-green { color: #16a34a !important; }
+.mc-stat-blue  { color: #2563eb !important; }
+.mc-stat-teal  { color: #007b91 !important; }
+
+.mc-stat-lbl {
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* --- Barra global --- */
+.mc-global-bar {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.dark-mode .mc-global-bar {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.mc-global-bar-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.mc-global-bar-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.dark-mode .mc-global-bar-label { color: #94a3b8; }
+
+.mc-global-bar-pct {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #007b91;
+}
+
+.mc-track {
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.dark-mode .mc-track { background: #334155; }
+
+.mc-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #007b91, #00b4d8);
+    transition: width 0.8s ease;
+}
+
+/* --- Grid de tarjetas --- */
+.mc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+}
+
+/* --- Tarjeta individual --- */
+.mc-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1.5px solid #e2e8f0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.dark-mode .mc-card {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.mc-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 123, 145, 0.12);
+}
+
+.mc-card--done  { border-color: #86efac; }
+.mc-card--active { border-color: #007b91; }
+.mc-card--new   { border-color: #e2e8f0; }
+
+.dark-mode .mc-card--done  { border-color: #166534; }
+.dark-mode .mc-card--active { border-color: #007b91; }
+
+/* Imagen */
+.mc-card-img-wrap {
+    position: relative;
+    height: 170px;
+    overflow: hidden;
+}
+
+.mc-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.mc-card-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 99px;
+    letter-spacing: 0.03em;
+}
+
+.mc-badge--done   { background: #dcfce7; color: #15803d; }
+.mc-badge--active { background: #e0f4f7; color: #007b91; }
+.mc-badge--new    { background: #eff6ff; color: #2563eb; }
+
+/* Cuerpo */
+.mc-card-body {
+    padding: 1.1rem 1.2rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.75rem;
+}
+
+.mc-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.35;
+}
+
+.dark-mode .mc-card-title { color: #f1f5f9; }
+
+/* Fila de progreso circular */
+.mc-progress-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.mc-ring-wrap {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+}
+
+.mc-ring {
+    width: 52px;
+    height: 52px;
+    transform: rotate(-90deg);
+}
+
+.mc-ring-bg {
+    fill: none;
+    stroke: #e2e8f0;
+    stroke-width: 3;
+}
+
+.dark-mode .mc-ring-bg { stroke: #334155; }
+
+.mc-ring-fill {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.8s ease;
+}
+
+.mc-ring-fill--done   { stroke: #16a34a; }
+.mc-ring-fill--active { stroke: #007b91; }
+.mc-ring-fill--new    { stroke: #93c5fd; }
+
+.mc-ring-pct {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.dark-mode .mc-ring-pct { color: #f1f5f9; }
+
+.mc-progress-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mc-lecciones {
+    font-size: 0.82rem;
+    color: #475569;
+    margin: 0;
+}
+
+.dark-mode .mc-lecciones { color: #94a3b8; }
+
+.mc-lecciones strong {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.dark-mode .mc-lecciones strong { color: #f1f5f9; }
+
+.mc-last {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin: 0;
+}
+
+/* Barra lineal inferior */
+.mc-bar-track {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.dark-mode .mc-bar-track { background: #334155; }
+
+.mc-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.8s ease;
+}
+
+.mc-bar--done   { background: #16a34a; }
+.mc-bar--active { background: linear-gradient(90deg, #007b91, #00b4d8); }
+.mc-bar--new    { background: #93c5fd; width: 2px !important; }
+
+/* Botón continuar */
+.mc-btn-continuar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: auto;
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    background: #007b91;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+    text-align: center;
+}
+
+.mc-btn-continuar:hover {
+    background: #005f70;
+    color: #fff;
+}
+
+.mc-btn-done {
+    background: #15803d;
+}
+
+.mc-btn-done:hover {
+    background: #166534;
+    color: #fff;
+}

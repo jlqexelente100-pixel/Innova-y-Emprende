@@ -1,49 +1,148 @@
 {% extends "base.html" %}
-
+ 
 {% block title %}Mis Cursos y Progreso{% endblock %}
-
+ 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/mis_cursos.css') }}">
+{% endblock %}
+ 
 {% block content %}
-<div class="container my-5">
-    <h1 class="mb-4">Mis Cursos</h1>
-
-    {% if cursos|length == 0 %}
-        <div class="alert alert-info">
-            Aún no estás inscrito en ningún curso. 
-            <a href="{{ url_for('index') }}" class="alert-link">Explorar cursos</a>
+<div class="mc-wrapper">
+ 
+    <!-- Encabezado -->
+    <div class="mc-header">
+        <div>
+            <h1 class="mc-title">Mis Cursos</h1>
+            <p class="mc-subtitle">Rastrea tu avance y sigue aprendiendo</p>
         </div>
+        <a href="{{ url_for('index') }}" class="mc-btn-explore">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7-7 7 7"/></svg>
+            Explorar más cursos
+        </a>
+    </div>
+ 
+    {% if cursos|length == 0 %}
+    <!-- Estado vacío -->
+    <div class="mc-empty">
+        <div class="mc-empty-icon">
+            <svg width="48" height="48" fill="none" stroke="#007b91" stroke-width="1.5" viewBox="0 0 24 24">
+                <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+        </div>
+        <h3>Aún no tienes cursos</h3>
+        <p>Inscríbete en un curso para comenzar tu aprendizaje.</p>
+        <a href="{{ url_for('index') }}" class="mc-btn-primary">Ver catálogo</a>
+    </div>
+ 
     {% else %}
-        <div class="row">
-            {% for curso in cursos %}
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    {% if curso.imagen_url %}
-                    <img src="/static/{{ curso.imagen_url }}" class="card-img-top" alt="{{ curso.titulo }}" style="height:180px; object-fit:cover;">
+ 
+    <!-- Métricas resumen -->
+    {% set total = cursos|length %}
+    {% set completados = cursos|selectattr('completado')|list|length %}
+    {% set en_progreso = cursos|selectattr('porcentaje', 'gt', 0)|rejectattr('completado')|list|length %}
+    {% set promedio = (cursos|sum(attribute='porcentaje') / total)|round(0)|int %}
+ 
+    <div class="mc-stats">
+        <div class="mc-stat-card">
+            <span class="mc-stat-num">{{ total }}</span>
+            <span class="mc-stat-lbl">Cursos inscritos</span>
+        </div>
+        <div class="mc-stat-card">
+            <span class="mc-stat-num mc-stat-green">{{ completados }}</span>
+            <span class="mc-stat-lbl">Completados</span>
+        </div>
+        <div class="mc-stat-card">
+            <span class="mc-stat-num mc-stat-blue">{{ en_progreso }}</span>
+            <span class="mc-stat-lbl">En progreso</span>
+        </div>
+        <div class="mc-stat-card">
+            <span class="mc-stat-num mc-stat-teal">{{ promedio }}%</span>
+            <span class="mc-stat-lbl">Avance promedio</span>
+        </div>
+    </div>
+ 
+    <!-- Barra de progreso global -->
+    <div class="mc-global-bar">
+        <div class="mc-global-bar-header">
+            <span class="mc-global-bar-label">Progreso general del plan</span>
+            <span class="mc-global-bar-pct">{{ promedio }}% completado</span>
+        </div>
+        <div class="mc-track">
+            <div class="mc-fill" style="width: {{ promedio }}%;"></div>
+        </div>
+    </div>
+ 
+    <!-- Tarjetas de cursos -->
+    <div class="mc-grid">
+        {% for curso in cursos %}
+        <div class="mc-card {% if curso.completado %}mc-card--done{% elif curso.porcentaje > 0 %}mc-card--active{% else %}mc-card--new{% endif %}">
+ 
+            <!-- Imagen -->
+            {% if curso.imagen_url %}
+            <div class="mc-card-img-wrap">
+                <img src="/static/{{ curso.imagen_url }}" alt="{{ curso.titulo }}" class="mc-card-img">
+                <div class="mc-card-badge
+                    {% if curso.completado %}mc-badge--done
+                    {% elif curso.porcentaje > 0 %}mc-badge--active
+                    {% else %}mc-badge--new{% endif %}">
+                    {% if curso.completado %}
+                        ✓ Completado
+                    {% elif curso.porcentaje > 0 %}
+                        En progreso
+                    {% else %}
+                        Nuevo
                     {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ curso.titulo }}</h5>
-                        
-                        <div class="progress mb-2" style="height: 20px;">
-                            <div class="progress-bar bg-success" role="progressbar" 
-                                 style="width: {{ curso.porcentaje }}%;" 
-                                 aria-valuenow="{{ curso.porcentaje }}" aria-valuemin="0" aria-valuemax="100">
-                                {{ curso.porcentaje|round(1) }}%
-                            </div>
-                        </div>
-                        
-                        <p class="card-text">
-                            <small>
-                                {{ curso.lecciones_completadas }} de {{ curso.total_lecciones }} lecciones
-                                {% if curso.completado %} · <strong>¡Completado! 🎉</strong>{% endif %}
-                            </small>
-                        </p>
-                        
-                        <a href="{{ url_for('curso_detalle', curso_id=curso.curso_id) }}" 
-                           class="btn btn-primary">Continuar</a>
-                    </div>
                 </div>
             </div>
-            {% endfor %}
+            {% endif %}
+ 
+            <div class="mc-card-body">
+                <h5 class="mc-card-title">{{ curso.titulo }}</h5>
+ 
+                <!-- Progreso circular + número -->
+                <div class="mc-progress-row">
+                    <div class="mc-ring-wrap">
+                        <svg class="mc-ring" viewBox="0 0 36 36">
+                            <circle class="mc-ring-bg" cx="18" cy="18" r="15.9"/>
+                            <circle class="mc-ring-fill
+                                {% if curso.completado %}mc-ring-fill--done
+                                {% elif curso.porcentaje > 0 %}mc-ring-fill--active
+                                {% else %}mc-ring-fill--new{% endif %}"
+                                cx="18" cy="18" r="15.9"
+                                stroke-dasharray="{{ curso.porcentaje|round(1) }} 100"
+                                stroke-dashoffset="25"/>
+                        </svg>
+                        <span class="mc-ring-pct">{{ curso.porcentaje|round(0)|int }}%</span>
+                    </div>
+                    <div class="mc-progress-info">
+                        <p class="mc-lecciones">
+                            <strong>{{ curso.lecciones_completadas }}</strong> / {{ curso.total_lecciones }} lecciones
+                        </p>
+                        {% if curso.ultima_actualizacion %}
+                        <p class="mc-last">Última actividad: {{ curso.ultima_actualizacion[:10] }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+ 
+                <!-- Barra lineal -->
+                <div class="mc-bar-track">
+                    <div class="mc-bar-fill
+                        {% if curso.completado %}mc-bar--done
+                        {% elif curso.porcentaje > 0 %}mc-bar--active
+                        {% else %}mc-bar--new{% endif %}"
+                        style="width: {{ curso.porcentaje }}%;"></div>
+                </div>
+ 
+                <a href="{{ url_for('curso_detalle', curso_id=curso.curso_id) }}"
+                   class="mc-btn-continuar {% if curso.completado %}mc-btn-done{% endif %}">
+                    {% if curso.completado %}Ver certificado{% elif curso.porcentaje > 0 %}Continuar{% else %}Empezar{% endif %}
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
         </div>
+        {% endfor %}
+    </div>
     {% endif %}
+ 
 </div>
 {% endblock %}

@@ -7,234 +7,306 @@
 {% endblock %}
 
 {% block content %}
-<!-- BARRA SUPERIOR CON TÍTULO -->
-<header class="leccion-header-bar">
-    <div class="header-content">
-        <h1>{{ leccion.titulo }}</h1>
-        {% if leccion.fecha %}
-            <p class="leccion-fecha">Fecha: {{ leccion.fecha }}</p>
-        {% endif %}
-        <div class="clouds">
-            <div class="cloud cloud1"></div>
-            <div class="cloud cloud2"></div>
-            <div class="cloud cloud3"></div>
-            <div class="cloud cloud4"></div>
+
+<!-- HEADER -->
+<header class="lec-header">
+    <div class="lec-header-inner">
+        <a href="/curso/{{ leccion.curso_id }}" class="lec-back">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            Volver al curso
+        </a>
+        <div class="lec-header-text">
+            <span class="lec-curso-nombre">{{ leccion.curso_titulo }}</span>
+            <h1 class="lec-titulo">{{ leccion.titulo }}</h1>
+            {% if leccion.fecha %}
+            <span class="lec-fecha">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                {{ leccion.fecha[:10] }}
+            </span>
+            {% endif %}
         </div>
+    </div>
+    <div class="lec-clouds" aria-hidden="true">
+        <div class="cloud c1"></div>
+        <div class="cloud c2"></div>
+        <div class="cloud c3"></div>
     </div>
 </header>
 
-<div class="container mt-4 leccion-container">
+<div class="lec-layout">
 
-    <!-- REUNIONES ACTIVAS -->
-    {% if reuniones %}
+    <!-- COLUMNA PRINCIPAL -->
+    <main class="lec-main">
+
+        <!-- REUNIÓN ACTIVA -->
+        {% if reuniones %}
         {% for r in reuniones %}
-            <div class="reunion">
-                <p class="mb-3">{{ r.mensaje }}</p>
-                <div class="d-flex flex-column flex-sm-row gap-2">
-                    <a href="{{ r.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-                        Entrar a la clase en vivo
-                    </a>
-                    {% if es_profesor %}
-                        <button onclick="eliminarMeet({{ r.id }})" class="btn btn-danger btn-sm">
-                            Eliminar
-                        </button>
-                    {% endif %}
-                </div>
+        <div class="lec-reunion">
+            <div class="lec-reunion-dot"></div>
+            <div class="lec-reunion-info">
+                <strong>Clase en vivo disponible</strong>
+                <p>{{ r.mensaje }}</p>
             </div>
+            <div class="lec-reunion-actions">
+                <a href="{{ r.url }}" target="_blank" rel="noopener noreferrer" class="lec-btn lec-btn-live">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16"/></svg>
+                    Entrar
+                </a>
+                {% if es_profesor %}
+                <button onclick="eliminarMeet({{ r.id }})" class="lec-btn lec-btn-danger">Eliminar</button>
+                {% endif %}
+            </div>
+        </div>
         {% endfor %}
-    {% endif %}
+        {% endif %}
 
-    <!-- DIV donde aparece la reunión recién creada -->
-    {% if es_profesor %}
-        <div id="nueva-reunion" class="mt-3"></div>
-    {% endif %}
-
-    <!-- ELIMINAR LECCIÓN (solo profesor) -->
-    {% if es_profesor %}
-        <button onclick="eliminarLeccion({{ leccion.id }})" class="btn btn-danger mt-2">Eliminar lección</button>
-    {% endif %}
-
-    <!-- VIDEO -->
-    {% if leccion.video_url %}
-    <div class="mb-4">
-        <div class="video-container">
-            <div id="youtube-player"></div>
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="content-divider"></div>
-
-    <!-- Contenido -->
-    <div class="action-card">
-        <div class="action-icon">📚</div>
-        <div class="action-content">
-            <h5>Contenido</h5>
-            <p>{{ leccion.contenido }}</p>
-        </div>
-    </div>
-
-    <!-- SECCIÓN INFERIOR CON ACCIONES -->
-    <div class="leccion-bottom-actions mt-5">
-
-        <!-- Marcar como completada -->
-        <div class="action-card action-interactive">
-            <button id="btn-completar" onclick="completarLeccion({{ leccion.id }})" class="action-button">
-                <div class="action-icon">✅</div>
-                <div class="action-content">
-                    <h5>Marcar completada</h5>
-                    <p>Finalizar lección</p>
-                </div>
-            </button>
-        </div>
-
-        <!-- Progreso -->
-        <div class="action-card">
-            <div class="action-icon">📊</div>
-            <div class="action-content">
-                <h5>Progreso</h5>
-                <p><span id="progreso">--%</span></p>
-            </div>
-        </div>
-
-        <!-- Crear reunión (solo profesor) -->
+        <!-- Acción nueva reunión (professor) -->
         {% if es_profesor %}
-        <div class="action-card action-interactive">
-            <button onclick="crearMeet()" class="action-button">
-                <div class="action-icon">📹</div>
-                <div class="action-content">
-                    <h5>Crear reunión</h5>
-                    <p>Clase en vivo</p>
+        <div id="nueva-reunion"></div>
+        {% endif %}
+
+        <!-- VIDEO -->
+        {% if leccion.video_url %}
+        <div class="lec-video-wrap">
+            <div class="lec-video-box">
+                <div id="youtube-player"></div>
+            </div>
+            <!-- Estado del video -->
+            <div id="lec-video-status" class="lec-video-status lec-video-status--watching">
+                <div class="lec-status-inner">
+                    <svg id="status-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16"/></svg>
+                    <span id="status-text">Mira el video completo para marcar la lección</span>
+                    <div id="lec-progress-bar-wrap" class="lec-vprogress-wrap">
+                        <div id="lec-progress-bar" class="lec-vprogress-fill" style="width:0%"></div>
+                    </div>
                 </div>
-            </button>
+            </div>
         </div>
         {% endif %}
 
-        <!-- Volver al curso -->
-        <div class="action-card action-interactive">
-            <a href="/curso/{{ leccion.curso_id }}" class="action-link">
-                <div class="action-icon">⬅️</div>
-                <div class="action-content">
-                    <h5>Volver</h5>
-                    <p>Al curso</p>
-                </div>
-            </a>
+        <!-- CONTENIDO -->
+        {% if leccion.contenido %}
+        <div class="lec-content-card">
+            <div class="lec-content-header">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                Material de la lección
+            </div>
+            <p class="lec-content-body">{{ leccion.contenido }}</p>
+        </div>
+        {% endif %}
+
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="lec-sidebar">
+
+        <!-- Progreso de esta lección -->
+        <div class="lec-sidebar-card">
+            <h3 class="lec-sidebar-title">Tu progreso</h3>
+            <div class="lec-ring-wrap">
+                <svg class="lec-ring" viewBox="0 0 36 36">
+                    <circle class="lec-ring-bg" cx="18" cy="18" r="15.9"/>
+                    <circle id="ring-fill" class="lec-ring-fill" cx="18" cy="18" r="15.9"
+                        stroke-dasharray="0 100" stroke-dashoffset="25"/>
+                </svg>
+                <span id="ring-pct" class="lec-ring-pct">0%</span>
+            </div>
+            <p class="lec-sidebar-sub" id="sidebar-estado">Inicia el video para registrar tu progreso</p>
+
+            <div id="completada-badge" class="lec-completada-badge" style="display:none">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>
+                Lección completada
+            </div>
         </div>
 
-    </div>
+        <!-- Acciones -->
+        <div class="lec-sidebar-card lec-sidebar-card--actions">
+            <h3 class="lec-sidebar-title">Acciones</h3>
+
+            <a href="/curso/{{ leccion.curso_id }}" class="lec-action-btn">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                Volver al curso
+            </a>
+
+            {% if es_profesor %}
+            <button onclick="crearMeet()" class="lec-action-btn lec-action-btn--teal">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.361a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
+                Crear clase en vivo
+            </button>
+            <button onclick="eliminarLeccion({{ leccion.id }})" class="lec-action-btn lec-action-btn--danger">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14H6L5 6m5 0V4h4v2"/></svg>
+                Eliminar lección
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- Progreso del curso -->
+        <div class="lec-sidebar-card">
+            <h3 class="lec-sidebar-title">Progreso del curso</h3>
+            <div class="lec-curso-progreso">
+                <div class="lec-bar-track">
+                    <div id="bar-curso" class="lec-bar-fill" style="width:0%"></div>
+                </div>
+                <span id="pct-curso" class="lec-bar-pct">--%</span>
+            </div>
+            <p class="lec-sidebar-sub">Del curso completo</p>
+        </div>
+
+    </aside>
 
 </div>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
-// ── YouTube IFrame API ──────────────────────────────────
+// ── Datos de la lección ─────────────────────────────────
+var VIDEO_URL    = "{{ leccion.video_url or '' }}";
+var LECCION_ID   = {{ leccion.id }};
+var yaCompletada = false;
+var player, duracion, timerProgreso;
+
+// ── Extraer video ID desde /embed/ o youtu.be o watch?v= ──
+function extraerVideoId(url) {
+    if (!url) return null;
+    // formato embed: youtube.com/embed/ID
+    var m = url.match(/\/embed\/([^?&]+)/);
+    if (m) return m[1];
+    // formato youtu.be/ID
+    m = url.match(/youtu\.be\/([^?&]+)/);
+    if (m) return m[1];
+    // formato watch?v=ID
+    m = url.match(/[?&]v=([^&]+)/);
+    if (m) return m[1];
+    return null;
+}
+
+// ── Cargar YouTube IFrame API ───────────────────────────
 var tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
 document.head.appendChild(tag);
 
-var player;
-var videoUrl = "{{ leccion.video_url }}";
-var leccionId = {{ leccion.id }};
-var yaCompletada = false;
-
 function onYouTubeIframeAPIReady() {
-    if (!videoUrl) return;
-    var videoId = videoUrl.split("/embed/")[1];
+    var videoId = extraerVideoId(VIDEO_URL);
     if (!videoId) return;
 
     player = new YT.Player('youtube-player', {
         height: '100%',
         width: '100%',
         videoId: videoId,
-        playerVars: { 'rel': 0 },
-        events: { 'onStateChange': onPlayerStateChange }
+        playerVars: { rel: 0, modestbranding: 1 },
+        events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange
+        }
     });
+}
+
+function onPlayerReady(event) {
+    duracion = player.getDuration();
+    // Iniciar timer de progreso cada segundo
+    timerProgreso = setInterval(actualizarProgreso, 1000);
 }
 
 function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.ENDED && !yaCompletada) {
-        completarLeccion(leccionId);
+        completarLeccion();
     }
 }
 
-// ── Completar lección ───────────────────────────────────
-function completarLeccion(id) {
-    fetch(`/leccion/${id}/completar`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" }
+// ── Barra de progreso del video ─────────────────────────
+function actualizarProgreso() {
+    if (!player || !duracion || yaCompletada) return;
+    var actual = player.getCurrentTime();
+    var pct = Math.round((actual / duracion) * 100);
+    document.getElementById('lec-progress-bar').style.width = pct + '%';
+
+    // Actualizar anillo sidebar
+    document.getElementById('ring-fill').setAttribute('stroke-dasharray', pct + ' 100');
+    document.getElementById('ring-pct').textContent = pct + '%';
+
+    if (pct >= 10) {
+        document.getElementById('sidebar-estado').textContent = 'Video en progreso…';
+    }
+}
+
+// ── Completar lección automáticamente al terminar video ─
+function completarLeccion() {
+    fetch('/leccion/' + LECCION_ID + '/completar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
     })
-    .then(res => res.json())
-    .then(data => {
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
         if (data.success) {
             yaCompletada = true;
-            document.getElementById("progreso").innerText = data.porcentaje_curso + "%";
-            document.getElementById("btn-completar").disabled = true;
-            document.getElementById("btn-completar").innerText = "✅ Completada";
-        } else {
-            alert("❌ " + data.error);
+            clearInterval(timerProgreso);
+
+            // Anillo al 100%
+            document.getElementById('ring-fill').setAttribute('stroke-dasharray', '100 100');
+            document.getElementById('ring-pct').textContent = '100%';
+            document.getElementById('lec-progress-bar').style.width = '100%';
+
+            // Badge completada
+            document.getElementById('completada-badge').style.display = 'flex';
+            document.getElementById('sidebar-estado').textContent = '¡Lección completada!';
+
+            // Barra del curso
+            var pctCurso = data.porcentaje_curso || 0;
+            document.getElementById('bar-curso').style.width = pctCurso + '%';
+            document.getElementById('pct-curso').textContent = pctCurso + '%';
+
+            // Estado del video
+            var statusBox = document.getElementById('lec-video-status');
+            statusBox.className = 'lec-video-status lec-video-status--done';
+            document.getElementById('status-icon').innerHTML = '<polyline points="20,6 9,17 4,12" stroke-width="2.5"/>';
+            document.getElementById('status-text').textContent = '¡Lección completada! Sigue con la siguiente.';
         }
     })
-    .catch(err => console.error(err));
+    .catch(function(e){ console.error(e); });
 }
 
 // ── Crear reunión Meet ──────────────────────────────────
 function crearMeet() {
-    const ahora = new Date();
-    const fin = new Date(ahora.getTime() + 2 * 60 * 60 * 1000);
-    const formatear = (d) => d.toISOString().slice(0, 19).replace("T", " ");
+    var ahora = new Date();
+    var fin = new Date(ahora.getTime() + 2 * 60 * 60 * 1000);
+    var fmt = function(d){ return d.toISOString().slice(0,19).replace('T',' '); };
 
-    fetch("/profesor/leccion/{{ leccion.id }}/crear-meet", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            hora_inicio: formatear(ahora),
-            hora_fin:    formatear(fin),
-            mensaje:     "Clase en vivo"
-        })
+    fetch('/profesor/leccion/{{ leccion.id }}/crear-meet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hora_inicio: fmt(ahora), hora_fin: fmt(fin), mensaje: 'Clase en vivo' })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.error) {
-            alert("Error: " + data.error);
-            return;
-        }
-        document.getElementById("nueva-reunion").innerHTML = `
-            <div class="reunion alert alert-success">
-                <p class="mb-3">✅ Reunión creada exitosamente</p>
-                <a href="${data.url}" target="_blank" rel="noopener noreferrer"
-                   class="btn btn-primary">
-                    Entrar a la clase en vivo
-                </a>
-                <button onclick="eliminarMeet(${data.id})"
-                        class="btn btn-danger btn-sm ms-2">
-                    Eliminar
-                </button>
-            </div>`;
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+        if (data.error) { alert('Error: ' + data.error); return; }
+        document.getElementById('nueva-reunion').innerHTML =
+            '<div class="lec-reunion">' +
+            '<div class="lec-reunion-dot"></div>' +
+            '<div class="lec-reunion-info"><strong>Reunión creada</strong><p>La clase en vivo está activa</p></div>' +
+            '<div class="lec-reunion-actions">' +
+            '<a href="' + data.url + '" target="_blank" class="lec-btn lec-btn-live">Entrar</a>' +
+            '<button onclick="eliminarMeet(' + data.id + ')" class="lec-btn lec-btn-danger">Eliminar</button>' +
+            '</div></div>';
     })
-    .catch(err => alert("Error: " + err.message));
+    .catch(function(e){ alert('Error: ' + e.message); });
 }
 
 // ── Eliminar lección ────────────────────────────────────
 function eliminarLeccion(id) {
-    if (!confirm("¿Estás seguro de que quieres eliminar esta lección? Esta acción no se puede deshacer.")) return;
-    fetch(`/profesor/leccion/${id}/eliminar`, { method: "POST" })
-    .then(response => {
-        if (response.ok) {
-            window.location.href = `/curso/{{ leccion.curso_id }}`;
-        } else {
-            alert("Error al eliminar la lección");
-        }
-    })
-    .catch(err => alert("Error: " + err.message));
+    if (!confirm('¿Eliminar esta lección? No se puede deshacer.')) return;
+    fetch('/profesor/leccion/' + id + '/eliminar', { method: 'POST' })
+    .then(function(r){
+        if (r.ok) window.location.href = '/curso/{{ leccion.curso_id }}';
+        else alert('Error al eliminar');
+    });
 }
 
 // ── Eliminar reunión ────────────────────────────────────
 function eliminarMeet(id) {
-    if (!confirm("¿Eliminar esta reunión?")) return;
-    fetch(`/meet/${id}/eliminar`, { method: "POST" })
-    .then(() => location.reload())
-    .catch(err => alert("Error: " + err.message));
+    if (!confirm('¿Eliminar esta reunión?')) return;
+    fetch('/meet/' + id + '/eliminar', { method: 'POST' })
+    .then(function(){ location.reload(); });
 }
 </script>
 {% endblock %}
