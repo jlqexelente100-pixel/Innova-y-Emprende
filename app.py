@@ -75,7 +75,7 @@ DB_CONFIG = {
     'host': os.getenv('DB_HOST', 'localhost'),  # usa 'db' en Docker, 'localhost' en local
     'database': 'Emprende',
     'user': 'postgres',
-    'password': '123456',
+    'password': '12345',
     'port': 5432
 }
 
@@ -1752,6 +1752,110 @@ def profesor_eliminar_leccion(leccion_id):
 
     flash("Lección eliminada correctamente.")
     return redirect(url_for("curso_detalle", curso_id=curso_id))
+
+
+# --------------------------
+# REPORTES (solo profesor)
+# --------------------------
+@app.route("/profesor/reportes")
+def profesor_reportes():
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión.")
+        return redirect(url_for("login"))
+    if not requiere_profesor():
+        flash("Acceso solo para profesores.")
+        return redirect(url_for("index"))
+
+    profesor_id = session["user_id"]
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    # Alumnos inscritos y total recaudado por curso (todos los cursos)
+    cur.execute("""
+        SELECT
+            c.id,
+            c.titulo,
+            COUNT(DISTINCT comp.usuario_id)   AS total_alumnos,
+            COALESCE(SUM(comp.monto), 0)       AS ingresos_totales,
+            c.precio
+        FROM cursos c
+        LEFT JOIN compras comp
+               ON comp.curso_id = c.id AND comp.estado = 'completado'
+        GROUP BY c.id, c.titulo, c.precio
+        ORDER BY ingresos_totales DESC;
+    """)
+    filas_cursos = cur.fetchall()
+
+    # Últimas 10 ventas (todas)
+    cur.execute("""
+        SELECT
+            u.nombre || ' ' || COALESCE(u.apellido, '') AS alumno,
+            c.titulo AS curso,
+            comp.monto,
+            comp.fecha
+        FROM compras comp
+        JOIN cursos   c ON comp.curso_id  = c.id
+        JOIN usuarios u ON comp.usuario_id = u.id
+        WHERE comp.estado = 'completado'
+        ORDER BY comp.fecha DESC
+        LIMIT 10;
+    """)
+    ultimas_ventas = cur.fetchall()
+
+    # Todos los usuarios registrados
+    cur.execute("""
+        SELECT nombre, COALESCE(apellido, ''), correo, rol, creado_en
+        FROM usuarios
+        ORDER BY creado_en DESC;
+    """)
+    filas_usuarios = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    resumen_cursos = [
+        {
+            "id": f[0],
+            "titulo": f[1],
+            "total_alumnos": f[2],
+            "ingresos_totales": float(f[3]),
+            "precio": float(f[4]) if f[4] else 0,
+        }
+        for f in filas_cursos
+    ]
+
+    ventas = [
+        {
+            "alumno": v[0].strip(),
+            "curso": v[1],
+            "monto": float(v[2]),
+            "fecha": v[3].strftime("%d/%m/%Y %H:%M") if v[3] else "-",
+        }
+        for v in ultimas_ventas
+    ]
+
+    usuarios = [
+        {
+            "nombre": u[0] + (" " + u[1] if u[1] else ""),
+            "correo": u[2],
+            "rol": u[3],
+            "creado_en": u[4].strftime("%d/%m/%Y") if u[4] else "-",
+        }
+        for u in filas_usuarios
+    ]
+
+    total_ingresos = sum(r["ingresos_totales"] for r in resumen_cursos)
+    total_alumnos  = sum(r["total_alumnos"]   for r in resumen_cursos)
+
+    return render_template(
+        "reportes_profesor.html",
+        resumen_cursos=resumen_cursos,
+        ventas=ventas,
+        usuarios=usuarios,
+        total_ingresos=total_ingresos,
+        total_alumnos=total_alumnos,
+        now=datetime.now(),
+    )
 
 
 # --------------------------
