@@ -12,7 +12,6 @@ import uuid
 import stripe
 from dotenv import load_dotenv
 from pathlib import Path
-
 env_path = Path(__file__).resolve().parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
@@ -355,6 +354,7 @@ def crear_tablas():
                 ('Transferencia Bancaria', 'transferencia', TRUE);
         """)
 
+# Crear usuario profesor demo y cursos demo
     cur.execute("SELECT COUNT(*) FROM cursos;")
     if cur.fetchone()[0] == 0:
         cur.execute("SELECT id FROM usuarios WHERE correo = %s;", ("profesor@demo.test",))
@@ -495,6 +495,33 @@ def crear_tablas():
                 VALUES (%s, %s, %s, %s);
             """, (curso_id, t, v, c))
 
+    #ADMINISTRADOR DEMO
+
+
+    cur.execute("SELECT id FROM usuarios WHERE correo = %s;", ("admin@demo.test",))
+    admin = cur.fetchone()
+
+    if not admin:
+        admin_hash = generate_password_hash("admin123")
+        cur.execute("""
+            INSERT INTO usuarios(
+                nombre,
+                apellido,
+                username,
+                correo,
+                password_hash,
+                rol
+            )
+            VALUES (%s, %s, %s, %s, %s, %s);
+        """, (
+            "Administrador",
+            "Sistema",
+            "admin",
+            "admin@demo.test",
+            admin_hash,
+            "admin"
+        ))
+
 
 
     conn.commit()
@@ -590,7 +617,14 @@ def login():
     session["nombre"] = nombre
     session["rol"] = rol
     flash("Bienvenido/a " + nombre)
-    return redirect(url_for("index"))
+
+    # ← Redirigir según rol
+    if rol == "admin":
+        return redirect(url_for("admin_dashboard"))
+    elif rol == "profesor":
+        return redirect(url_for("profesor_dashboard"))
+    else:
+        return redirect(url_for("index"))
 
 
 @app.route("/logout")
@@ -610,7 +644,7 @@ def registrar():
     username = request.form.get("username", "").strip()
     correo = request.form.get("correo", "").strip()
     password = request.form.get("password", "")
-    rol = request.form.get("rol") or "alumno"
+    rol = "alumno"  # ← SIEMPRE alumno, ignorar lo que venga del form
 
     if not nombre or not apellido or not username or not correo or not password:
         flash("Todos los campos son obligatorios.")
@@ -801,6 +835,186 @@ def profesor_anadir_leccion(curso_id):
     flash("Lección añadida.")
     return redirect(url_for("curso_detalle", curso_id=curso_id))
 
+#Panel Administrador
+
+def requiere_admin():
+ return session.get("rol") == "admin"     
+
+
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión")
+        return redirect(url_for("login"))
+    if not requiere_admin():
+        flash("Acceso solo para administradores")
+        return redirect(url_for("index"))
+    # Simplemente renderiza el template, los datos los carga el JS via API
+    return render_template("admin/dashboard_admin.html")
+
+# ══════════════════════════════════════════════════
+# ADMIN — APIs JSON para el dashboard
+# ══════════════════════════════════════════════════
+
+@app.route("/admin/api/usuarios")
+def admin_api_usuarios():
+    if not requiere_admin():
+        return jsonify({"error": "No autorizado"}), 403
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, nombre, apellido, username, correo, rol, creado_en
+        FROM usuarios ORDER BY creado_en DESC;
+    """)
+    filas = cur.fetchall()
+    cur.close(); conn.close()
+    return jsonify([
+        {"id":f[0],"nombre":f[1],"apellido":f[2],"username":f[3],
+         "correo":f[4],"rol":f[5],"creado_en":str(f[6])}
+        for f in filas
+    ])
+
+
+@app.route("/admin/api/usuarios", methods=["POST"])
+def admin_api_crear_usuario():
+    if not requiere_admin():
+        return jsonify({"error": "No autorizado"}), 403
+    data = request.json
+    nombre   = data.get("nombre","").strip()
+    apellido = data.get("apellido","").strip()
+    username = data.get("username","").strip()
+    correo   = data.get("correo","").strip()
+    password = data.get("password","")
+    rol      = data.get("rol","alumno")
+
+    if not nombre or not correo or not password:
+        return jsonify({"error": "Nombre, correo y contraseña son requeridos"}), 400
+
+    phash = generate_password_hash(password)
+    conn = conectar_bd()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            INSERT INTO usuarios(nombre, apellido, username, correo, password_hash, rol)
+            VALUES (%s,%s,%s,%s,%s,%s);
+        """, (nombre, apellido, username, correo, phash, rol))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        cur.close(); conn.close()
+        return jsonify({"error": str(e)}), 400
+    cur.close(); conn.close()
+    return jsonify({"ok": True}), 201
+
+
+@app.route("/admin/api/usuarios/<int:uid>", methods=["PUT"])
+def admin_api_editar_usuario(uid):
+    if not requiere_admin():
+        return jsonify({"error": "No autorizado"}), 403
+    data = request.json
+    conn = conectar_bd()
+    cur = conn.cursor()
+    try:
+        if data.get("password"):
+            phash = generate_password_hash(data["password"])
+            cur.execute("""
+                UPDATE usuarios SET nombre=%s, apellido=%s, username=%s,
+                correo=%s, rol=%s, password_hash=%s WHERE id=%s;
+            """, (data["nombre"], data.get("apellido",""), data.get("username",""),
+                  data["correo"], data["rol"], phash, uid))
+        else:
+            cur.execute("""
+                UPDATE usuarios SET nombre=%s, apellido=%s, username=%s,
+                correo=%s, rol=%s WHERE id=%s;
+            """, (data["nombre"], data.get("apellido",""), data.get("username",""),
+                  data["correo"], data["rol"], uid))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        cur.close(); conn.close()
+        return jsonify({"error": str(e)}), 400
+    cur.close(); conn.close()
+    return jsonify({"ok": True})
+
+
+@app.route("/admin/api/usuarios/<int:uid>", methods=["DELETE"])
+def admin_api_eliminar_usuario(uid):
+    if not requiere_admin():
+        return jsonify({"error": "No autorizado"}), 403
+    if uid == session.get("user_id"):
+        return jsonify({"error": "No puedes eliminarte a ti mismo"}), 400
+    conn = conectar_bd()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM usuarios WHERE id=%s;", (uid,))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        cur.close(); conn.close()
+        return jsonify({"error": str(e)}), 400
+    cur.close(); conn.close()
+    return jsonify({"ok": True})
+
+
+@app.route("/admin/api/ventas")
+def admin_api_ventas():
+    if not requiere_admin():
+        return jsonify({"error": "No autorizado"}), 403
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT c.id, u.nombre, cu.titulo, c.monto, c.estado, c.fecha
+        FROM compras c
+        JOIN usuarios u  ON c.usuario_id = u.id
+        JOIN cursos   cu ON c.curso_id   = cu.id
+        ORDER BY c.fecha DESC;
+    """)
+    filas = cur.fetchall()
+    cur.close(); conn.close()
+    return jsonify([
+        {"id":f[0],"usuario_nombre":f[1],"curso_titulo":f[2],
+         "monto":float(f[3]) if f[3] else 0,"estado":f[4],"fecha":str(f[5])}
+        for f in filas
+    ])
+
+
+@app.route("/admin/api/cursos")
+def admin_api_cursos():
+    if not requiere_admin():
+        return jsonify({"error": "No autorizado"}), 403
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT c.id, c.titulo, c.precio, u.nombre, c.profesor_id
+        FROM cursos c
+        JOIN usuarios u ON c.profesor_id = u.id
+        ORDER BY c.creado_en DESC;
+    """)
+    filas = cur.fetchall()
+    cur.close(); conn.close()
+    return jsonify([
+        {"id":f[0],"titulo":f[1],"precio":float(f[2]) if f[2] else 0,
+         "profesor":f[3],"profesor_id":f[4]}
+        for f in filas
+    ])
+
+
+@app.route("/admin/api/cursos/<int:cid>", methods=["DELETE"])
+def admin_api_eliminar_curso(cid):
+    if not requiere_admin():
+        return jsonify({"error": "No autorizado"}), 403
+    conn = conectar_bd()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM cursos WHERE id=%s;", (cid,))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        cur.close(); conn.close()
+        return jsonify({"error": str(e)}), 400
+    cur.close(); conn.close()
+    return jsonify({"ok": True})
+
 
 # --------------------------
 # Página detalle curso (alumno)
@@ -859,7 +1073,7 @@ def curso_detalle(curso_id):
             return redirect(url_for("login"))
 
         rol = fila_rol[0]
-        if rol == 'profesor':
+        if rol in ('profesor', 'admin'):      # ← admin agregado
             puede_acceder = True
         elif datos_curso["titulo"] == "Mente Emprendedora":
             puede_acceder = True
@@ -915,8 +1129,9 @@ def ver_leccion(leccion_id):
     if usuario:
         cur.execute("SELECT rol FROM usuarios WHERE id = %s;", (usuario,))
         rol = cur.fetchone()[0]
-        if rol == 'profesor':
-            # Verificar si es el profesor del curso
+        if rol == 'admin':                    # ← admin ve todo
+            puede_ver = True
+        elif rol == 'profesor':
             cur.execute("SELECT profesor_id FROM cursos WHERE id = %s;", (datos["curso_id"],))
             profesor_curso = cur.fetchone()[0]
             if profesor_curso == usuario:
@@ -1579,7 +1794,7 @@ def completar_leccion(leccion_id):
     puede_ver = False
     cur.execute("SELECT rol FROM usuarios WHERE id = %s", (usuario_id,))
     rol = cur.fetchone()[0]
-    if rol == 'profesor':
+    if rol in ('profesor', 'admin'):          # ← admin agregado
         puede_ver = True
     elif leccion[1] == "Mente Emprendedora":
         puede_ver = True
@@ -1712,6 +1927,9 @@ def buscar():
     ]
     return render_template("resultados.html", query=query, resultados=resultados)
 
+
+
+ 
 
 # --------------------------
 # Eliminar lección (solo profesor)
