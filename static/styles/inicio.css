@@ -1,6 +1,6 @@
-/* =============================================
+/* ══════════════════════════════════════════════════
    VARIABLES & DESIGN TOKENS
-   ============================================= */
+══════════════════════════════════════════════════ */
 :root {
     --brand-deep:       #001f26;
     --brand-primary:    #003842;
@@ -9,198 +9,56 @@
     --brand-accent:     #00c9a7;
     --brand-accent-2:   #00e5c0;
 
-    --surface-0:        #f0f4f8;
+    /* Fondo armonizado con la paleta verde */
+    --surface-0:        #e8f2f4;
     --surface-1:        #ffffff;
-    --surface-2:        #f8fafc;
-    --surface-border:   rgba(0, 56, 66, 0.08);
+    --surface-2:        #f2f8f9;
+    --surface-border:   rgba(0, 56, 66, 0.09);
 
     --text-primary:     #0a1628;
     --text-secondary:   #334155;
     --text-muted:       #64748b;
     --text-faint:       #94a3b8;
 
-    --shadow-xs:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-    --shadow-sm:  0 2px 8px rgba(0,0,0,.06), 0 4px 16px rgba(0,56,66,.07);
-    --shadow-md:  0 4px 16px rgba(0,0,0,.08), 0 12px 32px rgba(0,56,66,.12);
-    --shadow-lg:  0 8px 32px rgba(0,0,0,.10), 0 24px 56px rgba(0,56,66,.18);
-    --shadow-accent: 0 8px 24px rgba(0,201,167,.25);
+    --shadow-xs:  0 1px 3px rgba(0,0,0,.05);
+    --shadow-sm:  0 2px 8px rgba(0,0,0,.06), 0 4px 16px rgba(0,56,66,.06);
+    --shadow-md:  0 4px 16px rgba(0,0,0,.07), 0 12px 32px rgba(0,56,66,.10);
+    --shadow-lg:  0 8px 32px rgba(0,0,0,.09), 0 24px 56px rgba(0,56,66,.15);
 
     --radius-sm:  8px;
     --radius-md:  14px;
-    --radius-lg:  20px;
-    --radius-xl:  28px;
+    --radius-lg:  18px;
+    --radius-xl:  26px;
 
     --transition-fast:   0.15s ease;
     --transition-base:   0.25s ease;
     --transition-spring: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* =============================================
-   RESET & BASE
-   ============================================= */
-*, *::before, *::after {
-    box-sizing: border-box;
-}
+/* ══════════════════════════════════════════════════
+   RESET
+══════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
     margin: 0;
-    font-family: "Lato", "Segoe UI", system-ui, sans-serif;
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
     background: var(--surface-0);
     color: var(--text-primary);
     min-height: 100vh;
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* =============================================
-   BARRA SUPERIOR — HERO HEADER
-   ============================================= */
-.barra-superior {
-    width: calc(100% + 3rem);
-    min-height: 180px;
-    background:
-        radial-gradient(ellipse 80% 120% at 10% 50%, rgba(0,201,167,.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 100% at 90% 30%, rgba(0,92,107,.4) 0%, transparent 55%),
-        linear-gradient(135deg, var(--brand-deep) 0%, var(--brand-primary) 45%, var(--brand-mid) 100%);
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    padding: 2rem 3rem 2rem 2.5rem;
-    margin: 0 0 0 -1.5rem;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
-}
-
-/* Accent line bottom */
-.barra-superior::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        var(--brand-accent) 20%,
-        var(--brand-accent-2) 50%,
-        var(--brand-accent) 80%,
-        transparent 100%
-    );
-}
-
-/* Decorative grid overlay */
-.barra-superior::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image:
-        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-}
-
-/* Hero text inside header */
-.barra-superior h1,
-.barra-superior .hero-title {
-    font-size: clamp(1.4rem, 3vw, 2.2rem);
-    font-weight: 900;
-    letter-spacing: -0.03em;
-    margin: 0;
-    line-height: 1.2;
-    text-shadow: 0 2px 12px rgba(0,0,0,.2);
-    position: relative;
-    z-index: 2;
-}
-
-.barra-superior p,
-.barra-superior .hero-subtitle {
-    font-size: 0.95rem;
-    opacity: 0.75;
-    margin: 0.4rem 0 0;
-    font-weight: 300;
-    letter-spacing: 0.01em;
-    position: relative;
-    z-index: 2;
-}
-
-/* =============================================
-   NUBES (animación) — refinadas
-   ============================================= */
-.clouds {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 1;
-}
-
-.cloud {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 50px;
-    filter: blur(3px);
-}
-
-.cloud::before,
-.cloud::after {
-    content: "";
-    position: absolute;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 50%;
-}
-
-.cloud::before {
-    width: 30px;
-    height: 30px;
-    top: -15px;
-    left: 10px;
-}
-
-.cloud::after {
-    width: 50px;
-    height: 50px;
-    top: -25px;
-    right: 10px;
-}
-
-.cloud1 { width: 80px;  height: 30px; top: 18px;  left: -80px;  animation: moveCloud 25s linear infinite; }
-.cloud2 { width: 110px; height: 38px; top: 60px;  left: -110px; animation: moveCloud 32s linear infinite; animation-delay: 6s; }
-.cloud3 { width: 90px;  height: 32px; top: 40px;  left: -90px;  animation: moveCloud 40s linear infinite; animation-delay: 12s; }
-.cloud4 { width: 100px; height: 35px; top: 90px;  left: -100px; animation: moveCloud 36s linear infinite; animation-delay: 3s; }
-
-@keyframes moveCloud {
-    0%   { left: -120px; opacity: 0; }
-    5%   { opacity: 1; }
-    95%  { opacity: 1; }
-    100% { left: 100vw; opacity: 0; }
-}
-
-/* =============================================
-   LAYOUT PRINCIPAL
-   ============================================= */
-section {
-    flex: 1;
-    padding: 0 24px 60px;
-    transition: all 0.3s ease;
-}
-
-.content {
-    padding-top: 0;
-}
-
-/* =============================================
-   SECTION HEADER — Título y subtítulo
-   ============================================= */
+/* ══════════════════════════════════════════════════
+   SECTION HEADERS
+══════════════════════════════════════════════════ */
 .section-title {
     text-align: center;
-    font-size: clamp(1.5rem, 3vw, 2.1rem);
-    font-weight: 900;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 800;
     color: var(--text-primary);
-    margin: 3rem 0 0.4rem;
+    margin: 2.5rem 0 0.4rem;
     letter-spacing: -0.03em;
     line-height: 1.15;
 }
@@ -208,38 +66,36 @@ section {
 .section-subtitle {
     text-align: center;
     color: var(--text-muted);
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 400;
-    margin: 0 0 0.75rem;
-    max-width: 520px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto 0.75rem;
+    max-width: 500px;
     line-height: 1.6;
 }
 
 .section-divider {
-    width: 48px;
+    width: 44px;
     height: 3px;
     background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
     border-radius: 4px;
-    margin: 0 auto 2.5rem;
+    margin: 0 auto 2.25rem;
 }
 
-/* =============================================
+/* ══════════════════════════════════════════════════
    CARDS CONTAINER
-   ============================================= */
+══════════════════════════════════════════════════ */
 .cards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
-    padding: 8px 16px 48px;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 22px;
+    padding: 8px 0 48px;
     max-width: 1360px;
     margin: 0 auto;
 }
 
-/* =============================================
+/* ══════════════════════════════════════════════════
    CARD — diseño premium
-   ============================================= */
+══════════════════════════════════════════════════ */
 .card {
     background: var(--surface-1);
     border-radius: var(--radius-lg);
@@ -259,11 +115,7 @@ section {
     position: absolute;
     inset: 0;
     border-radius: var(--radius-lg);
-    background: linear-gradient(
-        135deg,
-        rgba(0,201,167,.04) 0%,
-        transparent 60%
-    );
+    background: linear-gradient(135deg, rgba(0,201,167,.04) 0%, transparent 60%);
     opacity: 0;
     transition: opacity var(--transition-base);
     pointer-events: none;
@@ -271,74 +123,36 @@ section {
 }
 
 .card:hover {
-    transform: translateY(-8px);
+    transform: translateY(-7px);
     box-shadow: var(--shadow-lg);
 }
+.card:hover::before { opacity: 1; }
 
-.card:hover::before {
-    opacity: 1;
-}
-
-/* Card top accent bar */
-.card .card-accent-bar {
-    height: 3px;
-    background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
-    width: 0;
-    transition: width 0.4s ease;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    border-radius: 0;
-}
-
-.card:hover .card-accent-bar {
-    width: 100%;
-}
-
-/* =============================================
-   IMAGEN DE CARD
-   ============================================= */
-.card-img-wrapper {
-    overflow: hidden;
-    position: relative;
-}
+/* ── Imagen ── */
+.card-img-wrapper { overflow: hidden; position: relative; }
 
 .card-img-top {
-    height: 210px;
+    height: 205px;
     width: 100%;
     object-fit: cover;
     display: block;
     transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+.card:hover .card-img-top { transform: scale(1.05); }
 
-.card:hover .card-img-top {
-    transform: scale(1.05);
-}
-
-/* Image overlay on hover */
 .card-img-wrapper::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        to bottom,
-        transparent 50%,
-        rgba(0,31,38,.18) 100%
-    );
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,31,38,.16) 100%);
     opacity: 0;
     transition: opacity var(--transition-base);
 }
+.card:hover .card-img-wrapper::after { opacity: 1; }
 
-.card:hover .card-img-wrapper::after {
-    opacity: 1;
-}
-
-/* =============================================
-   CARD BODY
-   ============================================= */
+/* ── Body ── */
 .card-body {
-    padding: 1.4rem 1.5rem 1rem;
+    padding: 1.35rem 1.4rem 1rem;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -347,10 +161,10 @@ section {
 }
 
 .card-title {
-    font-size: 1.05rem;
-    font-weight: 800;
+    font-size: 1.02rem;
+    font-weight: 700;
     color: var(--text-primary);
-    margin: 0 0 0.55rem;
+    margin: 0 0 0.5rem;
     line-height: 1.35;
     letter-spacing: -0.02em;
 }
@@ -360,38 +174,29 @@ section {
     color: var(--text-secondary);
     line-height: 1.7;
     flex: 1;
-    margin: 0 0 1.1rem;
+    margin: 0 0 1rem;
 }
 
-/* =============================================
-   PRECIO EN CARD
-   ============================================= */
+/* ── Precio ── */
 .card-price {
     display: flex;
     align-items: baseline;
-    gap: 6px;
-    margin: 0 0 0.9rem;
-}
-
-.card-price strong,
-.card-price {
-    font-size: 1.3rem;
+    gap: 5px;
+    margin: 0 0 0.85rem;
+    font-size: 1.25rem;
     font-weight: 800;
     color: var(--brand-primary);
     letter-spacing: -0.02em;
 }
-
 .card-price span {
     font-size: 0.78rem;
     font-weight: 400;
     color: var(--text-faint);
 }
 
-/* =============================================
-   CARD FOOTER (Bootstrap default override)
-   ============================================= */
+/* ── Footer ── */
 .card-footer {
-    padding: 0.9rem 1.5rem 1.1rem;
+    padding: 0.85rem 1.4rem 1rem;
     border-top: 1px solid var(--surface-border);
     background: var(--surface-2) !important;
     position: relative;
@@ -399,27 +204,24 @@ section {
 }
 
 .card-footer strong {
-    font-size: 1.2rem;
+    font-size: 1.18rem;
     font-weight: 800;
     color: var(--brand-primary);
     letter-spacing: -0.02em;
 }
 
-/* =============================================
-   BOTONES DE CARD
-   ============================================= */
+/* ── Botones de card ── */
 .card .btn,
 .card-footer .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 9px 20px;
+    gap: 5px;
+    padding: 8px 18px;
     border-radius: var(--radius-sm);
     font-size: 0.875rem;
     font-weight: 700;
-    letter-spacing: 0.02em;
-    text-align: center;
+    letter-spacing: 0.01em;
     transition: all var(--transition-base);
     border: none;
     cursor: pointer;
@@ -431,45 +233,22 @@ section {
 .card-footer .btn-primary {
     background: linear-gradient(135deg, var(--brand-primary), var(--brand-mid));
     color: #ffffff;
-    box-shadow: 0 3px 10px rgba(0,56,66,.28);
+    box-shadow: 0 3px 10px rgba(0,56,66,.25);
 }
-
 .card .btn-primary:hover,
 .card-footer .btn-primary:hover {
     background: linear-gradient(135deg, var(--brand-mid), var(--brand-light));
-    box-shadow: 0 5px 16px rgba(0,56,66,.38);
+    box-shadow: 0 5px 16px rgba(0,56,66,.35);
     transform: translateY(-1px);
     color: #ffffff;
 }
-
-.card .btn-primary:active,
-.card-footer .btn-primary:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(0,56,66,.2);
-}
-
 .card .btn-sm,
 .card-footer .btn-sm {
-    padding: 7px 16px;
+    padding: 6px 14px;
     font-size: 0.82rem;
 }
 
-.card .btn-outline-primary {
-    background: transparent;
-    color: var(--brand-primary);
-    border: 1.5px solid rgba(0,56,66,.3);
-}
-
-.card .btn-outline-primary:hover {
-    background: var(--brand-primary);
-    color: #ffffff;
-    border-color: var(--brand-primary);
-    transform: translateY(-1px);
-}
-
-/* =============================================
-   BADGE / ETIQUETA EN CARD
-   ============================================= */
+/* ── Badge en card ── */
 .card-badge {
     display: inline-flex;
     align-items: center;
@@ -479,291 +258,166 @@ section {
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
 }
+.badge-free  { background: rgba(16,185,129,.12); color: #065f46; border: 1px solid rgba(16,185,129,.2); }
+.badge-paid  { background: rgba(0,56,66,.08);    color: #003842; border: 1px solid rgba(0,56,66,.15); }
 
-.badge-free {
-    background: rgba(16,185,129,.12);
-    color: #065f46;
-    border: 1px solid rgba(16,185,129,.2);
+/* ── Animación entrada ── */
+@keyframes cardFadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
+.card { animation: cardFadeUp 0.42s ease both; }
 
-.badge-paid {
-    background: rgba(59,130,246,.1);
-    color: #1e40af;
-    border: 1px solid rgba(59,130,246,.18);
-}
+.cards-container .card:nth-child(1)   { animation-delay: 0.04s; }
+.cards-container .card:nth-child(2)   { animation-delay: 0.09s; }
+.cards-container .card:nth-child(3)   { animation-delay: 0.14s; }
+.cards-container .card:nth-child(4)   { animation-delay: 0.19s; }
+.cards-container .card:nth-child(5)   { animation-delay: 0.24s; }
+.cards-container .card:nth-child(6)   { animation-delay: 0.29s; }
+.cards-container .card:nth-child(n+7) { animation-delay: 0.33s; }
 
-/* =============================================
-   STATS / METADATA EN CARD (opcional)
-   ============================================= */
-.card-meta {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    margin-top: auto;
-    padding-top: 0.7rem;
-    border-top: 1px solid var(--surface-border);
-    margin-bottom: 0.9rem;
-}
+.row .col-sm-6:nth-child(1) .card  { animation-delay: 0.04s; }
+.row .col-sm-6:nth-child(2) .card  { animation-delay: 0.09s; }
+.row .col-sm-6:nth-child(3) .card  { animation-delay: 0.14s; }
+.row .col-sm-6:nth-child(4) .card  { animation-delay: 0.19s; }
+.row .col-sm-6:nth-child(5) .card  { animation-delay: 0.24s; }
+.row .col-sm-6:nth-child(6) .card  { animation-delay: 0.29s; }
+.row .col-sm-6:nth-child(n+7) .card { animation-delay: 0.33s; }
 
-.card-meta span {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-/* =============================================
+/* ══════════════════════════════════════════════════
    BOTÓN WHATSAPP FLOTANTE
-   ============================================= */
+══════════════════════════════════════════════════ */
 .logo-whatsapp {
     position: fixed;
-    width: 56px;
-    height: 56px;
-    bottom: 28px;
-    right: 28px;
+    width: 54px;
+    height: 54px;
+    bottom: 26px;
+    right: 26px;
     z-index: 1000;
     background: linear-gradient(135deg, #25d366, #1da851);
     border-radius: 50%;
-    box-shadow:
-        0 4px 16px rgba(37,211,102,.4),
-        0 2px 6px rgba(0,0,0,.12);
-    transition:
-        transform var(--transition-spring),
-        box-shadow var(--transition-base);
+    box-shadow: 0 4px 16px rgba(37,211,102,.4), 0 2px 6px rgba(0,0,0,.10);
+    transition: transform var(--transition-spring), box-shadow var(--transition-base);
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 .logo-whatsapp:hover {
-    transform: scale(1.12) translateY(-3px);
-    box-shadow:
-        0 8px 28px rgba(37,211,102,.5),
-        0 4px 12px rgba(0,0,0,.15);
+    transform: scale(1.10) translateY(-3px);
+    box-shadow: 0 8px 28px rgba(37,211,102,.5), 0 4px 12px rgba(0,0,0,.14);
 }
-
 .logo-whatsapp img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    display: block;
     object-fit: cover;
+    display: block;
 }
-
-/* Pulse ring animation */
 .logo-whatsapp::before {
     content: "";
     position: absolute;
     inset: -4px;
     border-radius: 50%;
-    border: 2px solid rgba(37,211,102,.4);
+    border: 2px solid rgba(37,211,102,.35);
     animation: waPulse 2.5s ease-out infinite;
 }
-
 @keyframes waPulse {
     0%   { transform: scale(1); opacity: 0.7; }
     70%  { transform: scale(1.4); opacity: 0; }
     100% { transform: scale(1.4); opacity: 0; }
 }
 
-/* =============================================
-   ANIMACIÓN DE ENTRADA — cards
-   ============================================= */
-@keyframes cardFadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.card {
-    animation: cardFadeUp 0.45s ease both;
-}
-
-/* Stagger via nth-child */
-.cards-container .card:nth-child(1)  { animation-delay: 0.05s; }
-.cards-container .card:nth-child(2)  { animation-delay: 0.10s; }
-.cards-container .card:nth-child(3)  { animation-delay: 0.15s; }
-.cards-container .card:nth-child(4)  { animation-delay: 0.20s; }
-.cards-container .card:nth-child(5)  { animation-delay: 0.25s; }
-.cards-container .card:nth-child(6)  { animation-delay: 0.30s; }
-.cards-container .card:nth-child(n+7){ animation-delay: 0.35s; }
-
-/* Bootstrap grid stagger */
-.row .col-sm-6:nth-child(1) .card { animation-delay: 0.05s; }
-.row .col-sm-6:nth-child(2) .card { animation-delay: 0.10s; }
-.row .col-sm-6:nth-child(3) .card { animation-delay: 0.15s; }
-.row .col-sm-6:nth-child(4) .card { animation-delay: 0.20s; }
-.row .col-sm-6:nth-child(5) .card { animation-delay: 0.25s; }
-.row .col-sm-6:nth-child(6) .card { animation-delay: 0.30s; }
-.row .col-sm-6:nth-child(n+7) .card { animation-delay: 0.35s; }
-
-/* =============================================
-   EMPTY STATE (cuando no hay cursos)
-   ============================================= */
+/* ══════════════════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════════════════ */
 .empty-state {
     text-align: center;
     padding: 5rem 2rem;
     color: var(--text-muted);
 }
-
 .empty-state .empty-icon {
-    font-size: 3.5rem;
+    font-size: 3.2rem;
     display: block;
     margin-bottom: 1rem;
-    opacity: 0.4;
+    opacity: 0.35;
 }
-
 .empty-state h3 {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--text-secondary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
-/* =============================================
-   RESPONSIVE — Tablet
-   ============================================= */
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════ */
 @media (max-width: 992px) {
     .cards-container {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 20px;
-        padding: 8px 12px 40px;
-    }
-
-    .barra-superior {
-        width: calc(100% + 2rem);
-        padding: 1.75rem 2rem;
-        min-height: 160px;
+        grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+        gap: 18px;
     }
 }
 
-/* =============================================
-   RESPONSIVE — Mobile
-   ============================================= */
 @media (max-width: 768px) {
     .cards-container {
         grid-template-columns: 1fr;
-        max-width: 480px;
+        max-width: 460px;
         margin: 0 auto;
-        padding: 8px 12px 32px;
     }
-
-    .card-img-top {
-        height: 200px;
-    }
-
-    .barra-superior {
-        min-height: 130px;
-        padding: 1.5rem 1.25rem;
-        font-size: 0.95rem;
-        margin-left: -1rem;
-        width: calc(100% + 2rem);
-    }
-
-    .section-title {
-        font-size: 1.55rem;
-        margin-top: 2rem;
-    }
-
-    .logo-whatsapp {
-        width: 52px;
-        height: 52px;
-        bottom: 20px;
-        right: 20px;
-    }
+    .card-img-top { height: 195px; }
+    .section-title { font-size: 1.5rem; margin-top: 1.75rem; }
+    .logo-whatsapp { width: 50px; height: 50px; bottom: 20px; right: 18px; }
 }
 
-/* =============================================
-   RESPONSIVE — Small mobile
-   ============================================= */
 @media (max-width: 480px) {
-    .card-img-top {
-        height: 185px;
-    }
-
-    .card-title {
-        font-size: 1rem;
-    }
-
-    .card-text {
-        font-size: 0.85rem;
-    }
-
-    .card .btn,
-    .card-footer .btn {
-        padding: 8px 14px;
-        font-size: 0.84rem;
-    }
-
-    .barra-superior {
-        width: calc(100% + 1.7rem);
-        margin-left: -0.85rem;
-        min-height: 110px;
-        padding: 1.25rem 1rem;
-    }
-
-    .logo-whatsapp {
-        width: 48px;
-        height: 48px;
-        bottom: 16px;
-        right: 16px;
-    }
+    .card-img-top  { height: 180px; }
+    .card-title    { font-size: 0.98rem; }
+    .card-text     { font-size: 0.84rem; }
+    .card .btn, .card-footer .btn { padding: 7px 13px; font-size: 0.83rem; }
+    .logo-whatsapp { width: 46px; height: 46px; bottom: 16px; right: 14px; }
 }
 
-/* =============================================
-   DARK MODE — override variables
-   ============================================= */
-body.dark-mode {
-    --surface-0:       #0a1628;
-    --surface-1:       #0f1e2e;
-    --surface-2:       #152436;
-    --surface-border:  rgba(0,201,167,.1);
-    --text-primary:    #e2eaf4;
-    --text-secondary:  #94afc8;
-    --text-muted:      #607a94;
-    --text-faint:      #435a70;
+/* ══════════════════════════════════════════════════
+   DARK MODE  (selector unificado con darkmode.js)
+══════════════════════════════════════════════════ */
+[data-theme="dark"] body,
+[data-theme="dark"] .content {
+    --surface-0:      #0d1117;
+    --surface-1:      #161b22;
+    --surface-2:      #1c2430;
+    --surface-border: rgba(0, 201, 167, 0.09);
+    --text-primary:   #e2eaf4;
+    --text-secondary: #94afc8;
+    --text-muted:     #607a94;
+    --text-faint:     #435a70;
+    background-color: #0d1117;
+    color: #e2eaf4;
 }
 
-body.dark-mode .card {
-    box-shadow:
-        0 2px 8px rgba(0,0,0,.25),
-        0 12px 32px rgba(0,0,0,.35);
+[data-theme="dark"] .card {
+    background-color: #161b22 !important;
+    border-color: #30363d !important;
+    color: #e6edf3 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,.28), 0 12px 32px rgba(0,0,0,.38);
 }
-
-body.dark-mode .card:hover {
-    box-shadow:
-        0 8px 32px rgba(0,0,0,.4),
-        0 24px 56px rgba(0,201,167,.12);
+[data-theme="dark"] .card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,.44), 0 24px 56px rgba(0,201,167,.10);
 }
-
-body.dark-mode .card-footer {
-    background: rgba(255,255,255,.03) !important;
+[data-theme="dark"] .card-title  { color: #e6edf3 !important; }
+[data-theme="dark"] .card-text   { color: #8b949e !important; }
+[data-theme="dark"] .card-footer {
+    background: #1c2430 !important;
+    border-top-color: #30363d !important;
 }
-
-body.dark-mode .card-footer strong,
-body.dark-mode .card-price,
-body.dark-mode .card-price strong {
-    color: var(--brand-accent);
+[data-theme="dark"] .card-footer strong,
+[data-theme="dark"] .card-price {
+    color: #00c9a7 !important;
 }
-
-body.dark-mode .card .btn-primary,
-body.dark-mode .card-footer .btn-primary {
+[data-theme="dark"] .card .btn-primary,
+[data-theme="dark"] .card-footer .btn-primary {
     background: linear-gradient(135deg, var(--brand-mid), var(--brand-light));
-    box-shadow: 0 3px 12px rgba(0,201,167,.2);
+    box-shadow: 0 3px 12px rgba(0,201,167,.18);
 }
-
-body.dark-mode .section-title {
-    color: var(--text-primary);
-}
-
-body.dark-mode .barra-superior {
-    box-shadow: 0 4px 24px rgba(0,0,0,.4);
-}
+[data-theme="dark"] .section-title { color: #e2eaf4 !important; }
