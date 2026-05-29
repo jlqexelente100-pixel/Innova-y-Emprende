@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+{% block title %}Reportes - Innova y Emprende{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ── Página general ── */
+    .reporte-page { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+
+    /* ── Botón imprimir ── */
+    .btn-imprimir {
+        background: #1a3c6e; color: white; border: none;
+        padding: .55rem 1.4rem; border-radius: 6px; font-weight: 600;
+        cursor: pointer; margin-bottom: 1.2rem;
+    }
+    .btn-imprimir:hover { background: #14305a; }
+
+    /* ── Documento ── */
+    .reporte-doc {
+        border: 2px solid #1a3c6e;
+        border-radius: 4px;
+        background: #fff;
+        padding: 2rem 2.5rem;
+        font-family: Arial, sans-serif;
+        color: #111;
+    }
+
+    /* ── Encabezado: logo | título | fecha ── */
+    .reporte-header {
+        display: grid;
+        grid-template-columns: 120px 1fr auto;
+        align-items: center;
+        gap: 1rem;
+        border-bottom: 3px solid #1a3c6e;
+        padding-bottom: 1rem;
+        margin-bottom: 1.2rem;
+    }
+    .reporte-header img { width: 90px; }
+    .reporte-header .titulo-bloque { text-align: center; }
+    .reporte-header .titulo-bloque h2 {
+        font-size: 1.4rem; font-weight: 800;
+        color: #1a3c6e; margin: 0;
+        text-transform: uppercase; letter-spacing: 1px;
+    }
+    .reporte-header .titulo-bloque p { margin: 2px 0; font-size: .85rem; color: #555; }
+    .reporte-header .meta-bloque { text-align: right; font-size: .8rem; color: #444; line-height: 1.6; }
+
+    /* ── Tarjetas resumen ── */
+    .resumen-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: .8rem;
+        margin-bottom: 1.5rem;
+    }
+    .res-card {
+        border: 1px solid #d0d8e8;
+        border-radius: 6px;
+        padding: .9rem 1rem;
+        text-align: center;
+        background: #f5f8ff;
+    }
+    .res-card .rc-val { font-size: 1.5rem; font-weight: 800; color: #1a3c6e; }
+    .res-card .rc-lbl { font-size: .78rem; color: #666; margin-top: 2px; }
+
+    /* ── Sección título ── */
+    .sec-titulo {
+        background: #1a3c6e;
+        color: white;
+        font-weight: 700;
+        font-size: .9rem;
+        padding: .45rem 1rem;
+        margin: 1.4rem 0 0 0;
+        border-radius: 3px 3px 0 0;
+    }
+
+    /* ── Tablas ── */
+    .reporte-tabla {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .85rem;
+    }
+    .reporte-tabla thead tr {
+        background: #1a3c6e;
+        color: white;
+    }
+    .reporte-tabla thead th {
+        padding: .55rem .9rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .reporte-tabla thead th.num { text-align: right; }
+    .reporte-tabla tbody tr:nth-child(even) { background: #f0f4fb; }
+    .reporte-tabla tbody td {
+        padding: .5rem .9rem;
+        border-bottom: 1px solid #dce3f0;
+    }
+    .reporte-tabla tbody td.num { text-align: right; font-weight: 600; }
+    .reporte-tabla tbody td.verde { color: #1a7a3c; font-weight: 700; }
+
+    /* ── Fila de total ── */
+    .fila-total td {
+        background: #1a3c6e !important;
+        color: white !important;
+        font-weight: 700;
+        padding: .55rem .9rem;
+    }
+    .fila-total td.num { text-align: right; }
+
+    /* ── Pie: totales + firma ── */
+    .reporte-pie {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 2px solid #1a3c6e;
+    }
+    .pie-totales p { margin: 3px 0; font-size: .85rem; }
+    .pie-totales .total-grande {
+        font-size: 1.1rem; font-weight: 800; color: #1a3c6e;
+    }
+    .firma-bloque { text-align: center; }
+    .firma-linea {
+        width: 200px;
+        border-bottom: 1px solid #333;
+        margin: 0 auto 4px;
+    }
+    .firma-bloque small { font-size: .75rem; color: #555; }
+
+    /* ── Sin datos ── */
+    .sin-datos td {
+        text-align: center; color: #888;
+        padding: 1.5rem; font-style: italic;
+    }
+
+    /* ── Impresión ── */
+    @media print {
+        .btn-imprimir, nav, #sidebar, .mobile-sidebar-toggle { display: none !important; }
+        .layout { display: block !important; }
+        .reporte-doc { border: 1.5px solid #1a3c6e; padding: 1.2rem; }
+        body { background: white !important; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="reporte-page">
+
+    <button class="btn-imprimir" onclick="window.print()">🖨️ Imprimir / Exportar PDF</button>
+
+    <div class="reporte-doc">
+
+        <!-- ── ENCABEZADO ── -->
+        <div class="reporte-header">
+            <img src="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}"
+                 alt="Logo Innova y Emprende">
+
+            <div class="titulo-bloque">
+                <h2>Reporte de Ventas</h2>
+                <p>Innova y Emprende — Academia Online</p>
+                <p>Resumen de alumnos e ingresos por curso</p>
+            </div>
+
+            <div class="meta-bloque">
+                <strong>Fecha de generación:</strong><br>
+                {{ now.strftime('%d/%m/%Y') }}<br>
+                <strong>Hora:</strong> {{ now.strftime('%I:%M %p') }}<br>
+                <strong>Profesor:</strong> {{ session.get('nombre') }}
+            </div>
+        </div>
+
+        <!-- ── TARJETAS RESUMEN ── -->
+        <div class="resumen-cards">
+            <div class="res-card">
+                <div class="rc-val">${{ "%.2f"|format(total_ingresos) }}</div>
+                <div class="rc-lbl">Ingresos totales</div>
+            </div>
+            <div class="res-card">
+                <div class="rc-val">{{ total_alumnos }}</div>
+                <div class="rc-lbl">Alumnos inscritos</div>
+            </div>
+            <div class="res-card">
+                <div class="rc-val">{{ resumen_cursos|length }}</div>
+                <div class="rc-lbl">Cursos publicados</div>
+            </div>
+        </div>
+
+        <!-- ── TABLA 1: POR CURSO ── -->
+        <div class="sec-titulo">Alumnos e Ingresos por Curso</div>
+        <table class="reporte-tabla">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Curso</th>
+                    <th class="num">Precio</th>
+                    <th class="num">Alumnos</th>
+                    <th class="num">Ingresos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in resumen_cursos %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ c.titulo }}</td>
+                    <td class="num">${{ "%.2f"|format(c.precio) }}</td>
+                    <td class="num">{{ c.total_alumnos }}</td>
+                    <td class="num verde">${{ "%.2f"|format(c.ingresos_totales) }}</td>
+                </tr>
+                {% else %}
+                <tr class="sin-datos"><td colspan="5">Sin cursos registrados aún.</td></tr>
+                {% endfor %}
+                <tr class="fila-total">
+                    <td colspan="3"><strong>Total de cursos: {{ resumen_cursos|length }}</strong></td>
+                    <td class="num">{{ total_alumnos }}</td>
+                    <td class="num">TOTAL: ${{ "%.2f"|format(total_ingresos) }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- ── TABLA 2: ÚLTIMAS VENTAS ── -->
+        <div class="sec-titulo" style="margin-top:1.8rem;">Últimas 10 Ventas</div>
+        <table class="reporte-tabla">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Alumno</th>
+                    <th>Curso</th>
+                    <th class="num">Monto</th>
+                    <th class="num">Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in ventas %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ v.alumno }}</td>
+                    <td>{{ v.curso }}</td>
+                    <td class="num verde">${{ "%.2f"|format(v.monto) }}</td>
+                    <td class="num">{{ v.fecha }}</td>
+                </tr>
+                {% else %}
+                <tr class="sin-datos"><td colspan="5">No hay ventas registradas aún.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- ── TABLA 3: USUARIOS REGISTRADOS ── -->
+        <div class="sec-titulo" style="margin-top:1.8rem;">Usuarios Registrados</div>
+        <table class="reporte-tabla">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th class="num">Fecha registro</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in usuarios %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ u.nombre }}</td>
+                    <td>{{ u.correo }}</td>
+                    <td>
+                        {% if u.rol == 'profesor' %}
+                            <span style="background:#1a3c6e;color:white;padding:2px 8px;border-radius:10px;font-size:.75rem;">Profesor</span>
+                        {% else %}
+                            <span style="background:#e8f4ff;color:#007bff;padding:2px 8px;border-radius:10px;font-size:.75rem;">Alumno</span>
+                        {% endif %}
+                    </td>
+                    <td class="num">{{ u.creado_en }}</td>
+                </tr>
+                {% else %}
+                <tr class="sin-datos"><td colspan="5">No hay usuarios registrados.</td></tr>
+                {% endfor %}
+                <tr class="fila-total">
+                    <td colspan="4"><strong>Total de usuarios: {{ usuarios|length }}</strong></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- ── PIE: TOTALES + FIRMA ── -->
+        <div class="reporte-pie">
+            <div class="pie-totales">
+                <p>Total de ventas registradas: <strong>{{ ventas|length }}</strong></p>
+                <p class="total-grande">TOTAL GENERAL: ${{ "%.2f"|format(total_ingresos) }}</p>
+            </div>
+            </div>
+        </div>
+
+    </div><!-- /reporte-doc -->
+</div><!-- /reporte-page -->
+{% endblock %}
