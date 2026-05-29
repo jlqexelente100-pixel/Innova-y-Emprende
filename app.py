@@ -1346,7 +1346,7 @@ def mis_compras():
     conn = conectar_bd()
     cur = conn.cursor()
     cur.execute("""
-        SELECT c.id, cursos.titulo, c.monto, c.estado, c.fecha
+        SELECT c.id, cursos.titulo, c.monto, c.estado, c.fecha, c.curso_id
         FROM compras c JOIN cursos ON c.curso_id = cursos.id
         WHERE c.usuario_id = %s ORDER BY c.fecha DESC;
     """, (session["user_id"],))
@@ -1355,11 +1355,10 @@ def mis_compras():
     conn.close()
 
     compras = [
-        {"id": f[0], "titulo": f[1], "monto": float(f[2]), "estado": f[3], "fecha": f[4]}
+        {"id": f[0], "titulo": f[1], "monto": float(f[2]), "estado": f[3], "fecha": f[4], "curso_id": f[5]}
         for f in filas
     ]
-    return render_template("mis_compras.html", compras=compras)
-
+    return render_template("mis_compras.html", compras=compras, is_home=True, barra_titulo="Mis Compras")
 
 # --------------------------
 # REUNIONES JITSI MEET

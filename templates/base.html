@@ -183,7 +183,7 @@
     <main class="content flex-fill pt-0 px-4 pb-4">
         {% if is_home|default(False) %}
         <header class="barra-superior">
-            <h2 class="ms-3 m-0 fw-bold">Cursos disponibles</h2>
+            <h2 class="ms-3 m-0 fw-bold">{{ barra_titulo|default('Cursos disponibles') }}</h2>
             <div class="clouds">
                 <div class="cloud cloud1"></div>
                 <div class="cloud cloud2"></div>

@@ -1,17 +1,341 @@
-body {
-    background: #f5f7fb;
+/* =============================================
+   MIS COMPRAS
+   Paleta principal: #007b91 (teal)
+   Sigue el mismo sistema de diseño que mis_cursos.css
+============================================= */
+
+.mcp-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
 }
 
-.table-responsive {
+/* --- Encabezado (idéntico a mis_cursos) --- */
+.mc-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.mc-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.dark-mode .mc-title { color: #f1f5f9; }
+
+.mc-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 4px 0 0;
+}
+
+.dark-mode .mc-subtitle { color: #94a3b8; }
+
+.mc-btn-explore {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #007b91;
+    color: #fff;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.mc-btn-explore:hover {
+    background: #005f70;
+    color: #fff;
+}
+
+/* --- Encabezado --- */
+.mcp-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.mcp-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.dark-mode .mcp-title { color: #f1f5f9; }
+
+.mcp-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 4px 0 0;
+}
+
+.dark-mode .mcp-subtitle { color: #94a3b8; }
+
+.mcp-btn-explore {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #007b91;
+    color: #fff;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.mcp-btn-explore:hover {
+    background: #005f70;
+    color: #fff;
+}
+
+/* --- Métricas resumen --- */
+.mcp-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 640px) {
+    .mcp-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+.mcp-stat-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dark-mode .mcp-stat-card {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.mcp-stat-num {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.1;
+}
+
+.dark-mode .mcp-stat-num { color: #f1f5f9; }
+
+.mcp-stat-green { color: #16a34a !important; }
+.mcp-stat-blue  { color: #2563eb !important; }
+.mcp-stat-teal  { color: #007b91 !important; }
+
+.mcp-stat-lbl {
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* --- Lista de tarjetas --- */
+.mcp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+/* --- Tarjeta individual --- */
+.mcp-card {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1.1rem 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+}
+
+.dark-mode .mcp-card {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.mcp-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 145, 0.11);
+    border-color: #007b91;
+}
+
+/* Ícono */
+.mcp-card-icon {
+    width: 52px;
+    height: 52px;
+    background: #e0f4f7;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.dark-mode .mcp-card-icon {
+    background: #164e63;
+}
+
+/* Info */
+.mcp-card-info {
+    flex: 1;
+    min-width: 180px;
+}
+
+.mcp-card-title {
+    font-size: 0.97rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 4px;
+    line-height: 1.3;
+}
+
+.dark-mode .mcp-card-title { color: #f1f5f9; }
+
+.mcp-card-fecha {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Monto */
+.mcp-card-monto {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #007b91;
+    white-space: nowrap;
+    min-width: 70px;
+    text-align: right;
+}
+
+.dark-mode .mcp-card-monto { color: #38bdf8; }
+
+/* Botón ir al curso */
+.mcp-card-action {
+    margin-left: auto;
+}
+
+.mcp-btn-ir {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #007b91;
+    color: #fff;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.mcp-btn-ir:hover {
+    background: #005f70;
+    color: #fff;
+}
+
+/* --- Estado vacío --- */
+.mcp-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #fff;
     border-radius: 16px;
+    border: 1px solid #e2e8f0;
 }
 
-.card.shadow-sm {
-    border-radius: 18px;
+.dark-mode .mcp-empty {
+    background: #1e293b;
+    border-color: #334155;
 }
 
-@media (max-width: 576px) {
-    .table {
-        min-width: 560px;
+.mcp-empty-icon {
+    width: 80px;
+    height: 80px;
+    background: #e0f4f7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.mcp-empty h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.dark-mode .mcp-empty h3 { color: #f1f5f9; }
+
+.mcp-empty p {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
+
+.mcp-btn-primary {
+    display: inline-flex;
+    background: #007b91;
+    color: #fff;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.mcp-btn-primary:hover {
+    background: #005f70;
+    color: #fff;
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+    .mcp-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
     }
+
+    .mcp-card-action {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .mcp-btn-ir {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .mcp-card-monto {
+        text-align: left;
+    }
+
+}
+.barra-superior::before {
+    display: none;
 }
