@@ -124,3 +124,100 @@ body.dark {
         width: 100%;
     }
 }
+
+/* ===== RESEÑAS ===== */
+.reseñas-resumen {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.reseñas-promedio {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #f5a623;
+}
+
+.reseñas-total {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.estrellas-display .estrella.llena { color: #f5a623; }
+.estrellas-display .estrella.vacia { color: #ccc; }
+
+.estrellas-selector {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.estrella-input {
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.estrella-input.activa { color: #f5a623; }
+
+.reseña-textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 0.95rem;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.reseña-textarea:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.reseña-msg {
+    margin-top: 6px;
+    font-size: 0.9rem;
+}
+
+.reseña-item {
+    border-bottom: 1px solid #eee;
+    padding: 14px 0;
+}
+
+.reseña-item:last-child { border-bottom: none; }
+
+.reseña-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.reseña-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.reseña-fecha {
+    margin-left: auto;
+    color: #6c757d;
+    font-size: 0.82rem;
+}
+
+.reseña-comentario-texto {
+    margin: 0;
+    color: #444;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.reseña-form-wrapper {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 16px;
+}
