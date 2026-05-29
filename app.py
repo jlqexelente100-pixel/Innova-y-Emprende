@@ -344,6 +344,18 @@ def crear_tablas():
     );
     """)
 
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS resenas (
+        id SERIAL PRIMARY KEY,
+        curso_id INTEGER REFERENCES cursos(id) ON DELETE CASCADE,
+        usuario_id INTEGER REFERENCES usuarios(id) ON DELETE CASCADE,
+        puntaje INTEGER NOT NULL CHECK (puntaje >= 1 AND puntaje <= 5),
+        comentario TEXT NOT NULL,
+        creado_en TIMESTAMP DEFAULT NOW(),
+        UNIQUE(usuario_id, curso_id)
+    );
+    """)
+
     # Datos iniciales
     cur.execute("SELECT COUNT(*) FROM metodos_pago;")
     if cur.fetchone()[0] == 0:
@@ -1351,14 +1363,21 @@ def mis_compras():
         WHERE c.usuario_id = %s ORDER BY c.fecha DESC;
     """, (session["user_id"],))
     filas = cur.fetchall()
+
+    cur.execute("""
+        SELECT COUNT(*) FROM progreso_cursos
+        WHERE usuario_id = %s AND completado = TRUE;
+    """, (session["user_id"],))
+    completados = cur.fetchone()[0]
+
     cur.close()
     conn.close()
 
     compras = [
-        {"id": f[0], "titulo": f[1], "monto": float(f[2]), "estado": f[3], "fecha": f[4], "curso_id": f[5]}
+        {"id": f[0], "titulo": f[1], "monto": float(f[2]), "estado": f[3], "fecha": f[4].strftime("%d/%m/%Y") if f[4] else "—", "curso_id": f[5]}
         for f in filas
     ]
-    return render_template("mis_compras.html", compras=compras, is_home=True, barra_titulo="Mis Compras")
+    return render_template("mis_compras.html", compras=compras, completados=completados, is_home=True, barra_titulo="Mis Compras")
 
 # --------------------------
 # REUNIONES JITSI MEET
@@ -2074,7 +2093,96 @@ def profesor_reportes():
         now=datetime.now(),
     )
 
+@app.route("/curso/<int:curso_id>/resenas")
+def obtener_resenas(curso_id):
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT r.id, r.puntaje, r.comentario, r.creado_en,
+               u.nombre, u.apellido, u.foto_perfil
+        FROM resenas r
+        JOIN usuarios u ON r.usuario_id = u.id
+        WHERE r.curso_id = %s
+        ORDER BY r.creado_en DESC;
+    """, (curso_id,))
+    filas = cur.fetchall()
 
+    cur.execute("SELECT AVG(puntaje), COUNT(*) FROM resenas WHERE curso_id = %s;", (curso_id,))
+    stats = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    resenas = [
+        {
+            "id": f[0],
+            "puntaje": f[1],
+            "comentario": f[2],
+            "fecha": f[3].strftime("%d/%m/%Y") if f[3] else "",
+            "autor": f"{f[4]} {f[5]}" if f[5] else f[4],
+            "foto": f[6]
+        }
+        for f in filas
+    ]
+    return jsonify({
+        "resenas": resenas,
+        "promedio": round(float(stats[0]), 1) if stats[0] else 0,
+        "total": stats[1]
+    })
+
+
+@app.route("/curso/<int:curso_id>/resena", methods=["POST"])
+def crear_resena(curso_id):
+    if not session.get("user_id"):
+        return jsonify({"error": "Debes iniciar sesión"}), 401
+
+    usuario_id = session["user_id"]
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    cur.execute("SELECT rol FROM usuarios WHERE id = %s;", (usuario_id,))
+    rol = cur.fetchone()[0]
+
+    if rol != 'profesor':
+        cur.execute("""
+            SELECT 1 FROM compras
+            WHERE usuario_id = %s AND curso_id = %s AND estado = 'completado';
+        """, (usuario_id, curso_id))
+        if not cur.fetchone():
+            cur.close()
+            conn.close()
+            return jsonify({"error": "Solo puedes reseñar cursos que hayas comprado"}), 403
+
+    data = request.json
+    puntaje = data.get("puntaje")
+    comentario = data.get("comentario", "").strip()
+
+    if not puntaje or not (1 <= int(puntaje) <= 5):
+        cur.close()
+        conn.close()
+        return jsonify({"error": "Puntaje inválido (1-5)"}), 400
+
+    if not comentario:
+        cur.close()
+        conn.close()
+        return jsonify({"error": "El comentario no puede estar vacío"}), 400
+
+    try:
+        cur.execute("""
+            INSERT INTO resenas (curso_id, usuario_id, puntaje, comentario)
+            VALUES (%s, %s, %s, %s)
+            ON CONFLICT (usuario_id, curso_id)
+            DO UPDATE SET puntaje = %s, comentario = %s, creado_en = NOW();
+        """, (curso_id, usuario_id, puntaje, comentario, puntaje, comentario))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        cur.close()
+        conn.close()
+        return jsonify({"error": str(e)}), 500
+
+    cur.close()
+    conn.close()
+    return jsonify({"mensaje": "Reseña guardada correctamente"}), 201
 # --------------------------
 # Ejecutar app
 # --------------------------
