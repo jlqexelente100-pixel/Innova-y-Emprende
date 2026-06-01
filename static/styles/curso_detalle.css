@@ -1,3 +1,7 @@
+/* ===== FUENTES ===== */
+/* Playfair Display para títulos, DM Sans para cuerpo */
+/* Ya importadas en el HTML via Google Fonts */
+
 :root {
     --color-principal: #007bff;
     --color-secundario: #6c757d;
@@ -14,50 +18,272 @@ body.dark {
     --text-card: #e2e8f0;
 }
 
-/*.curso-panel {
-    background: var(--bg-card);
-    color: var(--text-card);
-}*/
+body {
+    font-family: "Lato", Arial, sans-serif;
+}
 
-/**/
+/* ===== HEADER CURSO ===== */
+
+/* Variables de marca inferidas del proyecto */
+:root {
+    --brand-deep:   #013941;
+    --brand-primary:#005969;
+    --brand-mid:    #007b91;
+    --brand-light:  #00b4c7;
+    --radius-lg:    16px;
+    --radius-sm:    8px;
+    --shadow-md:    0 8px 28px rgba(15, 23, 42, 0.15);
+    --shadow-sm:    0 4px 12px rgba(15, 23, 42, 0.10);
+    --transition-fast: all 0.2s ease;
+
+    /* Ancho dinámico del sidebar */
+    --current-sidebar-width: var(--sidebar-width, 260px);
+}
+#sidebar.collapsed ~ .main-wrapper .curso-header,
+#sidebar.collapsed ~ * .curso-header {
+    --current-sidebar-width: var(--sidebar-collapsed-width, 68px);
+}
 
 .curso-header {
-    background: linear-gradient(135deg, var(--color-principal), var(--color-secundario));
-    color: white;
-    padding: clamp(2rem, 5vw, 3rem) 0;
-    margin-bottom: 2rem;
-    border-radius: 0!important;
+    /* Sin posicionamiento absoluto — fluye normal dentro del wrapper */
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+    box-sizing: border-box;
+    transition: width 0.28s ease;
+    
+
+
+    /* Estilo prof-hero — tarjeta flotante */
+    background: linear-gradient(135deg, var(--brand-deep) 0%, var(--brand-primary) 55%, var(--brand-mid) 100%);
+    border-radius: var(--radius-lg);
+    padding: 2rem 2.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Línea decorativa inferior */
+.curso-header::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand-mid), var(--brand-light));
+    z-index: 1;
+}
+
+/* Cuadrícula de fondo sutil */
+.curso-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-size: 46px 46px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Cuadrícula de fondo */
+.curso-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-size: 46px 46px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Línea decorativa inferior */
+.curso-header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        #00b4c7 25%,
+        #45d7df 50%,
+        #00b4c7 75%,
+        transparent 100%
+    );
+    z-index: 0;
+}
+
+.curso-header-inner {
+    position: relative;
+    z-index: 2;
+    text-align: left;
+}
+
+.curso-header-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 12px;
+    border-radius: 20px;
+    margin-bottom: 0.7rem;
 }
 
 .curso-header h1 {
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
-    margin-bottom: 0.75rem;
+    font-size: 1.7rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin: 0 0 0.3rem;
+    color: #ffffff;
+    position: relative;
+    z-index: 2;
+    font-family: "Lato", Arial, sans-serif;
 }
 
-.curso-header {
-    margin-left: calc(-2 * var(--bs-gutter-x, 0.75rem));
-    margin-right: calc(-2 * var(--bs-gutter-x, 0.75rem));
+.curso-header-profesor {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.82);
+    margin: 0 0 0.6rem;
+    position: relative;
+    z-index: 2;
 }
 
+.curso-header-profesor strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.curso-header-precio {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    position: relative;
+    z-index: 2;
+}
+
+.curso-header-precio.gratis {
+    color: #4ade80;
+}
+
+@media (max-width: 768px) {
+    .curso-header {
+        padding: 1.5rem 1.25rem;
+    }
+}
+
+/* ===== TARJETA COMPRAR ===== */
+.comprar-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.comprar-precio {
+    font-family: "Lato", Arial, sans-serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.btn-comprar {
+    background: linear-gradient(135deg, var(--brand-deep) 0%, var(--brand-primary) 55%, var(--brand-mid) 100%);
+    color: white;
+    font-family: "Lato", Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    margin-bottom: 1.25rem;
+}
+
+.btn-comprar:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    color: white;
+}
+
+.comprar-beneficios {
+    text-align: left;
+    border-top: 1px solid rgba(61, 61, 61, 0.1);
+    padding-top: 1rem;
+}
+
+.comprar-beneficios-titulo {
+    color: rgba(61, 61, 61, 0.6);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.6rem;
+    font-weight: 500;
+}
+
+.comprar-beneficios ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.comprar-beneficios ul li {
+    color: rgba(61, 61, 61, 0.85);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.comprar-beneficios ul li::before {
+    content: "✓";
+    color: #4ade80;
+    font-weight: 700;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+/* ===== LAYOUT ===== */
 .curso-detalle-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
     gap: 1.5rem;
     align-items: start;
-    
 }
 
 .curso-imagen {
     width: 100%;
     height: clamp(220px, 40vw, 400px);
     object-fit: cover;
-    border-radius: 18px;
-    margin-bottom: 1.5rem;
+    border-radius: 0;
+    display: block;
+}
+
+/* Cuando la imagen está dentro de la tarjeta media, redondea solo arriba */
+.curso-panel-media .curso-imagen {
+    border-radius: 18px 18px 0 0;
 }
 
 .curso-panel {
-    background: var(--bg-card); 
-    color: var(--text-card);   
+    background: var(--bg-card);
+    color: var(--text-card);
     border-radius: 18px;
     box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
     overflow: hidden;
@@ -65,6 +291,13 @@ body.dark {
 
 .curso-panel .card-body {
     padding: 1.25rem;
+}
+
+.curso-panel h3 {
+    font-family: "Lato", Arial, sans-serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
 }
 
 .leccion-item {
@@ -117,7 +350,7 @@ body.dark {
     .curso-header {
         margin-inline: -1rem;
         border-radius: 0 0 18px 18px;
-        margin-top: -4.8rem ;
+        margin-top: -4.8rem;
     }
 
     .profesor-panel .btn-group-responsive > * {
@@ -137,6 +370,7 @@ body.dark {
     font-size: 2rem;
     font-weight: 700;
     color: #f5a623;
+    font-family: "Lato", Arial, sans-serif;
 }
 
 .reseñas-total {
@@ -169,7 +403,7 @@ body.dark {
     padding: 10px;
     font-size: 0.95rem;
     resize: vertical;
-    font-family: inherit;
+    font-family: "Lato", Arial, sans-serif;
 }
 
 .reseña-textarea:focus {
