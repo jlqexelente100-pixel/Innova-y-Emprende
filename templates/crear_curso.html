@@ -2,61 +2,107 @@
 
 {% block title %}Crear Curso{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/crear_curso.css') }}">
+{% endblock %}
+
 {% block content %}
 {% if session.get('rol') == 'profesor' %}
+<div class="container-fluid mt-4 px-2 px-md-3">
 
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-6">
-
-            <h2 class="mb-4 fw-bold">Crea tu curso</h2>
-
-            <div class="card shadow-sm border-0 p-4">
-
-                <form method="POST" action="{{ url_for('profesor_crear_curso') }}" enctype="multipart/form-data">
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Título</label>
-                        <input type="text" class="form-control" name="titulo" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Descripción</label>
-                        <textarea class="form-control" name="descripcion" rows="4" required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Precio</label>
-                        <input type="number" step="0.01" class="form-control" name="precio" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Imagen del curso</label>
-                        <input type="file" name="imagen" class="form-control" accept="image/*">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
-                        Crear curso
-                    </button>
-
-                </form>
-
-            </div>
+    <!-- ── Hero ── -->
+    <div class="curso-hero">
+        <div>
+            <h2><i class="bi bi-plus-circle"></i> Crear nuevo curso</h2>
+            <p>Completa la información para publicar tu curso en la plataforma</p>
         </div>
+        <a href="{{ url_for('profesor_dashboard') }}" class="btn-volver-curso">
+            <i class="bi bi-arrow-left"></i> Volver al panel
+        </a>
     </div>
+
+    <!-- ── Formulario ── -->
+    <div class="crear-curso-card">
+        <form method="POST" action="{{ url_for('profesor_crear_curso') }}" enctype="multipart/form-data">
+
+            <p class="form-section-title">Información del curso</p>
+
+            <div class="row g-4 mb-2">
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="bi bi-type"></i> Título
+                    </label>
+                    <input type="text" class="form-control" name="titulo" required
+                           placeholder="Ej: Marketing Digital para Emprendedores">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="bi bi-tag"></i> Precio (USD)
+                    </label>
+                    <input type="number" step="0.01" min="0" class="form-control" name="precio" required
+                           placeholder="Ej: 29.99">
+                    <div class="form-text">Escribe 0 para publicar el curso gratis</div>
+                </div>
+            </div>
+
+            <p class="form-section-title">Contenido y portada</p>
+
+            <div class="row g-4 mb-2">
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="bi bi-file-text"></i> Descripción
+                    </label>
+                    <textarea class="form-control" name="descripcion" rows="5" required
+                              placeholder="Describe qué aprenderán los estudiantes en este curso..."></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="bi bi-image"></i> Imagen de portada
+                    </label>
+                    <input type="file" name="imagen" class="form-control" accept="image/*"
+                           onchange="previewImagen(this)">
+                    <div class="form-text">Formatos: JPG, PNG, WEBP. Recomendado: 1280×720px</div>
+                    <div class="img-preview-wrap" id="imgPreview">
+                        <img id="imgPreviewEl" src="" alt="Vista previa">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-crear-curso-submit mt-3">
+                <i class="bi bi-check-circle"></i> Publicar curso
+            </button>
+
+        </form>
+    </div>
+
 </div>
 
 {% else %}
-
-<div class="container py-4">
-    <div class="alert alert-danger shadow-sm">
-        <h5 class="fw-bold">Acceso denegado</h5>
+<div class="container mt-4">
+    <div class="alert alert-danger">
+        <h5>Acceso denegado</h5>
         <p>Solo los profesores pueden crear cursos.</p>
-        <a href="{{ url_for('index') }}" class="btn btn-primary">
-            Volver al inicio
-        </a>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Volver al inicio</a>
     </div>
 </div>
-
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function previewImagen(input) {
+    const wrap = document.getElementById("imgPreview");
+    const img  = document.getElementById("imgPreviewEl");
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            img.src = e.target.result;
+            wrap.style.display = "block";
+        };
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        wrap.style.display = "none";
+    }
+}
+</script>
 {% endblock %}

@@ -1,0 +1,210 @@
+/* ═══════════════════════════════════════════════
+   DASHBOARD PROFESOR
+   Usa las variables de inicio.css (:root)
+═══════════════════════════════════════════════ */
+
+/* ── Hero ───────────────────────────────────── */
+.prof-hero {
+    background: linear-gradient(135deg, var(--brand-deep) 0%, var(--brand-primary) 55%, var(--brand-mid) 100%);
+    border-radius: var(--radius-lg);
+    padding: 2rem 2.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+.prof-hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand-mid), var(--brand-light));
+}
+.prof-hero h2 { font-size: 1.7rem; font-weight: 900; margin: 0; }
+.prof-hero p  { margin: .3rem 0 0; opacity: .82; font-size: .95rem; }
+
+.btn-crear-curso {
+    background: var(--brand-mid);
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    padding: .65rem 1.5rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+}
+.btn-crear-curso:hover {
+    background: var(--brand-light);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ── Stats row ──────────────────────────────── */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.stat-card {
+    background: var(--surface-1);
+    border-radius: var(--radius-md);
+    padding: 1.3rem 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow-sm);
+    border-left: 5px solid var(--brand-mid);
+    transition: transform var(--transition-fast);
+}
+.stat-card:hover { transform: translateY(-3px); }
+.stat-card.compradores { border-left-color: var(--brand-light); }
+
+.stat-icon { font-size: 1.8rem; line-height: 1; color: var(--brand-mid); }
+.stat-val  { font-size: 1.8rem; font-weight: 900; color: var(--text-primary); line-height: 1; }
+.stat-lbl  { font-size: .8rem; color: var(--text-muted); margin-top: .2rem; }
+
+body.dark-mode .stat-card { background: #1a2a33; }
+body.dark-mode .stat-val  { color: #e2e8f0; }
+
+/* ── Grid de cursos ─────────────────────────── */
+.cursos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.4rem;
+}
+@media (max-width: 1200px) { .cursos-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 900px)  { .cursos-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 580px)  { .cursos-grid { grid-template-columns: 1fr; } }
+
+.curso-card-prof {
+    background: var(--surface-1);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--surface-border);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.curso-card-prof:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Portada */
+.curso-cover {
+    height: 155px;
+    background: linear-gradient(135deg, var(--brand-deep), var(--brand-mid));
+    position: relative;
+    overflow: hidden;
+}
+.curso-cover img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform var(--transition-base);
+}
+.curso-card-prof:hover .curso-cover img { transform: scale(1.04); }
+
+.precio-badge {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: var(--brand-primary);
+    color: #fff;
+    font-weight: 800;
+    font-size: .82rem;
+    padding: .25rem .7rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+/* Cuerpo de la card */
+.curso-body {
+    padding: 1rem 1.1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.curso-body h5 {
+    font-weight: 800;
+    font-size: .97rem;
+    margin-bottom: .45rem;
+    line-height: 1.3;
+    color: var(--text-primary);
+}
+.curso-body p {
+    font-size: .82rem;
+    color: var(--text-muted);
+    flex: 1;
+    margin-bottom: .8rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.curso-meta {
+    font-size: .78rem;
+    color: var(--text-muted);
+    margin-bottom: .9rem;
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+}
+
+/* Botones de acción */
+.curso-actions {
+    display: flex;
+    gap: .6rem;
+}
+.curso-actions a {
+    flex: 1;
+    text-align: center;
+    padding: .45rem .5rem;
+    border-radius: var(--radius-sm);
+    font-size: .82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+.btn-ver {
+    background: rgba(0,92,107,.08);
+    color: var(--brand-mid);
+    border: 1.5px solid var(--brand-mid);
+}
+.btn-ver:hover  { background: var(--brand-mid); color: #fff; }
+
+.btn-add {
+    background: rgba(0,56,66,.07);
+    color: var(--brand-primary);
+    border: 1.5px solid var(--brand-primary);
+}
+.btn-add:hover  { background: var(--brand-primary); color: #fff; }
+
+/* Darkmode cards */
+body.dark-mode .curso-card-prof {
+    background: #1a2a33;
+    border-color: rgba(255,255,255,.07);
+}
+body.dark-mode .curso-body h5 { color: #e2e8f0; }
+body.dark-mode .curso-body p,
+body.dark-mode .curso-meta     { color: #94a3b8; }
+body.dark-mode .btn-ver  {
+    background: rgba(0,92,107,.25);
+    color: #7dd3e8;
+    border-color: #7dd3e8;
+}
+body.dark-mode .btn-ver:hover  { background: #7dd3e8; color: #001f26; }
+body.dark-mode .btn-add  {
+    background: rgba(0,56,66,.4);
+    color: #93c5d4;
+    border-color: #93c5d4;
+}
+body.dark-mode .btn-add:hover  { background: #93c5d4; color: #001f26; }

@@ -752,19 +752,51 @@ def profesor_dashboard():
     profesor_id = session["user_id"]
     conn = conectar_bd()
     cur = conn.cursor()
+
+    # Cursos con conteo de lecciones
     cur.execute(
-        "SELECT id, titulo, descripcion, precio, imagen_url FROM cursos WHERE profesor_id = %s;",
+        """
+        SELECT c.id, c.titulo, c.descripcion, c.precio, c.imagen_url,
+               COUNT(DISTINCT l.id) AS total_lecciones
+        FROM cursos c
+        LEFT JOIN lecciones l ON l.curso_id = c.id
+        WHERE c.profesor_id = %s
+        GROUP BY c.id, c.titulo, c.descripcion, c.precio, c.imagen_url
+        ORDER BY c.id;
+        """,
         (profesor_id,)
     )
     filas = cur.fetchall()
+
+    # Total de compradores únicos en todos los cursos del profesor
+    cur.execute(
+        """
+        SELECT COUNT(DISTINCT comp.usuario_id)
+        FROM compras comp
+        JOIN cursos c ON comp.curso_id = c.id
+        WHERE c.profesor_id = %s AND comp.estado = 'completado';
+        """,
+        (profesor_id,)
+    )
+    total_compradores = cur.fetchone()[0] or 0
+
     cur.close()
     conn.close()
 
     cursos = [
-        {"id": f[0], "titulo": f[1], "descripcion": f[2], "precio": float(f[3]) if f[3] else 0, "imagen_url": f[4]}
+        {
+            "id": f[0], "titulo": f[1], "descripcion": f[2],
+            "precio": float(f[3]) if f[3] else 0,
+            "imagen_url": f[4], "total_lecciones": f[5],
+        }
         for f in filas
     ]
-    return render_template("dashboard_profesor.html", cursos=cursos, nombre=session.get("nombre"))
+    return render_template(
+        "dashboard_profesor.html",
+        cursos=cursos,
+        nombre=session.get("nombre"),
+        total_compradores=total_compradores,
+    )
 
 
 @app.route("/profesor/crear-curso", methods=["GET", "POST"])

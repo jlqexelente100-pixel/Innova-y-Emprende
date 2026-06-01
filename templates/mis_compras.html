@@ -4,11 +4,69 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/mis_compras.css') }}">
+<style>
+.page-hero {
+    background: linear-gradient(135deg, var(--brand-deep) 0%, var(--brand-primary) 55%, var(--brand-mid) 100%);
+    border-radius: var(--radius-lg);
+    padding: 2rem 2.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+.page-hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand-mid), var(--brand-light));
+}
+.page-hero h2 { font-size: 1.6rem; font-weight: 900; margin: 0; }
+.page-hero p  { margin: .3rem 0 0; opacity: .8; font-size: .92rem; }
+.page-hero-btn {
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    font-weight: 600;
+    border: 1.5px solid rgba(255,255,255,.4);
+    padding: .55rem 1.2rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-size: .88rem;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+}
+.page-hero-btn:hover {
+    background: rgba(255,255,255,.25);
+    color: #fff;
+    border-color: rgba(255,255,255,.7);
+}
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="mcp-wrapper">
+<div class="container-fluid mt-4 px-2 px-md-3">
 
+    <!-- Hero -->
+    <div class="page-hero">
+        <div>
+            <h2><i class="bi bi-bag-check"></i> Mis Compras</h2>
+            <p>Historial de todos los cursos que has adquirido</p>
+        </div>
+        <a href="{{ url_for('index') }}" class="page-hero-btn">
+            <i class="bi bi-compass"></i> Ver catálogo
+        </a>
+    </div>
+
+<div class="mcp-wrapper" style="padding-top:0;">
 
     {% if compras %}
 
@@ -54,9 +112,7 @@
                     </p>
                 </div>
 
-                <div class="mcp-card-monto">
-                    ${{ "%.2f"|format(c.monto) }}
-                </div>
+                <div class="mcp-card-monto">${{ "%.2f"|format(c.monto) }}</div>
 
                 <div class="mcp-card-action">
                     <a href="{{ url_for('curso_detalle', curso_id=c.curso_id) }}" class="mcp-btn-ir">
@@ -86,5 +142,6 @@
 
     {% endif %}
 
+</div>
 </div>
 {% endblock %}

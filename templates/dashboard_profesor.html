@@ -2,45 +2,72 @@
 
 {% block title %}Panel Profesor{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard_profesor.css') }}">
+{% endblock %}
+
 {% block content %}
 {% if session.get('rol') == 'profesor' %}
-<div class="container mt-4">
-    <h2 class="mb-2">Panel del Profesor - {{ nombre }}</h2>
+<div class="container-fluid mt-4 px-2 px-md-3">
 
-    <div class="mb-4">
-        <a href="{{ url_for('profesor_crear_curso') }}" class="btn btn-success">
-            + Crear nuevo curso
-        </a>
+    <!-- ── Hero ── -->
+    <div class="prof-hero">
+        <div>
+            <h2><i class="bi bi-easel2"></i> Panel del Profesor</h2>
+            <p>Bienvenido, <strong>{{ nombre }}</strong> — gestiona y haz crecer tus cursos</p>
+        </div>
+        <a href="{{ url_for('profesor_crear_curso') }}" class="btn-crear-curso">+ Crear nuevo curso</a>
     </div>
 
-    <h3 class="mb-3">Tus cursos</h3>
+    <!-- ── Stats ── -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="bi bi-journal-bookmark"></i></div>
+            <div>
+                <div class="stat-val">{{ cursos|length }}</div>
+                <div class="stat-lbl">Cursos publicados</div>
+            </div>
+        </div>
+        <div class="stat-card compradores">
+            <div class="stat-icon"><i class="bi bi-people"></i></div>
+            <div>
+                <div class="stat-val">{{ total_compradores }}</div>
+                <div class="stat-lbl">Estudiantes inscritos</div>
+            </div>
+        </div>
+    </div>
 
+    <!-- ── Grid de cursos ── -->
     {% if cursos %}
-        <div class="list-group shadow-sm">
-            {% for c in cursos %}
-                <div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-                    <div>
-                        <strong>{{ c.titulo }}</strong><br>
-                        <small class="text-muted">Precio: ${{ c.precio }}</small>
-                    </div>
-
-                    <div class="d-flex flex-column flex-sm-row gap-2 w-100">
-                        <a href="{{ url_for('curso_detalle', curso_id=c.id) }}" class="btn btn-sm btn-outline-primary">
-                           Ver/Editar
-                        </a>
-
-                        <a href="{{ url_for('profesor_anadir_leccion', curso_id=c.id) }}" class="btn btn-sm btn-outline-secondary">
-                           Anadir leccion
-                        </a>
-                    </div>
+    <div class="cursos-grid">
+        {% for c in cursos %}
+        <div class="curso-card-prof">
+            <div class="curso-cover">
+                {% if c.imagen_url %}
+                    <img src="/static/{{ c.imagen_url }}" alt="{{ c.titulo }}">
+                {% endif %}
+                <span class="precio-badge">${{ "%.2f"|format(c.precio) }}</span>
+            </div>
+            <div class="curso-body">
+                <h5>{{ c.titulo }}</h5>
+                <p>{{ c.descripcion or "Sin descripción disponible." }}</p>
+                <div class="curso-meta">
+                    <i class="bi bi-book"></i> {{ c.total_lecciones }} lección{{ 'es' if c.total_lecciones != 1 else '' }}
                 </div>
-            {% endfor %}
+                <div class="curso-actions">
+                    <a href="{{ url_for('curso_detalle', curso_id=c.id) }}" class="btn-ver"><i class="bi bi-pencil"></i> Ver/Editar</a>
+                    <a href="{{ url_for('profesor_anadir_leccion', curso_id=c.id) }}" class="btn-add"><i class="bi bi-plus-lg"></i> Lección</a>
+                </div>
+            </div>
         </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <div class="alert alert-info">
-            No tienes cursos todavia.
-        </div>
+    <div class="alert alert-info mt-2">
+        No tienes cursos todavía. ¡Crea el primero con el botón de arriba!
+    </div>
     {% endif %}
+
 </div>
 
 {% else %}
@@ -48,9 +75,7 @@
     <div class="alert alert-danger">
         <h5>Acceso denegado</h5>
         <p>Solo los profesores pueden acceder a este panel.</p>
-        <a href="{{ url_for('index') }}" class="btn btn-primary">
-            Volver al inicio
-        </a>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Volver al inicio</a>
     </div>
 </div>
 {% endif %}
