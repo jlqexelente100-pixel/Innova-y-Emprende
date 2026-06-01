@@ -39,6 +39,46 @@
                 </div>
             </div>
 
+            <!-- ===== SECCIÓN RESEÑAS ===== -->
+<div class="curso-panel mb-4" id="seccion-reseñas">
+    <div class="card-body">
+        <h3>Reseñas del curso</h3>
+
+        <!-- Resumen promedio -->
+        <div class="reseñas-resumen" id="reseñas-resumen">
+            <span class="reseñas-promedio" id="reseñas-promedio">—</span>
+            <div class="estrellas-display" id="estrellas-promedio"></div>
+            <span class="reseñas-total" id="reseñas-total"></span>
+        </div>
+
+        <!-- Formulario (solo si compró el curso) -->
+        {% if curso.puede_acceder and not curso.es_profesor %}
+        <div class="reseña-form-wrapper mt-3">
+            <h5>Tu reseña</h5>
+            <div class="estrellas-selector" id="estrellas-selector">
+                <span class="estrella-input" data-valor="1">★</span>
+                <span class="estrella-input" data-valor="2">★</span>
+                <span class="estrella-input" data-valor="3">★</span>
+                <span class="estrella-input" data-valor="4">★</span>
+                <span class="estrella-input" data-valor="5">★</span>
+            </div>
+            <textarea id="reseña-comentario" class="reseña-textarea"
+                      placeholder="Escribe tu opinión sobre el curso..." rows="3"></textarea>
+            <button class="btn btn-principal mt-2" onclick="enviarResena()">
+                Publicar reseña
+            </button>
+            <p class="reseña-msg" id="reseña-msg"></p>
+        </div>
+        {% endif %}
+
+        <!-- Lista de reseñas -->
+        <div class="reseñas-lista mt-4" id="reseñas-lista">
+            <p class="text-muted">Cargando reseñas...</p>
+        </div>
+    </div>
+</div>
+<!-- ===== FIN RESEÑAS ===== -->
+
             {% if curso.precio and curso.precio > 0 and not curso.puede_acceder %}
             <button class="btn btn-principal" onclick="comprarCurso({{ curso.id }}, {{ curso.precio }})">
                 Comprar curso
@@ -168,5 +208,119 @@ async function comprarCurso(curso_id, precio) {
         alert("Error al procesar el pago");
     }
 }
+
+// ===== RESENAS =====
+let puntajeSeleccionado = 0;
+
+async function cargarResenas() {
+    try {
+        const res = await fetch(`/curso/${cursoId}/resenas`);
+        const data = await res.json();
+
+        document.getElementById("reseñas-promedio").textContent =
+            data.promedio > 0 ? data.promedio.toFixed(1) : "Sin reseñas";
+        document.getElementById("estrellas-promedio").innerHTML =
+            renderEstrellas(data.promedio);
+        document.getElementById("reseñas-total").textContent =
+            data.total > 0 ? `(${data.total} reseña${data.total !== 1 ? "s" : ""})` : "";
+
+        const lista = document.getElementById("reseñas-lista");
+        if (data.resenas.length === 0) {
+            lista.innerHTML = '<p class="text-muted">Aún no hay reseñas. ¡Sé el primero!</p>';
+            return;
+        }
+        lista.innerHTML = data.resenas.map(r => `
+            <div class="reseña-item">
+                <div class="reseña-header">
+                    <img src="${r.foto ? '/static/' + r.foto : '/static/styles/imagenes/default-avatar.png'}"
+                         class="reseña-avatar" alt="${r.autor}">
+                    <div>
+                        <strong>${r.autor}</strong>
+                        <div class="estrellas-display">${renderEstrellas(r.puntaje)}</div>
+                    </div>
+                    <span class="reseña-fecha">${r.fecha}</span>
+                </div>
+                <p class="reseña-comentario-texto">${r.comentario}</p>
+            </div>
+        `).join("");
+    } catch (e) {
+        document.getElementById("reseñas-lista").innerHTML =
+            '<p class="text-muted">Error al cargar reseñas.</p>';
+    }
+}
+
+function renderEstrellas(valor) {
+    let html = "";
+    for (let i = 1; i <= 5; i++) {
+        html += i <= valor
+            ? '<span class="estrella llena">★</span>'
+            : '<span class="estrella vacia">☆</span>';
+    }
+    return html;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".estrella-input").forEach(estrella => {
+        estrella.addEventListener("mouseover", function () {
+            const val = parseInt(this.dataset.valor);
+            document.querySelectorAll(".estrella-input").forEach((e, i) => {
+                e.classList.toggle("activa", i < val);
+            });
+        });
+        estrella.addEventListener("mouseout", function () {
+            document.querySelectorAll(".estrella-input").forEach((e, i) => {
+                e.classList.toggle("activa", i < puntajeSeleccionado);
+            });
+        });
+        estrella.addEventListener("click", function () {
+            puntajeSeleccionado = parseInt(this.dataset.valor);
+            document.querySelectorAll(".estrella-input").forEach((e, i) => {
+                e.classList.toggle("activa", i < puntajeSeleccionado);
+            });
+        });
+    });
+});
+
+async function enviarResena() {
+    const comentario = document.getElementById("reseña-comentario").value.trim();
+    const msg = document.getElementById("reseña-msg");
+
+    if (!puntajeSeleccionado) {
+        msg.textContent = "Por favor selecciona una puntuación.";
+        msg.style.color = "red";
+        return;
+    }
+    if (!comentario) {
+        msg.textContent = "Escribe un comentario antes de publicar.";
+        msg.style.color = "red";
+        return;
+    }
+
+    try {
+        const res = await fetch(`/curso/${cursoId}/resena`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ puntaje: puntajeSeleccionado, comentario })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            msg.textContent = "¡Reseña publicada!";
+            msg.style.color = "green";
+            document.getElementById("reseña-comentario").value = "";
+            puntajeSeleccionado = 0;
+            document.querySelectorAll(".estrella-input").forEach(e => e.classList.remove("activa"));
+            cargarResenas();
+        } else {
+            msg.textContent = data.error || "Error al publicar.";
+            msg.style.color = "red";
+        }
+    } catch (e) {
+        msg.textContent = "Error de conexión.";
+        msg.style.color = "red";
+    }
+}
+
+cargarResenas();
 </script>
 {% endblock %}
