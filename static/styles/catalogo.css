@@ -83,7 +83,7 @@ flex-direction: column;
 position: relative;
 transition: transform var(--transition), box-shadow var(--transition), border-color 0.2s;
 }
-
+/*/* Efecto hover */
 .curso-card:hover {
 transform: translateY(-6px) scale(1.01);
 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.253), 0 0 0 1px var(--border);
