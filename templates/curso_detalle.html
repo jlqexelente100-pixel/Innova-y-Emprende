@@ -6,92 +6,111 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/curso_detalle.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<section class="curso-header">
-    <div class="container">
-        <h1>{{ curso.titulo }}</h1>
-        <p class="mb-2">
-            Impartido por:
-            <strong>{{ curso.profesor_id }}</strong>
-        </p>
 
-        {% if curso.precio and curso.precio > 0 %}
-        <h3 class="mb-0">${{ "%.2f"|format(curso.precio) }}</h3>
-        {% else %}
-        <h3 class="mb-0">GRATIS</h3>
-        {% endif %}
-    </div>
-</section>
+<!-- HEADER CURSO -->
+<div class="container mb-4">
+    <header class="curso-header">
+        <div class="curso-header-inner">
+            <div class="curso-header-content">
+                <h1>{{ curso.titulo }}</h1>
+                <p class="curso-header-profesor">
+                    Impartido por
+                    <strong>{{ curso.profesor_id }}</strong>
+                </p>
+                {% if curso.precio and curso.precio > 0 %}
+                    <div class="curso-header-precio">
+                        ${{ "%.2f"|format(curso.precio) }}
+                    </div>
+                {% else %}
+                    <div class="curso-header-precio gratis">
+                        GRATIS
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+</div>
 
 <div class="container my-4">
     <div class="curso-detalle-grid">
-        <div>
-            <img src="{{ url_for('static', filename=curso.imagen_url) }}"
-                 class="curso-imagen"
-                 alt="{{ curso.titulo }}">
 
-            <div class="curso-panel mb-4">
+        <!-- COLUMNA IZQUIERDA: imagen, descripción, reseñas -->
+        <div>
+            <!-- TARJETA: imagen + descripción -->
+            <div class="curso-panel curso-panel-media mb-4">
+                <img src="{{ url_for('static', filename=curso.imagen_url) }}"
+                     class="curso-imagen"
+                     alt="{{ curso.titulo }}">
                 <div class="card-body">
                     <h3>Descripcion</h3>
                     <p class="mb-0">{{ curso.descripcion }}</p>
                 </div>
             </div>
 
-            <!-- ===== SECCIÓN RESEÑAS ===== -->
-<div class="curso-panel mb-4" id="seccion-reseñas">
-    <div class="card-body">
-        <h3>Reseñas del curso</h3>
+            <!-- SECCIÓN RESEÑAS -->
+            <div class="curso-panel mb-4" id="seccion-reseñas">
+                <div class="card-body">
+                    <h3>Reseñas del curso</h3>
 
-        <!-- Resumen promedio -->
-        <div class="reseñas-resumen" id="reseñas-resumen">
-            <span class="reseñas-promedio" id="reseñas-promedio">—</span>
-            <div class="estrellas-display" id="estrellas-promedio"></div>
-            <span class="reseñas-total" id="reseñas-total"></span>
-        </div>
+                    <div class="reseñas-resumen" id="reseñas-resumen">
+                        <span class="reseñas-promedio" id="reseñas-promedio">—</span>
+                        <div class="estrellas-display" id="estrellas-promedio"></div>
+                        <span class="reseñas-total" id="reseñas-total"></span>
+                    </div>
 
-        <!-- Formulario (solo si compró el curso) -->
-        {% if curso.puede_acceder and not curso.es_profesor %}
-        <div class="reseña-form-wrapper mt-3">
-            <h5>Tu reseña</h5>
-            <div class="estrellas-selector" id="estrellas-selector">
-                <span class="estrella-input" data-valor="1">★</span>
-                <span class="estrella-input" data-valor="2">★</span>
-                <span class="estrella-input" data-valor="3">★</span>
-                <span class="estrella-input" data-valor="4">★</span>
-                <span class="estrella-input" data-valor="5">★</span>
+                    {% if curso.puede_acceder and not curso.es_profesor %}
+                    <div class="reseña-form-wrapper mt-3">
+                        <h5>Tu reseña</h5>
+                        <div class="estrellas-selector" id="estrellas-selector">
+                            <span class="estrella-input" data-valor="1">★</span>
+                            <span class="estrella-input" data-valor="2">★</span>
+                            <span class="estrella-input" data-valor="3">★</span>
+                            <span class="estrella-input" data-valor="4">★</span>
+                            <span class="estrella-input" data-valor="5">★</span>
+                        </div>
+                        <textarea id="reseña-comentario" class="reseña-textarea"
+                                  placeholder="Escribe tu opinión sobre el curso..." rows="3"></textarea>
+                        <button class="btn btn-principal mt-2" onclick="enviarResena()">
+                            Publicar reseña
+                        </button>
+                        <p class="reseña-msg" id="reseña-msg"></p>
+                    </div>
+                    {% endif %}
+
+                    <div class="reseñas-lista mt-4" id="reseñas-lista">
+                        <p class="text-muted">Cargando reseñas...</p>
+                    </div>
+                </div>
             </div>
-            <textarea id="reseña-comentario" class="reseña-textarea"
-                      placeholder="Escribe tu opinión sobre el curso..." rows="3"></textarea>
-            <button class="btn btn-principal mt-2" onclick="enviarResena()">
-                Publicar reseña
-            </button>
-            <p class="reseña-msg" id="reseña-msg"></p>
-        </div>
-        {% endif %}
-
-        <!-- Lista de reseñas -->
-        <div class="reseñas-lista mt-4" id="reseñas-lista">
-            <p class="text-muted">Cargando reseñas...</p>
-        </div>
-    </div>
-</div>
-<!-- ===== FIN RESEÑAS ===== -->
-
-            {% if curso.precio and curso.precio > 0 and not curso.puede_acceder %}
-            <button class="btn btn-principal" onclick="comprarCurso({{ curso.id }}, {{ curso.precio }})">
-                Comprar curso
-            </button>
-            {% endif %}
-
-            {% if curso.es_profesor %}
-            {% endif %}
         </div>
 
+        <!-- COLUMNA DERECHA: comprar, lecciones, foro, profesor -->
         <div>
+            <!-- BOTÓN COMPRAR -->
+            {% if curso.precio and curso.precio > 0 and not curso.puede_acceder %}
+            <div class="comprar-card mb-4">
+                <div class="comprar-precio">${{ "%.2f"|format(curso.precio) }}</div>
+                <button class="btn btn-comprar" onclick="comprarCurso({{ curso.id }}, {{ curso.precio }})">
+                    Comprar curso — ${{ "%.2f"|format(curso.precio) }}
+                </button>
+                <div class="comprar-beneficios">
+                    <p class="comprar-beneficios-titulo">Lo que obtendrás:</p>
+                    <ul>
+                        <li>Acceso de por vida</li>
+                        <li>Certificado</li>
+                        <li>Soporte</li>
+                        <li>Material descargable</li>
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
             {% if curso.puede_acceder %}
-            <div class="curso-panel">
+            <div class="curso-panel mb-3">
                 <div class="card-body">
                     <h5>Lecciones ({{ lecciones|length }})</h5>
 
@@ -128,19 +147,21 @@
                 </div>
             </div>
 
+            <!-- Panel Profesor: solo visible si es_profesor -->
+            {% if curso.es_profesor %}
             <div class="alert alert-success mt-4 profesor-panel">
                 <h5>Panel Profesor</h5>
                 <div class="btn-group-responsive mt-3">
                     <a href="{{ url_for('profesor_anadir_leccion', curso_id=curso.id) }}" class="btn btn-sm btn-primary">
                         Agregar leccion
                     </a>
-
                     <button class="btn btn-sm btn-secondary" onclick="editarEstilos()">
                         Personalizar CSS
                     </button>
                 </div>
             </div>
-            
+            {% endif %}
+
             {% else %}
             <div class="curso-panel">
                 <div class="card-body">
@@ -150,6 +171,7 @@
             </div>
             {% endif %}
         </div>
+
     </div>
 </div>
 {% endblock %}
@@ -166,9 +188,7 @@ function eliminarLeccion(id) {
     if (confirm("¿Estás seguro de que quieres eliminar esta lección? Esta acción no se puede deshacer.")) {
         fetch(`/profesor/leccion/${id}/eliminar`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
         })
         .then(response => {
             if (response.ok) {
@@ -188,17 +208,10 @@ async function comprarCurso(curso_id, precio) {
     try {
         const res = await fetch("/crear-checkout-session", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                curso_id: curso_id,
-                precio: precio
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ curso_id, precio })
         });
-
         const data = await res.json();
-
         if (data.url) {
             window.location.href = data.url;
         } else {
@@ -209,7 +222,7 @@ async function comprarCurso(curso_id, precio) {
     }
 }
 
-// ===== RESENAS =====
+// ===== RESEÑAS =====
 let puntajeSeleccionado = 0;
 
 async function cargarResenas() {
@@ -322,5 +335,26 @@ async function enviarResena() {
 }
 
 cargarResenas();
+
+// ── Sincronizar ancho del header con el sidebar ──
+(function () {
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebar) return;
+
+    function updateHeaderWidth() {
+        const w = sidebar.classList.contains('collapsed')
+            ? getComputedStyle(document.documentElement)
+                .getPropertyValue('--sidebar-collapsed-width').trim() || '68px'
+            : getComputedStyle(document.documentElement)
+                .getPropertyValue('--sidebar-width').trim() || '260px';
+        document.documentElement.style.setProperty('--current-sidebar-width', w);
+    }
+
+    // Observar cambios de clase en el sidebar
+    new MutationObserver(updateHeaderWidth)
+        .observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+
+    updateHeaderWidth();
+})();
 </script>
 {% endblock %}

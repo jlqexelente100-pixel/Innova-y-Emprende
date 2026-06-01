@@ -1814,7 +1814,25 @@ def crear_post_foro(curso_id):
     conn.close()
     return jsonify({"mensaje": "Post creado"}), 201
 
+@app.route("/notificaciones/no-leidas")
+def notificaciones_no_leidas():
 
+    if not session.get("user_id"):
+        return jsonify({"cantidad": 0})
+    
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT COUNT(*) FROM notificaciones
+        WHERE usuario_id = %s AND leida = FALSE;
+    """, (session["user_id"],))
+
+    cantidad =cur.fetchone()[0]
+    cur.close()
+    conn.close()
+
+    return jsonify({"cantidad": cantidad})
 # --------------------------
 # PROGRESO DE LECCIONES
 # --------------------------
@@ -1880,6 +1898,66 @@ def completar_leccion(leccion_id):
     completadas = cur.fetchone()[0]
 
     porcentaje = round((completadas / total_lecciones * 100) if total_lecciones > 0 else 0, 1)
+
+    # Crear notificación de progreso
+
+    faltantes = total_lecciones - completadas
+
+    mensaje = (
+        f"Llevas {completadas} de {total_lecciones} lecciones completadas. "
+        f"Tu progreso actual es del {porcentaje}%. "
+        f"Te faltan {faltantes} lecciones para terminar el curso."
+    )
+
+    cur.execute("""
+        INSERT INTO notificaciones
+        (usuario_id, tipo, titulo, mensaje, leccion_id)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (
+        usuario_id,
+        "progreso",
+        "Actualización de progreso",
+        mensaje,
+        leccion_id
+    ))
+
+    if porcentaje >= 100:
+        cur.execute("""
+                insert into notificaciones
+                (usuario_id, tipo, titulo, mensaje)
+                values (%s, %s, %s, %s)
+            """, (
+                usuario_id,
+                "completado",
+                "Curso completado",
+                f"¡Felicidades! Has completado el curso '{leccion[1]}'  y ya puedes solicitar tu certificado."
+            ))
+        
+    if porcentaje >= 25 and porcentaje < 50:
+        cur.execute("""
+                insert into notificaciones
+                (usuario_id, tipo, titulo, mensaje)
+                values (%s, %s, %s, %s)
+            """, (
+                usuario_id,
+                "progreso",
+                "¡Buen comienzo!",
+                f"¡Genial! Has completado el {porcentaje}% del curso '{leccion[1]}'. Sigue así para alcanzar tus metas."
+            ))
+    
+    elif porcentaje >= 50 and porcentaje < 75:
+        cur.execute("""
+                insert into notificaciones
+                (usuario_id, tipo, titulo, mensaje)
+                values (%s, %s, %s, %s)
+            """, (
+                usuario_id,
+                "progreso",
+                "¡Mitad del camino!",
+                f"¡Excelente! Has completado el {porcentaje}% del curso '{leccion[1]}'. Estás a mitad de camino, ¡no te detengas ahora!"
+            ))
+    
+        
 
     cur.execute("""
         INSERT INTO progreso_cursos (usuario_id, curso_id, porcentaje, ultima_actualizacion, completado)

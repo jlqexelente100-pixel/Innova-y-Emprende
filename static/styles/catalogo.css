@@ -1,92 +1,249 @@
-/* ============================= */
-/*   CONTENEDOR DE CURSOS        */
-/* ============================= */
 
-.container h2 {
-    font-weight: 800;
-    margin-bottom: 30px;
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+:root {
+--bg: white;
+--surface: #f5f5f56c;
+--surface-2: #ffffff00;
+--border: rgba(5, 2, 2, 0.082);
+--text: #000000;
+--text-muted: #000000;
+--accent: #006172;
+--accent-glow: #006172;
+--radius: 16px;
+--transition: 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* ============================= */
-/*   TARJETAS DE CURSOS          */
-/* ============================= */
-
-.card {
-    border: none;
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    background: #ffffff;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+body {
+background: var(--bg);
+color: var(--text);
+font-family: 'DM Sans', sans-serif;
 }
 
-.card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.15);
+/* ── Filtros ── */
+.filtros-bar {
+display: flex;
+align-items: center;
+gap: 12px;
+margin-bottom: 36px;
+flex-wrap: wrap;
 }
 
-/* Imagen del curso */
-.card-img-top {
-    transition: transform 0.3s ease;
+.filtros-bar h2 {
+font-family: 'Sora', sans-serif;
+font-weight: 700;
+font-size: 1.9rem;
+letter-spacing: -0.03em;
+margin: 0;
+flex: 1;
 }
 
-.card:hover .card-img-top {
-    transform: scale(1.05);
+.filtro-btn {
+background: var(--surface-2);
+border: 1px solid var(--border);
+color: var(--text-muted);
+padding: 8px 18px;
+border-radius: 999px;
+font-size: 0.85rem;
+font-family: 'DM Sans', sans-serif;
+cursor: pointer;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+gap: 6px;
 }
 
-/* Título */
-.card-title {
-    font-weight: 700;
-    font-size: 1.1rem;
+.filtro-btn:hover,
+.filtro-btn.active {
+background: var(--accent);
+border-color: var(--accent);
+color: #fff;
 }
 
-/* Texto */
-.card-text {
-    font-size: 0.9rem;
-    color: #555;
+.filtro-btn svg {
+width: 14px;
+height: 14px;
+}
+
+/* ── Grid ── */
+.cursos-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+gap: 24px;
+}
+
+/* ── Card ── */
+.curso-card {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: var(--radius);
+overflow: hidden;
+display: flex;
+flex-direction: column;
+position: relative;
+transition: transform var(--transition), box-shadow var(--transition), border-color 0.2s;
+}
+
+.curso-card:hover {
+transform: translateY(-6px) scale(1.01);
+box-shadow: 0 10px 20px rgba(0, 0, 0, 0.253), 0 0 0 1px var(--border);
+border-color: rgba(255, 255, 255, 0.062);
+}
+
+/* Barra de color superior */
+.curso-card::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 3px;
+background: #006172;
+z-index: 2;
+}
+
+/* Imagen */
+.curso-card__img-wrap {
+position: relative;
+overflow: hidden;
+height: 180px;
+}
+
+.curso-card__img-wrap img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: transform 0.5s ease;
+display: block;
+}
+
+.curso-card:hover .curso-card__img-wrap img {
+transform: scale(1.06);
+}
+
+.curso-card__img-wrap::after {
+content: '';
+position: absolute;
+inset: 0;
+background: linear-gradient(to bottom, transparent 50%, var(--surface) 100%);
+}
+
+/* Body de la card */
+.curso-card__body {
+padding: 20px 22px 12px;
+flex: 1;
+display: flex;
+flex-direction: column;
+gap: 8px;
+margin-top: 9px;
+
+}
+
+.curso-card__titulo {
+font-family: 'Sora', sans-serif;
+font-size: 1rem;
+font-weight: 700;
+line-height: 1.3;
+color: var(--text);
+margin: 0;
+}
+
+.curso-card__desc {
+font-size: 0.83rem;
+color: var(--text-muted);
+line-height: 1.55;
+margin: 0;
+flex: 1;
+}
+
+/* Meta chips */
+.curso-card__meta {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+margin-top: 4px;
+}
+
+.meta-chip {
+font-size: 0.72rem;
+color: var(--text-muted);
+background: var(--surface-2);
+border: 1px solid var(--border);
+border-radius: 6px;
+padding: 3px 9px;
+display: flex;
+align-items: center;
+gap: 4px;
 }
 
 /* Footer */
-.card-footer {
-    border: none;
-    font-weight: 600;
+.curso-card__footer {
+padding: 14px 22px 18px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+border-top: 1px solid var(--border);
 }
 
-/* Botón */
-.btn-primary {
-    border-radius: 30px;
-    font-weight: 600;
-    padding: 6px 16px;
-    transition: 0.3s ease;
+.curso-card__precio {
+font-family: 'Sora', sans-serif;
+font-size: 1.25rem;
+font-weight: 700;
+color: var(--text);
 }
 
-.btn-primary:hover {
-    transform: scale(1.05);
+.btn-ver {
+background: #006172;
+color: #fff;
+border: none;
+border-radius: 10px;
+padding: 9px 20px;
+font-size: 0.83rem;
+font-family: 'DM Sans', sans-serif;
+font-weight: 500;
+cursor: pointer;
+text-decoration: none;
+transition: opacity 0.2s, transform 0.15s;
+display: inline-flex;
+align-items: center;
+gap: 6px;
 }
 
-/* ============================= */
-/*        DARK MODE              */
-/* ============================= */
-
-html[data-theme="dark"] .card {
-    background: #1e1e1e;
-    color: #ffffff;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+.btn-ver:hover {
+opacity: 0.88;
+transform: scale(1.04);
+color: #ffffff;
 }
 
-html[data-theme="dark"] .card-text {
-    color: #cfcfcf;
+.btn-ver svg {
+width: 14px;
+height: 14px;
 }
 
-html[data-theme="dark"] .card-footer {
-    background-color: #2b2b2b !important;
+/* ── WhatsApp ── */
+.logo-whatsapp {
+position: fixed;
+bottom: 24px;
+right: 24px;
+z-index: 999;
+transition: transform var(--transition);
+filter: drop-shadow(0 4px 16px rgba(37,211,102,0.4));
 }
 
-html[data-theme="dark"] .btn-primary {
-    background-color: #4e73df;
-    border: none;
+.logo-whatsapp:hover {
+transform: scale(1.12) rotate(-4deg);
 }
 
-html[data-theme="dark"] .btn-primary:hover {
-    background-color: #2e59d9;
+.logo-whatsapp img {
+width: 56px;
+height: 56px;
+border-radius: 50%;
+}
+
+/* Animaciones de entrada */
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.curso-card {
+animation: fadeUp 0.45s ease both;
 }
