@@ -2,14 +2,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 
 :root {
---bg: #ffffff;
---surface: #ffffff;
---surface-2: #ffffff;
---border: rgba(255, 255, 255, 0.07);
---text: #f0f0f5;
---text-muted: #8888aa;
---accent: #6c63ff;
---accent-glow: rgba(108, 99, 255, 0.25);
+--bg: white;
+--surface: #f5f5f56c;
+--surface-2: #ffffff00;
+--border: rgba(5, 2, 2, 0.082);
+--text: #000000;
+--text-muted: #000000;
+--accent: #006172;
+--accent-glow: #006172;
 --radius: 16px;
 --transition: 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -86,8 +86,8 @@ transition: transform var(--transition), box-shadow var(--transition), border-co
 
 .curso-card:hover {
 transform: translateY(-6px) scale(1.01);
-box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
-border-color: rgba(255,255,255,0.14);
+box-shadow: 0 10px 20px rgba(0, 0, 0, 0.253), 0 0 0 1px var(--border);
+border-color: rgba(255, 255, 255, 0.062);
 }
 
 /* Barra de color superior */
@@ -96,7 +96,7 @@ content: '';
 position: absolute;
 top: 0; left: 0; right: 0;
 height: 3px;
-background: var(--card-color, var(--accent));
+background: #006172;
 z-index: 2;
 }
 
@@ -126,24 +126,6 @@ inset: 0;
 background: linear-gradient(to bottom, transparent 50%, var(--surface) 100%);
 }
 
-/* Badge de dificultad (opcional) */
-.badge-nivel {
-position: absolute;
-top: 12px;
-right: 12px;
-background: rgba(0,0,0,0.65);
-backdrop-filter: blur(6px);
-color: #fff;
-font-size: 0.7rem;
-font-weight: 600;
-letter-spacing: 0.06em;
-text-transform: uppercase;
-padding: 4px 10px;
-border-radius: 999px;
-border: 1px solid rgba(255,255,255,0.12);
-z-index: 3;
-}
-
 /* Body de la card */
 .curso-card__body {
 padding: 20px 22px 12px;
@@ -151,6 +133,8 @@ flex: 1;
 display: flex;
 flex-direction: column;
 gap: 8px;
+margin-top: 9px;
+
 }
 
 .curso-card__titulo {
@@ -207,7 +191,7 @@ color: var(--text);
 }
 
 .btn-ver {
-background: var(--card-color, var(--accent));
+background: #006172;
 color: #fff;
 border: none;
 border-radius: 10px;
@@ -226,7 +210,7 @@ gap: 6px;
 .btn-ver:hover {
 opacity: 0.88;
 transform: scale(1.04);
-color: #fff;
+color: #ffffff;
 }
 
 .btn-ver svg {
