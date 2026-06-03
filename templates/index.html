@@ -7,6 +7,10 @@
 {% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3f4030358c8e4e8187c06d13c991bab8e22b423b
 <div class="container py-5">
 
   <!-- Encabezado + filtros -->
@@ -14,15 +18,18 @@
     <h2>Cursos</h2>
 
     <button class="filtro-btn active">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M4 6h16M7 12h10M10 18h4"/>
+      </svg>
       Categorías
     </button>
 
     <button class="filtro-btn">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3 7h7l-6 4 2 7-6-4-6 4 2-7-6-4h7z"/></svg>
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M12 2l3 7h7l-6 4 2 7-6-4-6 4 2-7-6-4h7z"/>
+      </svg>
       Precio
     </button>
-
   </div>
 
   <!-- Grid de cursos -->
@@ -41,6 +48,7 @@
           alt="{{ curso.titulo }}"
           loading="lazy"
         >
+
         {% if curso.nivel %}
         <span class="badge-nivel">{{ curso.nivel }}</span>
         {% endif %}
@@ -53,13 +61,19 @@
         <div class="curso-card__meta">
           {% if curso.duracion %}
           <span class="meta-chip">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="12" height="12"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="12" height="12">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
             {{ curso.duracion }}
           </span>
           {% endif %}
+
           {% if curso.lecciones %}
           <span class="meta-chip">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="12" height="12"><path d="M4 6h16M4 10h16M4 14h8"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="12" height="12">
+              <path d="M4 6h16M4 10h16M4 14h8"/>
+            </svg>
             {{ curso.lecciones }} lecciones
           </span>
           {% endif %}
@@ -68,9 +82,12 @@
 
       <div class="curso-card__footer">
         <span class="curso-card__precio">${{ curso.precio }}</span>
+
         <a href="{{ url_for('curso_detalle', curso_id=curso.id) }}" class="btn-ver">
           Ver más
-          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
         </a>
       </div>
 
@@ -84,6 +101,7 @@
 <a href="https://wa.me/573241869341" class="logo-whatsapp" target="_blank" rel="noopener noreferrer">
   <img src="{{ url_for('static', filename='styles/imagenes/logo_whatsapp.png') }}" alt="WhatsApp">
 </a>
+<<<<<<< HEAD
 {% block scripts %}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -102,4 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 {% endblock %}
+=======
+
+>>>>>>> 3f4030358c8e4e8187c06d13c991bab8e22b423b
 {% endblock %}

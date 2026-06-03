@@ -20,15 +20,29 @@
     position: relative;
     overflow: hidden;
 }
+
 .page-hero::after {
     content: "";
     position: absolute;
-    bottom: 0; left: 0; right: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 3px;
     background: linear-gradient(90deg, var(--brand-mid), var(--brand-light));
 }
-.page-hero h2 { font-size: 1.6rem; font-weight: 900; margin: 0; }
-.page-hero p  { margin: .3rem 0 0; opacity: .8; font-size: .92rem; }
+
+.page-hero h2 {
+    font-size: 1.6rem;
+    font-weight: 900;
+    margin: 0;
+}
+
+.page-hero p {
+    margin: .3rem 0 0;
+    opacity: .8;
+    font-size: .92rem;
+}
+
 .page-hero-btn {
     background: rgba(255,255,255,.15);
     color: #fff;
@@ -44,6 +58,7 @@
     align-items: center;
     gap: .4rem;
 }
+
 .page-hero-btn:hover {
     background: rgba(255,255,255,.25);
     color: #fff;
@@ -53,19 +68,29 @@
 {% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
 <div class="mc-wrapper">
+=======
 
-    <!-- Encabezado -->
-    <header class="barra-superior">
-            <h2 class="ms-3 m-0 fw-bold">Mis Cursos</h2>
-            <div class="clouds">
-                <div class="cloud cloud1"></div>
-                <div class="cloud cloud2"></div>
-                <div class="cloud cloud3"></div>
-                <div class="cloud cloud4"></div>
-            </div>
-        </header>
+<div class="container-fluid mt-4 px-2 px-md-3">
 
+    <div class="page-hero">
+        <div>
+            <h2><i class="bi bi-journal-bookmark"></i> Mis Cursos</h2>
+            <p>Rastrea tu avance y sigue aprendiendo</p>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="page-hero-btn">
+            <i class="bi bi-compass"></i> Explorar más cursos
+        </a>
+    </div>
+
+    <div class="mc-wrapper" style="padding-top:0;">
+>>>>>>> 3f4030358c8e4e8187c06d13c991bab8e22b423b
+
+        {% if cursos|length == 0 %}
+
+<<<<<<< HEAD
     {% if cursos|length == 0 %}
     <!-- Estado vacío: se conservan la condición y la ruta al catálogo -->
     <section class="mc-empty" aria-label="Sin cursos inscritos">
@@ -139,63 +164,21 @@
             <div class="mc-stat-card">
                 <div class="mc-stat-icon mc-icon-courses">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+=======
+        <section class="mc-empty" aria-label="Sin cursos inscritos">
+            <div class="mc-empty-content">
+                <div class="mc-empty-icon">
+                    <svg width="42" height="42" fill="none" stroke="currentColor" stroke-width="1.65" viewBox="0 0 24 24" aria-hidden="true">
+>>>>>>> 3f4030358c8e4e8187c06d13c991bab8e22b423b
                         <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
                 </div>
-                <div>
-                    <span class="mc-stat-num">{{ total }}</span>
-                    <span class="mc-stat-lbl">Cursos inscritos</span>
-                </div>
-            </div>
-            <div class="mc-stat-card">
-                <div class="mc-stat-icon mc-icon-done">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M20 6L9 17l-5-5"/>
-                    </svg>
-                </div>
-                <div>
-                    <span class="mc-stat-num">{{ completados }}</span>
-                    <span class="mc-stat-lbl">Completados</span>
-                </div>
-            </div>
-            <div class="mc-stat-card">
-                <div class="mc-stat-icon mc-icon-active">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M12 8v5l3 2"/><path d="M21 12a9 9 0 1 1-9-9"/>
-                    </svg>
-                </div>
-                <div>
-                    <span class="mc-stat-num">{{ en_progreso }}</span>
-                    <span class="mc-stat-lbl">En progreso</span>
-                </div>
-            </div>
-            <div class="mc-stat-card">
-                <div class="mc-stat-icon mc-icon-average">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M12 20V10M18 20V4M6 20v-4"/>
-                    </svg>
-                </div>
-                <div>
-                    <span class="mc-stat-num">{{ promedio }}%</span>
-                    <span class="mc-stat-lbl">Avance promedio</span>
-                </div>
-            </div>
-        </div>
 
-        <div class="mc-global-bar">
-            <div class="mc-global-bar-header">
-                <div>
-                    <span class="mc-global-bar-label">Progreso general</span>
-                    <p class="mc-global-bar-help">Avance acumulado de todos tus cursos</p>
-                </div>
-                <span class="mc-global-bar-pct">{{ promedio }}%</span>
-            </div>
-            <div class="mc-track">
-                <div class="mc-fill" style="width: {{ promedio }}%;"></div>
-            </div>
-        </div>
-    </section>
+                <span class="mc-empty-tag">Tu biblioteca está lista</span>
+                <h2>Comienza tu primer curso</h2>
+                <p>Inscríbete en un curso y aquí podrás consultar tus lecciones, tu avance y los cursos completados.</p>
 
+<<<<<<< HEAD
     <div class="mc-section-header">
         <h2>Tus cursos</h2>
         <span>{{ total }} curso{% if total != 1 %}s{% endif %}</span>
@@ -271,16 +254,222 @@
                    class="mc-btn-continuar {% if curso.completado %}mc-btn-done{% endif %}">
                     {% if curso.completado %}Ver certificado{% elif curso.porcentaje > 0 %}Continuar curso{% else %}Empezar curso{% endif %}
                     <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+=======
+                <a href="{{ url_for('index') }}" class="mc-btn-primary">
+                    Ver catálogo
+                    <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+>>>>>>> 3f4030358c8e4e8187c06d13c991bab8e22b423b
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
                 </a>
             </div>
-        </article>
-        {% endfor %}
-    </section>
-    {% endif %}
+
+            <div class="mc-empty-preview" aria-hidden="true">
+                <div class="mc-preview-header">
+                    <span class="mc-preview-title">Tu progreso</span>
+                    <span class="mc-preview-pill">0 cursos</span>
+                </div>
+
+                <div class="mc-preview-track">
+                    <span></span>
+                </div>
+
+                <div class="mc-preview-steps">
+                    <div class="mc-preview-step">
+                        <span class="mc-step-number">1</span>
+                        <div>
+                            <strong>Elige un curso</strong>
+                            <small>Explora el catálogo</small>
+                        </div>
+                    </div>
+
+                    <div class="mc-preview-step">
+                        <span class="mc-step-number">2</span>
+                        <div>
+                            <strong>Aprende a tu ritmo</strong>
+                            <small>Completa tus lecciones</small>
+                        </div>
+                    </div>
+
+                    <div class="mc-preview-step">
+                        <span class="mc-step-number">3</span>
+                        <div>
+                            <strong>Mide tu avance</strong>
+                            <small>Revisa tu progreso aquí</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {% else %}
+
+        {% set total = cursos|length %}
+        {% set completados = cursos|selectattr('completado')|list|length %}
+        {% set en_progreso = cursos|selectattr('porcentaje', 'gt', 0)|rejectattr('completado')|list|length %}
+        {% set promedio = (cursos|sum(attribute='porcentaje') / total)|round(0)|int %}
+
+        <section class="mc-dashboard" aria-label="Resumen de avance">
+            <div class="mc-stats">
+
+                <div class="mc-stat-card">
+                    <div class="mc-stat-icon mc-icon-courses">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="mc-stat-num">{{ total }}</span>
+                        <span class="mc-stat-lbl">Cursos inscritos</span>
+                    </div>
+                </div>
+
+                <div class="mc-stat-card">
+                    <div class="mc-stat-icon mc-icon-done">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M20 6L9 17l-5-5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="mc-stat-num">{{ completados }}</span>
+                        <span class="mc-stat-lbl">Completados</span>
+                    </div>
+                </div>
+
+                <div class="mc-stat-card">
+                    <div class="mc-stat-icon mc-icon-active">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 8v5l3 2"/>
+                            <path d="M21 12a9 9 0 1 1-9-9"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="mc-stat-num">{{ en_progreso }}</span>
+                        <span class="mc-stat-lbl">En progreso</span>
+                    </div>
+                </div>
+
+                <div class="mc-stat-card">
+                    <div class="mc-stat-icon mc-icon-average">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 20V10M18 20V4M6 20v-4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="mc-stat-num">{{ promedio }}%</span>
+                        <span class="mc-stat-lbl">Avance promedio</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mc-global-bar">
+                <div class="mc-global-bar-header">
+                    <div>
+                        <span class="mc-global-bar-label">Progreso general</span>
+                        <p class="mc-global-bar-help">Avance acumulado de todos tus cursos</p>
+                    </div>
+                    <span class="mc-global-bar-pct">{{ promedio }}%</span>
+                </div>
+
+                <div class="mc-track">
+                    <div class="mc-fill" style="width: {{ promedio }}%;"></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="mc-section-header">
+            <h2>Tus cursos</h2>
+            <span>{{ total }} curso{% if total != 1 %}s{% endif %}</span>
+        </div>
+
+        <section class="mc-grid" aria-label="Lista de cursos">
+            {% for curso in cursos %}
+
+            <article class="mc-card {% if curso.completado %}mc-card--done{% elif curso.porcentaje > 0 %}mc-card--active{% else %}mc-card--new{% endif %}">
+
+                {% if curso.imagen_url %}
+                <div class="mc-card-img-wrap">
+                    <img src="{{ url_for('static', filename=curso.imagen_url) }}" alt="{{ curso.titulo }}" class="mc-card-img">
+
+                    <span class="mc-card-badge {% if curso.completado %}mc-badge--done{% elif curso.porcentaje > 0 %}mc-badge--active{% else %}mc-badge--new{% endif %}">
+                        {% if curso.completado %}
+                            ✓ Completado
+                        {% elif curso.porcentaje > 0 %}
+                            En progreso
+                        {% else %}
+                            Nuevo
+                        {% endif %}
+                    </span>
+                </div>
+                {% else %}
+                <div class="mc-card-cover">
+                    <svg width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+
+                    <span class="mc-card-badge {% if curso.completado %}mc-badge--done{% elif curso.porcentaje > 0 %}mc-badge--active{% else %}mc-badge--new{% endif %}">
+                        {% if curso.completado %}
+                            ✓ Completado
+                        {% elif curso.porcentaje > 0 %}
+                            En progreso
+                        {% else %}
+                            Nuevo
+                        {% endif %}
+                    </span>
+                </div>
+                {% endif %}
+
+                <div class="mc-card-body">
+                    <h3 class="mc-card-title">{{ curso.titulo }}</h3>
+
+                    <div class="mc-card-progress-header">
+                        <span>Progreso del curso</span>
+                        <strong>{{ curso.porcentaje|round(0)|int }}%</strong>
+                    </div>
+
+                    <div class="mc-bar-track">
+                        <div class="mc-bar-fill {% if curso.completado %}mc-bar--done{% elif curso.porcentaje > 0 %}mc-bar--active{% else %}mc-bar--new{% endif %}"
+                             style="width: {{ curso.porcentaje }}%;"></div>
+                    </div>
+
+                    <div class="mc-course-meta">
+                        <p class="mc-lecciones">
+                            <strong>{{ curso.lecciones_completadas }}</strong> de {{ curso.total_lecciones }} lecciones
+                        </p>
+
+                        {% if curso.ultima_actualizacion %}
+                        <p class="mc-last">Última actividad: {{ curso.ultima_actualizacion[:10] }}</p>
+                        {% endif %}
+                    </div>
+
+                    <a href="{{ url_for('curso_detalle', curso_id=curso.curso_id) }}"
+                       class="mc-btn-continuar {% if curso.completado %}mc-btn-done{% endif %}">
+                        {% if curso.completado %}
+                            Ver certificado
+                        {% elif curso.porcentaje > 0 %}
+                            Continuar curso
+                        {% else %}
+                            Empezar curso
+                        {% endif %}
+
+                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+
+            </article>
+
+            {% endfor %}
+        </section>
+
+        {% endif %}
+
+    </div>
 
 </div>
+<<<<<<< HEAD
 </div>
 
 {% block scripts %}
@@ -305,4 +494,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 {% endblock %}
+=======
+
+>>>>>>> 3f4030358c8e4e8187c06d13c991bab8e22b423b
 {% endblock %}
