@@ -232,6 +232,8 @@ function actualizarProgreso() {
 
 // ── Completar lección automáticamente al terminar video ─
 function completarLeccion() {
+    var btnCompletar = document.querySelector('[onclick*="completarLeccion"], .lec-btn-completar, #btn-completar');
+    if (btnCompletar) window.LoadingUI.btnLoading(btnCompletar, "Guardando…");
     fetch('/leccion/' + LECCION_ID + '/completar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
@@ -272,6 +274,7 @@ function crearMeet() {
     var fin = new Date(ahora.getTime() + 2 * 60 * 60 * 1000);
     var fmt = function(d){ return d.toISOString().slice(0,19).replace('T',' '); };
 
+    window.LoadingUI.showOverlay('Creando reunión…');
     fetch('/profesor/leccion/{{ leccion.id }}/crear-meet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -310,4 +313,3 @@ function eliminarMeet(id) {
 }
 </script>
 {% endblock %}
-

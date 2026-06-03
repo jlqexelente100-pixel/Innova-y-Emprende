@@ -81,7 +81,7 @@
                     </div>
                     {% endif %}
 
-                    <div class="reseñas-lista mt-4" id="reseñas-lista">
+                    <div class="reseñas-lista mt-4" id="reseñas-lista" style="min-height:80px;">
                         <p class="text-muted">Cargando reseñas...</p>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
             {% if curso.precio and curso.precio > 0 and not curso.puede_acceder %}
             <div class="comprar-card mb-4">
                 <div class="comprar-precio">${{ "%.2f"|format(curso.precio) }}</div>
-                <button class="btn btn-comprar" onclick="comprarCurso({{ curso.id }}, {{ curso.precio }})">
+                <button class="btn btn-comprar" data-loading="Redirigiendo al pago…" onclick="comprarCurso({{ curso.id }}, {{ curso.precio }})">
                     Comprar curso — ${{ "%.2f"|format(curso.precio) }}
                 </button>
                 <div class="comprar-beneficios">
@@ -205,6 +205,7 @@ function eliminarLeccion(id) {
 }
 
 async function comprarCurso(curso_id, precio) {
+    window.LoadingUI.showOverlay("Preparando tu pago…");
     try {
         const res = await fetch("/crear-checkout-session", {
             method: "POST",
@@ -218,6 +219,7 @@ async function comprarCurso(curso_id, precio) {
             alert(data.error || "Error creando el pago");
         }
     } catch (e) {
+        window.LoadingUI.hideOverlay();
         alert("Error al procesar el pago");
     }
 }
@@ -226,6 +228,11 @@ async function comprarCurso(curso_id, precio) {
 let puntajeSeleccionado = 0;
 
 async function cargarResenas() {
+    // Show skeleton while loading
+    var lista = document.getElementById("reseñas-lista");
+    if (lista) {
+        lista.innerHTML = window.LoadingUI.skProgressCards(2);
+    }
     try {
         const res = await fetch(`/curso/${cursoId}/resenas`);
         const data = await res.json();

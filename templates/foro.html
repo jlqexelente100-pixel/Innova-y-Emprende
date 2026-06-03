@@ -69,6 +69,8 @@ document.getElementById("formPost").addEventListener("submit", async (e) => {
     const contenido = document.getElementById("contenido").value;
 
     try {
+        var btn = document.querySelector('.foro-submit, [type="submit"]');
+        if (btn) window.LoadingUI.btnLoading(btn, "Publicando…");
         const res = await fetch(`/curso/${cursoId}/foro/post`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},

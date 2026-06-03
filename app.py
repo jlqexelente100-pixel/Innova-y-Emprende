@@ -144,12 +144,12 @@ def recuperar():
 
     correo = request.form.get("correo") or request.form.get("email")
     if not correo:
-        flash("Ingresa un correo válido.")
+        flash("Ingresa un correo válido.", "error")
         return redirect(url_for("recuperar"))
 
     conn = conectar_bd()
     if not conn:
-        flash("Error de conexión a la base de datos. Intenta más tarde.")
+        flash("Error de conexión a la base de datos. Intenta más tarde.", "error")
         return redirect(url_for("recuperar"))
 
     cur = conn.cursor()
@@ -163,11 +163,11 @@ def recuperar():
         link = url_for('restablecer', token=token, _external=True)
         enviado = enviar_correo(correo, link)
         if enviado:
-            flash("Hemos enviado un enlace de recuperación a tu correo electrónico.")
+            flash("Hemos enviado un enlace de recuperación a tu correo electrónico.", "success")
         else:
-            flash("No se pudo enviar el correo. Verifica la configuración del servidor de correo.")
+            flash("No se pudo enviar el correo. Verifica la configuración del servidor de correo.", "error")
     else:
-        flash("Hemos enviado un enlace de recuperación a tu correo electrónico.")
+        flash("Hemos enviado un enlace de recuperación a tu correo electrónico.", "success")
 
     return redirect(url_for("login"))
 
@@ -607,7 +607,7 @@ def login():
     password = request.form.get("password")
     conn = conectar_bd()
     if not conn:
-        flash("No se pudo conectar a la base de datos.")
+        flash("No se pudo conectar a la base de datos.", "error")
         return redirect(url_for("login"))
 
     cur = conn.cursor()
@@ -617,12 +617,12 @@ def login():
     conn.close()
 
     if not r:
-        flash("Usuario no encontrado.")
+        flash("Usuario no encontrado.", "error")
         return redirect(url_for("login"))
 
     user_id, nombre, password_hash, rol = r
     if not check_password_hash(password_hash, password):
-        flash("Contraseña incorrecta.")
+        flash("Contraseña incorrecta.", "error")
         return redirect(url_for("login"))
 
     session["user_id"] = user_id
@@ -642,7 +642,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.clear()
-    flash("Sesión cerrada.")
+    flash("Sesión cerrada.", "success")
     return redirect(url_for("home"))
 
 
@@ -659,34 +659,34 @@ def registrar():
     rol = "alumno"  # ← SIEMPRE alumno, ignorar lo que venga del form
 
     if not nombre or not apellido or not username or not correo or not password:
-        flash("Todos los campos son obligatorios.")
+        flash("Todos los campos son obligatorios.", "error")
         return redirect(url_for("registrar"))
 
     if "@" not in correo or "." not in correo:
-        flash("Correo electrónico inválido.")
+        flash("Correo electrónico inválido.", "error")
         return redirect(url_for("registrar"))
 
     if len(password) < 6:
-        flash("La contraseña debe tener al menos 6 caracteres.")
+        flash("La contraseña debe tener al menos 6 caracteres.", "error")
         return redirect(url_for("registrar"))
 
     password_hash = generate_password_hash(password)
 
     conn = conectar_bd()
     if not conn:
-        flash("Error de conexión.")
+        flash("Error de conexión.", "error")
         return redirect(url_for("registrar"))
 
     cur = conn.cursor()
     try:
         cur.execute("SELECT id FROM usuarios WHERE correo = %s;", (correo,))
         if cur.fetchone():
-            flash("El correo ya está registrado.")
+            flash("El correo ya está registrado.", "error")
             return redirect(url_for("registrar"))
 
         cur.execute("SELECT id FROM usuarios WHERE username = %s;", (username,))
         if cur.fetchone():
-            flash("El nombre de usuario ya está en uso.")
+            flash("El nombre de usuario ya está en uso.", "error")
             return redirect(url_for("registrar"))
 
         cur.execute(
@@ -702,7 +702,7 @@ def registrar():
         cur.close()
         conn.close()
 
-    flash("Registrado correctamente. Inicia sesión.")
+    flash("Registrado correctamente. Inicia sesión.", "success")
     return redirect(url_for("login"))
 
 
@@ -742,11 +742,11 @@ def requiere_profesor():
 @app.route("/profesor/dashboard")
 def profesor_dashboard():
     if not session.get("user_id"):
-        flash("Debes iniciar sesión.")
+        flash("Debes iniciar sesión.", "warning")
         return redirect(url_for("login"))
 
     if not requiere_profesor():
-        flash("Acceso solo para profesores.")
+        flash("Acceso solo para profesores.", "warning")
         return redirect(url_for("index"))
 
     profesor_id = session["user_id"]
@@ -802,11 +802,11 @@ def profesor_dashboard():
 @app.route("/profesor/crear-curso", methods=["GET", "POST"])
 def profesor_crear_curso():
     if not session.get("user_id"):
-        flash("Debes iniciar sesión.")
+        flash("Debes iniciar sesión.", "warning")
         return redirect(url_for("login"))
 
     if not requiere_profesor():
-        flash("Acceso solo para profesores.")
+        flash("Acceso solo para profesores.", "warning")
         return redirect(url_for("index"))
 
     if request.method == "POST":
@@ -831,11 +831,11 @@ def profesor_crear_curso():
                 VALUES (%s, %s, %s, %s, %s) RETURNING id;
             """, (titulo, descripcion, precio, imagen_url, profesor_id))
             conn.commit()
-            flash("Curso creado exitosamente")
+            flash("Curso creado exitosamente", "success")
             return redirect(url_for("index"))
         except Exception as e:
             conn.rollback()
-            flash("No se pudo crear el curso: probablemente ya existe un curso con el mismo título.")
+            flash("No se pudo crear el curso: probablemente ya existe un curso con el mismo título.", "error")
             return redirect(url_for("profesor_crear_curso"))
         finally:
             cur.close()
@@ -850,11 +850,11 @@ def profesor_crear_curso():
 @app.route("/profesor/curso/<int:curso_id>/anadir_leccion", methods=["GET", "POST"])
 def profesor_anadir_leccion(curso_id):
     if not session.get("user_id"):
-        flash("Debes iniciar sesión.")
+        flash("Debes iniciar sesión.", "warning")
         return redirect(url_for("login"))
 
     if not requiere_profesor():
-        flash("Acceso solo para profesores.")
+        flash("Acceso solo para profesores.", "warning")
         return redirect(url_for("index"))
 
     if request.method == "GET":
@@ -876,7 +876,7 @@ def profesor_anadir_leccion(curso_id):
     cur.close()
     conn.close()
 
-    flash("Lección añadida.")
+    flash("Lección añadida.", "success")
     return redirect(url_for("curso_detalle", curso_id=curso_id))
 
 #Panel Administrador
@@ -888,10 +888,10 @@ def requiere_admin():
 @app.route("/admin/dashboard")
 def admin_dashboard():
     if not session.get("user_id"):
-        flash("Debes iniciar sesión")
+        flash("Debes iniciar sesión", "warning")
         return redirect(url_for("login"))
     if not requiere_admin():
-        flash("Acceso solo para administradores")
+        flash("Acceso solo para administradores", "warning")
         return redirect(url_for("index"))
     # Simplemente renderiza el template, los datos los carga el JS via API
     return render_template("admin/dashboard_admin.html")
@@ -1113,7 +1113,7 @@ def curso_detalle(curso_id):
             cur.close()
             conn.close()
             session.clear()
-            flash("Tu sesión expiró. Inicia sesión nuevamente.")
+            flash("Tu sesión expiró. Inicia sesión nuevamente.", "warning")
             return redirect(url_for("login"))
 
         rol = fila_rol[0]
@@ -1195,7 +1195,7 @@ def ver_leccion(leccion_id):
     conn.close()
 
     if not puede_ver:
-        flash("Debes adquirir el curso o iniciar sesión con la cuenta del profesor para ver esta lección.")
+        flash("Debes adquirir el curso o iniciar sesión con la cuenta del profesor para ver esta lección.", "warning")
         return redirect(url_for("curso_detalle", curso_id=datos["curso_id"]))
 
     # ... resto del código ...
@@ -1305,18 +1305,18 @@ def pago_exitoso():
     stripe_session_id = request.args.get("session_id")
 
     if not stripe_session_id:
-        flash("Solicitud inválida.")
+        flash("Solicitud inválida.", "warning")
         return redirect(url_for("index"))
 
     # Verificar con Stripe
     try:
         checkout = stripe.checkout.Session.retrieve(stripe_session_id)
     except Exception as e:
-        flash("No se pudo verificar el pago.")
+        flash("No se pudo verificar el pago.", "error")
         return redirect(url_for("index"))
 
     if checkout.payment_status != "paid":
-        flash("El pago no fue completado.")
+        flash("El pago no fue completado.", "error")
         return redirect(url_for("index"))
 
     # ✅ Recuperar datos desde los metadatos de Stripe
@@ -1330,7 +1330,7 @@ def pago_exitoso():
             curso_id = checkout.metadata["curso_id"]
 
     if not usuario_id or not curso_id:
-        flash("Error al procesar la compra.")
+        flash("Error al procesar la compra.", "error")
         return redirect(url_for("index"))
 
     monto = checkout.amount_total / 100
@@ -1365,7 +1365,7 @@ def pago_exitoso():
             session["nombre"] = r[0]
             session["rol"] = r[1]
 
-    flash("¡Pago realizado correctamente! ✅")
+    flash("¡Pago realizado correctamente! ✅", "success")
     return redirect(url_for("mis_compras"))
 
 
@@ -1374,7 +1374,7 @@ def pago_exitoso():
 # --------------------------
 @app.route("/pago-cancelado")
 def pago_cancelado():
-    flash("El pago fue cancelado.")
+    flash("El pago fue cancelado.", "warning")
     return redirect(url_for("index"))
 
 
@@ -1384,7 +1384,7 @@ def pago_cancelado():
 @app.route("/mis_compras")
 def mis_compras():
     if not session.get("user_id"):
-        flash("Debes iniciar sesión")
+        flash("Debes iniciar sesión", "warning")
         return redirect(url_for("login"))
 
     conn = conectar_bd()
@@ -1645,7 +1645,7 @@ def obtener_estilos_curso(curso_id):
 @app.route("/perfil")
 def perfil():
     if not session.get("user_id"):
-        flash("Debes iniciar sesión.")
+        flash("Debes iniciar sesión.", "warning")
         return redirect(url_for("login"))
 
     conn = conectar_bd()
@@ -1659,7 +1659,7 @@ def perfil():
     conn.close()
 
     if not usuario:
-        flash("Usuario no encontrado.")
+        flash("Usuario no encontrado.", "error")
         return redirect(url_for("index"))
 
     datos = {
@@ -1672,7 +1672,7 @@ def perfil():
 @app.route("/perfil/editar", methods=["GET", "POST"])
 def editar_perfil():
     if not session.get("user_id"):
-        flash("Debes iniciar sesión.")
+        flash("Debes iniciar sesión.", "warning")
         return redirect(url_for("login"))
 
     conn = conectar_bd()
@@ -1701,7 +1701,7 @@ def editar_perfil():
             """, (nombre, apellido, username, session["user_id"]))
 
         conn.commit()
-        flash("Perfil actualizado correctamente.")
+        flash("Perfil actualizado correctamente.", "success")
         cur.close()
         conn.close()
         return redirect(url_for("perfil"))
@@ -1735,7 +1735,7 @@ def inject_user():
 @app.route("/curso/<int:curso_id>/foro")
 def foro_curso(curso_id):
     if not session.get("user_id"):
-        flash("Debes iniciar sesión para acceder al foro.")
+        flash("Debes iniciar sesión para acceder al foro.", "warning")
         return redirect(url_for("login"))
 
     usuario_id = session["user_id"]
@@ -1753,7 +1753,7 @@ def foro_curso(curso_id):
         if not cur.fetchone():
             cur.close()
             conn.close()
-            flash("No estás inscrito en este curso.")
+            flash("No estás inscrito en este curso.", "warning")
             return redirect(url_for("index"))
 
     cur.execute("""
@@ -1980,7 +1980,7 @@ def completar_leccion(leccion_id):
 @app.route("/mis-cursos/progreso")
 def mis_cursos_progreso():
     if not session.get("user_id"):
-        flash("Debes iniciar sesión")
+        flash("Debes iniciar sesión", "warning")
         return redirect(url_for("login"))
 
     usuario_id = session["user_id"]
@@ -2065,11 +2065,11 @@ def buscar():
 @app.route("/profesor/leccion/<int:leccion_id>/eliminar", methods=["POST"])
 def profesor_eliminar_leccion(leccion_id):
     if not session.get("user_id"):
-        flash("Debes iniciar sesión.")
+        flash("Debes iniciar sesión.", "warning")
         return redirect(url_for("login"))
 
     if not requiere_profesor():
-        flash("Acceso solo para profesores.")
+        flash("Acceso solo para profesores.", "warning")
         return redirect(url_for("index"))
 
     conn = conectar_bd()
@@ -2085,7 +2085,7 @@ def profesor_eliminar_leccion(leccion_id):
     if not fila or fila[0] != session["user_id"]:
         cur.close()
         conn.close()
-        flash("No tienes permiso para eliminar esta lección.")
+        flash("No tienes permiso para eliminar esta lección.", "error")
         return redirect(url_for("dashboard_profesor"))
 
     curso_id = fila[1]
@@ -2096,7 +2096,7 @@ def profesor_eliminar_leccion(leccion_id):
     cur.close()
     conn.close()
 
-    flash("Lección eliminada correctamente.")
+    flash("Lección eliminada correctamente.", "success")
     return redirect(url_for("curso_detalle", curso_id=curso_id))
 
 
@@ -2106,10 +2106,10 @@ def profesor_eliminar_leccion(leccion_id):
 @app.route("/profesor/reportes")
 def profesor_reportes():
     if not session.get("user_id"):
-        flash("Debes iniciar sesión.")
+        flash("Debes iniciar sesión.", "warning")
         return redirect(url_for("login"))
     if not requiere_profesor():
-        flash("Acceso solo para profesores.")
+        flash("Acceso solo para profesores.", "warning")
         return redirect(url_for("index"))
 
     profesor_id = session["user_id"]

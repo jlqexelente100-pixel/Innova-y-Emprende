@@ -483,7 +483,8 @@ function fmtDate(str) {
 
 // ── CARGA INICIAL ──────────────────────────────
 async function cargarTodo() {
-  const [usuarios, ventas, cursos, metodos] = await Promise.all([
+  const [usuarios, ventas, cursos, metodos] = await window.LoadingUI && window.LoadingUI.showOverlay('Cargando panel…');
+  Promise.all([
     fetch('/admin/api/usuarios').then(r=>r.json()).catch(()=>[]),
     fetch('/admin/api/ventas').then(r=>r.json()).catch(()=>[]),
     fetch('/admin/api/cursos').then(r=>r.json()).catch(()=>[]),
