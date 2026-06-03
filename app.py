@@ -74,7 +74,7 @@ DB_CONFIG = {
     'host': os.getenv('DB_HOST', 'localhost'),  # usa 'db' en Docker, 'localhost' en local
     'database': 'Emprende',
     'user': 'postgres',
-    'password': '123456',
+    'password': 'mari',
     'port': 5432
 }
 
