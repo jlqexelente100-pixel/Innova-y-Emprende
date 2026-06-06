@@ -50,6 +50,41 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.grupo_texto {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 70%;
+}
+
+.primero{
+    color: #007a8c;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.segundo{
+    color: #111827;
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.parrafo_titulo{
+    color: #6b7280;
+    font-size: 1.05rem;
+    font-weight: 400;
+    line-height: 1.5;
+    margin: 4px 0 0 0;
+}
+
+.grupo_botones {
+    display: flex;
+    gap: 12px;
+}
 /* ══════════════════════════════════════════════════
    SECTION HEADERS
 ══════════════════════════════════════════════════ */
@@ -377,6 +412,17 @@ body {
     .card-text     { font-size: 0.84rem; }
     .card .btn, .card-footer .btn { padding: 7px 13px; font-size: 0.83rem; }
     .logo-whatsapp { width: 46px; height: 46px; bottom: 16px; right: 14px; }
+}
+
+@media (max-width: 768px) {
+    .courses-header-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    .text-group {
+        max-width: 100%;
+    }
 }
 
 /* ══════════════════════════════════════════════════
