@@ -233,7 +233,7 @@
 
         <!-- Logo / toggle -->
         <div class="sidebar-logo">
-            <img src="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}" alt="Logo" class="logo-img">
+            <span class="sidebar-brand-text nav-label">Innova y Emprende</span>
             <button id="toggleSidebar" class="sidebar-toggle-btn" type="button" title="Colapsar menú">
                 <i class="bi bi-layout-sidebar"></i>
             </button>
@@ -378,6 +378,8 @@
                 <a href="{{ url_for('perfil') }}" class="topbar-btn" title="Configuración">
                     <i class="bi bi-gear"></i>
                 </a>
+                <!-- Logo -->
+                <img src="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}" alt="Logo" class="topbar-logo-img">
                 <!-- Avatar -->
                 {% else %}
                 <a href="{{ url_for('login') }}" class="topbar-login-btn">Iniciar sesión</a>

@@ -1,8 +1,6 @@
-body {
+.content {
     font-family: "Inter", "Lato", sans-serif;
-    background: #f0f2f5 !important;
-    margin: 0;
-    padding: 0;
+    background: #f0f2f5;
 }
 
 .perfil-container {
@@ -124,4 +122,4 @@ body {
     .btn-editar {
         width: 100%;
     }
-}
+}   

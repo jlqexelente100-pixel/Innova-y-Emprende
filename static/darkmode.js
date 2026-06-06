@@ -25,16 +25,20 @@
         });
     });
 
-    /* Actualiza el texto e ícono de todos los botones según el tema */
+    /* Actualiza solo el ícono y el label, sin destruir el HTML del botón */
     function actualizarBotones(tema) {
         document.querySelectorAll(
             '.btn-darkmode, .btn-darkmode-flotante, .btn-darkmode-sidebar'
         ).forEach(function (btn) {
+            var icono = btn.querySelector('i');
+            var label = btn.querySelector('.sidebar-button-label, .nav-label');
             if (tema === 'dark') {
-                btn.innerHTML = '&#9728;&#65039; Claro';
+                if (icono) { icono.className = 'bi bi-sun nav-icon'; }
+                if (label) { label.textContent = 'Claro'; }
                 btn.title = 'Cambiar a modo claro';
             } else {
-                btn.innerHTML = '&#127769; Oscuro';
+                if (icono) { icono.className = 'bi bi-moon-stars nav-icon'; }
+                if (label) { label.textContent = 'Oscuro'; }
                 btn.title = 'Cambiar a modo oscuro';
             }
         });
