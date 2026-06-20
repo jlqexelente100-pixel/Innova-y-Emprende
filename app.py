@@ -48,7 +48,7 @@ app.secret_key = os.getenv("SECRET_KEY", "CAMBIA_ESTA_CLAVE_EN_EL_ENV")
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 # FIX: BASE_URL desde .env para no hardcodear localhost
-BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")
+BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")   
 
 print("Stripe inicializado")
 
@@ -70,8 +70,10 @@ serializer = URLSafeTimedSerializer(app.secret_key)
 # -------------------------
 # CONFIGURACIÓN BD (POSTGRES)
 # -------------------------
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 DB_CONFIG = {
-    'host': os.getenv('DB_HOST', 'localhost'),  # usa 'db' en Docker, 'localhost' en local
+    'host': os.getenv('DB_HOST', 'localhost'),
     'database': 'Emprende',
     'user': 'postgres',
     'password': '123456',
@@ -81,27 +83,16 @@ DB_CONFIG = {
 
 def conectar_bd():
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
+        if DATABASE_URL:
+            # Producción (Render)
+            conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+        else:
+            # Desarrollo local
+            conn = psycopg2.connect(**DB_CONFIG)
         return conn
     except psycopg2.OperationalError as e:
-        if "does not exist" in str(e) or "no existe" in str(e):
-            try:
-                temp_config = DB_CONFIG.copy()
-                temp_config['database'] = 'postgres'
-                temp_conn = psycopg2.connect(**temp_config)
-                temp_conn.autocommit = True
-                cur = temp_conn.cursor()
-                cur.execute(f"CREATE DATABASE {DB_CONFIG['database']};")
-                cur.close()
-                temp_conn.close()
-                conn = psycopg2.connect(**DB_CONFIG)
-                return conn
-            except Exception as e2:
-                print("Error al crear la base de datos:", e2)
-                return None
-        else:
-            print("Error al conectar a la BD:", e)
-            return None
+        print("Error al conectar a la BD:", e)
+        return None
 
 
 def enviar_correo(destinatario, enlace):
