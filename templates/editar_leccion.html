@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Lección{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/añadir_leccion.css') }}">
+{% endblock %}
+
+{% block content %}
+{% if session.get('rol') == 'admin' %}
+<div class="container-fluid mt-4 px-2 px-md-3">
+
+    <!-- ── Hero ── -->
+    <div class="leccion-hero">
+        <div>
+            <h2><i class="bi bi-pencil-square"></i> Editar lección</h2>
+            <p>Modifica los datos de la lección y guarda los cambios</p>
+        </div>
+        <a href="{{ url_for('curso_detalle', curso_id=leccion.curso_id) }}" class="btn-volver">
+            <i class="bi bi-arrow-left"></i> Volver al curso
+        </a>
+    </div>
+
+    <!-- ── Formulario ── -->
+    <div class="leccion-card">
+        <form method="POST" action="{{ url_for('editar_leccion', leccion_id=leccion.id) }}">
+
+            <p class="form-section-title">Información básica</p>
+
+            <div class="row g-4 mb-2">
+                <div class="col-md-6">
+                    <label class="form-label"><i class="bi bi-type"></i> Título de la lección</label>
+                    <input type="text" class="form-control" name="titulo" required value="{{ leccion.titulo or '' }}">
+                </div>
+            </div>
+
+            <p class="form-section-title">Contenido</p>
+
+            <div class="row g-4 mb-2">
+                <div class="col-md-6">
+                    <label class="form-label"><i class="bi bi-youtube"></i> URL del video (YouTube)</label>
+                    <input type="text" class="form-control" name="video_url" id="video_url"
+                           value="{{ leccion.video_url or '' }}"
+                           placeholder="https://www.youtube.com/watch?v=..."
+                           oninput="previewVideo()">
+                    <div class="form-text">Solo se admiten enlaces de YouTube. Deja vacío para quitar el video.</div>
+                    <div class="video-preview" id="videoPreview">
+                        <iframe id="videoFrame" src="" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><i class="bi bi-file-text"></i> Contenido adicional</label>
+                    <textarea class="form-control" name="contenido" rows="5"
+                              placeholder="Recursos, notas, descripción de la lección...">{{ leccion.contenido or '' }}</textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-guardar-leccion mt-3">
+                <i class="bi bi-floppy"></i> Guardar cambios
+            </button>
+
+        </form>
+    </div>
+
+</div>
+
+{% else %}
+<div class="container mt-4">
+    <div class="alert alert-danger">
+        <h5>Acceso denegado</h5>
+        <p>Solo el administrador puede editar lecciones.</p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Volver al inicio</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function convertirYoutube(url) {
+    if (!url) return null;
+    if (url.includes("/embed/")) return url;                 // ya es embed
+    if (url.includes("watch?v=")) return url.replace("watch?v=", "embed/");
+    if (url.includes("youtu.be/")) {
+        let id = url.split("youtu.be/")[1];
+        return "https://www.youtube.com/embed/" + id;
+    }
+    return null;
+}
+
+function previewVideo() {
+    const input   = document.getElementById("video_url").value;
+    const frame   = document.getElementById("videoFrame");
+    const preview = document.getElementById("videoPreview");
+    const embed   = convertirYoutube(input);
+
+    if (embed) {
+        frame.src = embed;
+        preview.style.display = "block";
+    } else {
+        preview.style.display = "none";
+        frame.src = "";
+    }
+}
+
+// Mostrar el video actual al cargar
+document.addEventListener("DOMContentLoaded", previewVideo);
+</script>
+{% endblock %}

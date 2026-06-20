@@ -55,8 +55,13 @@
                     <i class="bi bi-book"></i> {{ c.total_lecciones }} lección{{ 'es' if c.total_lecciones != 1 else '' }}
                 </div>
                 <div class="curso-actions">
-                    <a href="{{ url_for('curso_detalle', curso_id=c.id) }}" class="btn-ver"><i class="bi bi-pencil"></i> Ver/Editar</a>
+                    <a href="{{ url_for('curso_detalle', curso_id=c.id) }}" class="btn-ver"><i class="bi bi-eye"></i> Ver/Gestionar</a>
                     <a href="{{ url_for('profesor_anadir_leccion', curso_id=c.id) }}" class="btn-add"><i class="bi bi-plus-lg"></i> Lección</a>
+                    <form method="POST" action="{{ url_for('eliminar_curso', curso_id=c.id) }}"
+                          onsubmit="return confirm('¿Eliminar el curso «{{ c.titulo }}»? Se borrarán sus lecciones, compras y reseñas. Esta acción no se puede deshacer.');"
+                          style="display:inline;margin:0;">
+                        <button type="submit" class="btn-del"><i class="bi bi-trash"></i> Eliminar</button>
+                    </form>
                 </div>
             </div>
         </div>

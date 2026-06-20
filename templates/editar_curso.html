@@ -1,29 +1,29 @@
 {% extends "base.html" %}
 
-{% block title %}Crear Curso{% endblock %}
+{% block title %}Editar Curso{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/crear_curso.css') }}">
 {% endblock %}
 
 {% block content %}
-{% if session.get('rol') in ['profesor', 'admin'] %}
+{% if session.get('rol') == 'admin' %}
 <div class="container-fluid mt-4 px-2 px-md-3">
 
     <!-- ── Hero ── -->
     <div class="curso-hero">
         <div>
-            <h2><i class="bi bi-plus-circle"></i> Crear nuevo curso</h2>
-            <p>Completa la información para publicar tu curso en la plataforma</p>
+            <h2><i class="bi bi-pencil-square"></i> Editar curso</h2>
+            <p>Modifica la información del curso y guarda los cambios</p>
         </div>
-        <a href="{{ url_for('admin_dashboard') if session.get('rol') == 'admin' else url_for('profesor_dashboard') }}" class="btn-volver-curso">
-            <i class="bi bi-arrow-left"></i> Volver al panel
+        <a href="{{ url_for('curso_detalle', curso_id=curso.id) }}" class="btn-volver-curso">
+            <i class="bi bi-arrow-left"></i> Volver al curso
         </a>
     </div>
 
     <!-- ── Formulario ── -->
     <div class="crear-curso-card">
-        <form method="POST" action="{{ url_for('profesor_crear_curso') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ url_for('editar_curso', curso_id=curso.id) }}" enctype="multipart/form-data">
 
             <p class="form-section-title">Información del curso</p>
 
@@ -33,14 +33,14 @@
                         <i class="bi bi-type"></i> Título
                     </label>
                     <input type="text" class="form-control" name="titulo" required
-                           placeholder="Ej: Marketing Digital para Emprendedores">
+                           value="{{ curso.titulo }}">
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">
                         <i class="bi bi-tag"></i> Precio (USD)
                     </label>
                     <input type="number" step="0.01" min="0" class="form-control" name="precio" required
-                           placeholder="Ej: 29.99">
+                           value="{{ '%.2f'|format(curso.precio) }}">
                     <div class="form-text">Escribe 0 para publicar el curso gratis</div>
                 </div>
             </div>
@@ -52,8 +52,7 @@
                     <label class="form-label">
                         <i class="bi bi-file-text"></i> Descripción
                     </label>
-                    <textarea class="form-control" name="descripcion" rows="5" required
-                              placeholder="Describe qué aprenderán los estudiantes en este curso..."></textarea>
+                    <textarea class="form-control" name="descripcion" rows="5" required>{{ curso.descripcion }}</textarea>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">
@@ -61,15 +60,17 @@
                     </label>
                     <input type="file" name="imagen" class="form-control" accept="image/*"
                            onchange="previewImagen(this)">
-                    <div class="form-text">Formatos: JPG, PNG, WEBP. Recomendado: 1280×720px</div>
-                    <div class="img-preview-wrap" id="imgPreview">
-                        <img id="imgPreviewEl" src="" alt="Vista previa">
+                    <div class="form-text">Deja vacío para conservar la imagen actual</div>
+                    <div class="img-preview-wrap" id="imgPreview" style="display:block">
+                        <img id="imgPreviewEl"
+                             src="{{ url_for('static', filename=curso.imagen_url) if curso.imagen_url else '' }}"
+                             alt="Vista previa">
                     </div>
                 </div>
             </div>
 
             <button type="submit" class="btn-crear-curso-submit mt-3">
-                <i class="bi bi-check-circle"></i> Publicar curso
+                <i class="bi bi-check-circle"></i> Guardar cambios
             </button>
 
         </form>
@@ -81,7 +82,7 @@
 <div class="container mt-4">
     <div class="alert alert-danger">
         <h5>Acceso denegado</h5>
-        <p>Solo los profesores pueden crear cursos.</p>
+        <p>Solo el administrador puede editar cursos.</p>
         <a href="{{ url_for('index') }}" class="btn btn-primary">Volver al inicio</a>
     </div>
 </div>
@@ -100,8 +101,6 @@ function previewImagen(input) {
             wrap.style.display = "block";
         };
         reader.readAsDataURL(input.files[0]);
-    } else {
-        wrap.style.display = "none";
     }
 }
 </script>

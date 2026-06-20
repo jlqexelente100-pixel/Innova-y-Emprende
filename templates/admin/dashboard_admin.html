@@ -291,6 +291,10 @@
   <section class="section" id="sec-cursos">
     <div class="section-header">
       <div><h2>Cursos</h2><p>Todos los cursos publicados en la plataforma</p></div>
+      <a class="btn-primary" href="/profesor/crear-curso" style="text-decoration:none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nuevo curso
+      </a>
     </div>
     <div class="table-card">
       <div class="table-header">
@@ -483,13 +487,16 @@ function fmtDate(str) {
 
 // ── CARGA INICIAL ──────────────────────────────
 async function cargarTodo() {
-  const [usuarios, ventas, cursos, metodos] = await window.LoadingUI && window.LoadingUI.showOverlay('Cargando panel…');
-  Promise.all([
+  if (window.LoadingUI && window.LoadingUI.showOverlay) window.LoadingUI.showOverlay('Cargando panel…');
+
+  const [usuarios, ventas, cursos, metodos] = await Promise.all([
     fetch('/admin/api/usuarios').then(r=>r.json()).catch(()=>[]),
     fetch('/admin/api/ventas').then(r=>r.json()).catch(()=>[]),
     fetch('/admin/api/cursos').then(r=>r.json()).catch(()=>[]),
     fetch('/metodos_pago').then(r=>r.json()).catch(()=>[])
   ]);
+
+  if (window.LoadingUI && window.LoadingUI.hideOverlay) window.LoadingUI.hideOverlay();
 
   state.usuarios = Array.isArray(usuarios) ? usuarios : [];
   state.ventas   = Array.isArray(ventas)   ? ventas   : [];
@@ -594,7 +601,8 @@ function renderCursos() {
       <td>${ventas}</td>
       <td style="display:flex;gap:6px">
         <a class="action-btn view" href="/curso/${c.id}">👁️ Ver</a>
-        <button class="action-btn delete" onclick="confirmarEliminar('¿Eliminar curso «${c.titulo}»?', ()=>eliminarCurso(${c.id}))">🗑️</button>
+        <a class="action-btn edit" href="/curso/${c.id}/editar">✏️ Editar</a>
+        <button class="action-btn delete" onclick="confirmarEliminar('¿Eliminar curso «${c.titulo}»? Se borrarán sus lecciones, compras y reseñas.', ()=>eliminarCurso(${c.id}))">🗑️</button>
       </td>
     </tr>`;
   }).join('');

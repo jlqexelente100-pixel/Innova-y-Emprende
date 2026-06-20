@@ -62,7 +62,7 @@
                         <span class="reseñas-total" id="reseñas-total"></span>
                     </div>
 
-                    {% if curso.puede_acceder and not curso.es_profesor %}
+                    {% if curso.puede_acceder and not curso.puede_gestionar %}
                     <div class="reseña-form-wrapper mt-3">
                         <h5>Tu reseña</h5>
                         <div class="estrellas-selector" id="estrellas-selector">
@@ -124,11 +124,18 @@
                                 <small class="text-muted">Tiene video</small>
                                 {% endif %}
                             </div>
-                            {% if curso.es_profesor %}
-                            <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); eliminarLeccion({{ leccion.id }})">
-                                <i class="fas fa-trash"></i> Eliminar
-                            </button>
-                            {% endif %}
+                            <div class="d-flex gap-1">
+                                {% if curso.puede_editar %}
+                                <button class="btn btn-warning btn-sm" onclick="event.stopPropagation(); editarLeccion({{ leccion.id }})">
+                                    <i class="fas fa-pen"></i> Editar
+                                </button>
+                                {% endif %}
+                                {% if curso.puede_gestionar %}
+                                <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); eliminarLeccion({{ leccion.id }})">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     {% else %}
@@ -147,17 +154,29 @@
                 </div>
             </div>
 
-            <!-- Panel Profesor: solo visible si es_profesor -->
-            {% if curso.es_profesor %}
+            <!-- Panel de gestión: profesor dueño o administrador -->
+            {% if curso.puede_gestionar %}
             <div class="alert alert-success mt-4 profesor-panel">
-                <h5>Panel Profesor</h5>
+                <h5>{% if curso.es_admin %}Panel de Administrador{% else %}Panel Profesor{% endif %}</h5>
                 <div class="btn-group-responsive mt-3">
                     <a href="{{ url_for('profesor_anadir_leccion', curso_id=curso.id) }}" class="btn btn-sm btn-primary">
-                        Agregar leccion
+                        <i class="fas fa-plus"></i> Agregar lección
                     </a>
+                    {% if curso.puede_editar %}
+                    <a href="{{ url_for('editar_curso', curso_id=curso.id) }}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-pen"></i> Editar curso
+                    </a>
+                    {% endif %}
+                    {% if curso.es_profesor %}
                     <button class="btn btn-sm btn-secondary" onclick="editarEstilos()">
                         Personalizar CSS
                     </button>
+                    {% endif %}
+                    {% if curso.puede_eliminar_curso %}
+                    <button class="btn btn-sm btn-danger" onclick="eliminarCurso()">
+                        <i class="fas fa-trash"></i> Eliminar curso
+                    </button>
+                    {% endif %}
                 </div>
             </div>
             {% endif %}
@@ -174,6 +193,57 @@
 
     </div>
 </div>
+
+{% if curso.es_profesor %}
+<!-- MODAL: Personalizar estilos del curso -->
+<div id="estilosModal" class="estilos-modal-overlay" style="display:none;">
+    <div class="estilos-modal">
+        <h4 style="margin-top:0;">Personalizar curso</h4>
+        <p class="text-muted" style="font-size:.88rem;">Ajusta los colores, la fuente y CSS extra para este curso.</p>
+
+        <div class="estilos-field">
+            <label>Color principal</label>
+            <input type="color" id="est_color_principal" value="#007bff">
+        </div>
+        <div class="estilos-field">
+            <label>Color secundario</label>
+            <input type="color" id="est_color_secundario" value="#6c757d">
+        </div>
+        <div class="estilos-field">
+            <label>Fuente</label>
+            <select id="est_fuente">
+                <option value="Lato">Lato</option>
+                <option value="DM Sans">DM Sans</option>
+                <option value="Playfair Display">Playfair Display</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Montserrat">Montserrat</option>
+            </select>
+        </div>
+        <div class="estilos-field">
+            <label>CSS personalizado (opcional)</label>
+            <textarea id="est_css" rows="4" placeholder=".curso-header { ... }"></textarea>
+        </div>
+
+        <p id="est_msg" style="font-size:.85rem;margin:.4rem 0 0;"></p>
+        <div class="estilos-modal-actions">
+            <button class="btn btn-sm btn-secondary" onclick="cerrarEstilos()">Cancelar</button>
+            <button class="btn btn-sm btn-primary" onclick="guardarEstilos()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.estilos-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1050;padding:16px;}
+.estilos-modal{background:#fff;border-radius:14px;padding:22px;width:100%;max-width:440px;box-shadow:0 18px 50px rgba(0,0,0,.3);}
+body.dark-mode .estilos-modal{background:#1a2a33;color:#e2e8f0;}
+.estilos-field{margin-bottom:12px;display:flex;flex-direction:column;gap:5px;}
+.estilos-field label{font-size:.82rem;font-weight:600;}
+.estilos-field input[type=color]{width:56px;height:34px;border:1px solid #ccc;border-radius:6px;padding:2px;cursor:pointer;}
+.estilos-field select,.estilos-field textarea{width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:8px;font-size:.9rem;font-family:inherit;}
+body.dark-mode .estilos-field select,body.dark-mode .estilos-field textarea{background:#0f1e26;color:#e2e8f0;border-color:rgba(255,255,255,.15);}
+.estilos-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;}
+</style>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
@@ -182,6 +252,71 @@ const cursoId = {{ curso.id }};
 
 function irALeccion(id) {
     window.location.href = `/leccion/${id}`;
+}
+
+function editarLeccion(id) {
+    window.location.href = `/leccion/${id}/editar`;
+}
+
+// ===== PERSONALIZAR ESTILOS DEL CURSO =====
+async function editarEstilos() {
+    const modal = document.getElementById("estilosModal");
+    if (!modal) return;
+    try {
+        const res = await fetch(`/curso/${cursoId}/estilos-datos`);
+        const d = await res.json();
+        document.getElementById("est_color_principal").value  = d.color_principal  || "#007bff";
+        document.getElementById("est_color_secundario").value = d.color_secundario || "#6c757d";
+        document.getElementById("est_css").value              = d.css_personalizado || "";
+        const sel = document.getElementById("est_fuente");
+        if (d.fuente) sel.value = d.fuente;
+    } catch (e) { /* usa valores por defecto */ }
+    document.getElementById("est_msg").textContent = "";
+    modal.style.display = "flex";
+}
+
+function cerrarEstilos() {
+    const modal = document.getElementById("estilosModal");
+    if (modal) modal.style.display = "none";
+}
+
+async function guardarEstilos() {
+    const msg = document.getElementById("est_msg");
+    const payload = {
+        color_principal:   document.getElementById("est_color_principal").value,
+        color_secundario:  document.getElementById("est_color_secundario").value,
+        fuente:            document.getElementById("est_fuente").value,
+        css_personalizado: document.getElementById("est_css").value
+    };
+    try {
+        const res = await fetch(`/profesor/curso/${cursoId}/estilos`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            msg.style.color = "green";
+            msg.textContent = "Estilos guardados ✅";
+            setTimeout(cerrarEstilos, 900);
+        } else {
+            const d = await res.json().catch(() => ({}));
+            msg.style.color = "red";
+            msg.textContent = d.error || "No se pudieron guardar los estilos.";
+        }
+    } catch (e) {
+        msg.style.color = "red";
+        msg.textContent = "Error de conexión.";
+    }
+}
+
+function eliminarCurso() {
+    if (confirm("¿Eliminar este curso por completo? Se borrarán sus lecciones, compras y reseñas. Esta acción no se puede deshacer.")) {
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = `/curso/${cursoId}/eliminar`;
+        document.body.appendChild(form);
+        form.submit();
+    }
 }
 
 function eliminarLeccion(id) {

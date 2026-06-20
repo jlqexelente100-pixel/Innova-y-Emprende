@@ -188,6 +188,27 @@ body.dark-mode .stat-val  { color: #e2e8f0; }
 }
 .btn-add:hover  { background: var(--brand-primary); color: #fff; }
 
+.curso-actions form { flex: 1; margin: 0; }
+.btn-del {
+    width: 100%;
+    padding: .45rem .5rem;
+    border-radius: var(--radius-sm);
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: rgba(220,53,69,.08);
+    color: #dc3545;
+    border: 1.5px solid #dc3545;
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+.btn-del:hover { background: #dc3545; color: #fff; }
+body.dark-mode .btn-del {
+    background: rgba(220,53,69,.2);
+    color: #f08a93;
+    border-color: #f08a93;
+}
+body.dark-mode .btn-del:hover { background: #dc3545; color: #fff; }
+
 /* Darkmode cards */
 body.dark-mode .curso-card-prof {
     background: #1a2a33;

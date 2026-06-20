@@ -549,7 +549,7 @@ def crear_tablas():
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template("home.html")
+    return render_template("Home.html")
 
 
 @app.route('/servicios')
@@ -805,8 +805,8 @@ def profesor_crear_curso():
         flash("Debes iniciar sesión.", "warning")
         return redirect(url_for("login"))
 
-    if not requiere_profesor():
-        flash("Acceso solo para profesores.", "warning")
+    if not puede_agregar_contenido():
+        flash("No tienes permiso para crear cursos.", "warning")
         return redirect(url_for("index"))
 
     if request.method == "POST":
@@ -853,9 +853,19 @@ def profesor_anadir_leccion(curso_id):
         flash("Debes iniciar sesión.", "warning")
         return redirect(url_for("login"))
 
-    if not requiere_profesor():
-        flash("Acceso solo para profesores.", "warning")
+    if not puede_agregar_contenido():
+        flash("No tienes permiso para agregar lecciones.", "warning")
         return redirect(url_for("index"))
+
+    # El profesor solo puede agregar lecciones a SUS cursos; el admin a cualquiera
+    conn_chk = conectar_bd()
+    cur_chk = conn_chk.cursor()
+    autorizado = puede_gestionar_curso(cur_chk, curso_id)
+    cur_chk.close()
+    conn_chk.close()
+    if not autorizado:
+        flash("Solo puedes agregar lecciones a tus propios cursos.", "warning")
+        return redirect(url_for("curso_detalle", curso_id=curso_id))
 
     if request.method == "GET":
         return render_template("anadir_leccion.html", curso_id=curso_id)
@@ -882,7 +892,66 @@ def profesor_anadir_leccion(curso_id):
 #Panel Administrador
 
 def requiere_admin():
- return session.get("rol") == "admin"     
+ return session.get("rol") == "admin"
+
+
+# ──────────────────────────────────────────────────────────
+# Permisos por rol sobre CURSOS y LECCIONES
+#   admin    → agregar, editar y eliminar (cualquier curso)
+#   profesor → agregar y eliminar (solo SUS cursos)
+#   alumno   → solo mirar
+# ──────────────────────────────────────────────────────────
+def puede_agregar_contenido():
+    return session.get("rol") in ("admin", "profesor")
+
+
+def puede_editar_contenido():
+    return session.get("rol") == "admin"
+
+
+def puede_eliminar_contenido():
+    return session.get("rol") in ("admin", "profesor")
+
+
+def es_dueno_curso(cur, curso_id):
+    """True si el usuario en sesión es el profesor dueño del curso."""
+    cur.execute("SELECT profesor_id FROM cursos WHERE id = %s;", (curso_id,))
+    fila = cur.fetchone()
+    return bool(fila) and fila[0] == session.get("user_id")
+
+
+def puede_gestionar_curso(cur, curso_id):
+    """El admin gestiona cualquier curso; el profesor solo el suyo."""
+    rol = session.get("rol")
+    if rol == "admin":
+        return True
+    if rol == "profesor":
+        return es_dueno_curso(cur, curso_id)
+    return False
+
+
+def eliminar_leccion_completa(cur, leccion_id):
+    """Borra una lección y todas sus referencias (meet, notificaciones)."""
+    cur.execute("DELETE FROM reuniones_meet WHERE leccion_id = %s;", (leccion_id,))
+    cur.execute("DELETE FROM notificaciones WHERE leccion_id = %s;", (leccion_id,))
+    # progreso_lecciones se borra en cascada (ON DELETE CASCADE)
+    cur.execute("DELETE FROM lecciones WHERE id = %s;", (leccion_id,))
+
+
+def eliminar_curso_completo(cur, curso_id):
+    """Borra un curso y todo lo que cuelga de él (lecciones, compras, foro...)."""
+    cur.execute(
+        "DELETE FROM reuniones_meet WHERE leccion_id IN "
+        "(SELECT id FROM lecciones WHERE curso_id = %s);", (curso_id,))
+    cur.execute(
+        "DELETE FROM notificaciones WHERE leccion_id IN "
+        "(SELECT id FROM lecciones WHERE curso_id = %s);", (curso_id,))
+    cur.execute("DELETE FROM lecciones WHERE curso_id = %s;", (curso_id,))
+    cur.execute("DELETE FROM estilos_curso WHERE curso_id = %s;", (curso_id,))
+    cur.execute("DELETE FROM foro_posts WHERE curso_id = %s;", (curso_id,))
+    cur.execute("DELETE FROM compras WHERE curso_id = %s;", (curso_id,))
+    # progreso_cursos y resenas se borran en cascada (ON DELETE CASCADE)
+    cur.execute("DELETE FROM cursos WHERE id = %s;", (curso_id,))
 
 
 @app.route("/admin/dashboard")
@@ -1050,7 +1119,7 @@ def admin_api_eliminar_curso(cid):
     conn = conectar_bd()
     cur = conn.cursor()
     try:
-        cur.execute("DELETE FROM cursos WHERE id=%s;", (cid,))
+        eliminar_curso_completo(cur, cid)
         conn.commit()
     except Exception as e:
         conn.rollback()
@@ -1058,6 +1127,161 @@ def admin_api_eliminar_curso(cid):
         return jsonify({"error": str(e)}), 400
     cur.close(); conn.close()
     return jsonify({"ok": True})
+
+
+# ──────────────────────────────────────────────────────────
+# CURSO — Eliminar (admin cualquiera, profesor solo el suyo)
+# ──────────────────────────────────────────────────────────
+@app.route("/curso/<int:curso_id>/eliminar", methods=["POST"])
+def eliminar_curso(curso_id):
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión.", "warning")
+        return redirect(url_for("login"))
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    if not puede_eliminar_contenido() or not puede_gestionar_curso(cur, curso_id):
+        cur.close()
+        conn.close()
+        flash("No tienes permiso para eliminar este curso.", "error")
+        return redirect(url_for("curso_detalle", curso_id=curso_id))
+
+    try:
+        eliminar_curso_completo(cur, curso_id)
+        conn.commit()
+        flash("Curso eliminado correctamente.", "success")
+    except Exception as e:
+        conn.rollback()
+        flash("No se pudo eliminar el curso: " + str(e), "error")
+    finally:
+        cur.close()
+        conn.close()
+
+    if session.get("rol") == "admin":
+        return redirect(url_for("admin_dashboard"))
+    return redirect(url_for("profesor_dashboard"))
+
+
+# ──────────────────────────────────────────────────────────
+# CURSO — Editar (solo admin)
+# ──────────────────────────────────────────────────────────
+@app.route("/curso/<int:curso_id>/editar", methods=["GET", "POST"])
+def editar_curso(curso_id):
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión.", "warning")
+        return redirect(url_for("login"))
+
+    if not puede_editar_contenido():
+        flash("Solo el administrador puede editar cursos.", "warning")
+        return redirect(url_for("curso_detalle", curso_id=curso_id))
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id, titulo, descripcion, precio, imagen_url FROM cursos WHERE id = %s;",
+        (curso_id,))
+    fila = cur.fetchone()
+    if not fila:
+        cur.close()
+        conn.close()
+        return "Curso no encontrado", 404
+
+    if request.method == "GET":
+        curso = {
+            "id": fila[0], "titulo": fila[1], "descripcion": fila[2],
+            "precio": float(fila[3]) if fila[3] is not None else 0,
+            "imagen_url": fila[4],
+        }
+        cur.close()
+        conn.close()
+        return render_template("editar_curso.html", curso=curso)
+
+    # POST → actualizar
+    titulo = request.form.get("titulo")
+    descripcion = request.form.get("descripcion")
+    precio = request.form.get("precio")
+    imagen = request.files.get("imagen")
+    imagen_url = fila[4]
+
+    if imagen and allowed_file(imagen.filename):
+        filename = secure_filename(imagen.filename)
+        ruta = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        imagen.save(ruta)
+        imagen_url = "uploads/" + filename
+
+    try:
+        cur.execute("""
+            UPDATE cursos SET titulo=%s, descripcion=%s, precio=%s, imagen_url=%s
+            WHERE id=%s;
+        """, (titulo, descripcion, precio, imagen_url, curso_id))
+        conn.commit()
+        flash("Curso actualizado correctamente.", "success")
+    except Exception as e:
+        conn.rollback()
+        flash("No se pudo actualizar el curso: " + str(e), "error")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("curso_detalle", curso_id=curso_id))
+
+
+# ──────────────────────────────────────────────────────────
+# LECCIÓN — Editar (solo admin)
+# ──────────────────────────────────────────────────────────
+@app.route("/leccion/<int:leccion_id>/editar", methods=["GET", "POST"])
+def editar_leccion(leccion_id):
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión.", "warning")
+        return redirect(url_for("login"))
+
+    if not puede_editar_contenido():
+        flash("Solo el administrador puede editar lecciones.", "warning")
+        return redirect(url_for("ver_leccion", leccion_id=leccion_id))
+
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id, curso_id, titulo, video_url, contenido FROM lecciones WHERE id = %s;",
+        (leccion_id,))
+    fila = cur.fetchone()
+    if not fila:
+        cur.close()
+        conn.close()
+        return "Lección no encontrada", 404
+
+    curso_id = fila[1]
+
+    if request.method == "GET":
+        leccion = {
+            "id": fila[0], "curso_id": fila[1], "titulo": fila[2],
+            "video_url": fila[3], "contenido": fila[4],
+        }
+        cur.close()
+        conn.close()
+        return render_template("editar_leccion.html", leccion=leccion)
+
+    # POST → actualizar
+    titulo = request.form.get("titulo")
+    video_url = convertir_youtube(request.form.get("video_url"))
+    contenido = request.form.get("contenido")
+
+    try:
+        cur.execute("""
+            UPDATE lecciones SET titulo=%s, video_url=%s, contenido=%s
+            WHERE id=%s;
+        """, (titulo, video_url, contenido, leccion_id))
+        conn.commit()
+        flash("Lección actualizada correctamente.", "success")
+    except Exception as e:
+        conn.rollback()
+        flash("No se pudo actualizar la lección: " + str(e), "error")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("curso_detalle", curso_id=curso_id))
 
 
 # --------------------------
@@ -1099,6 +1323,14 @@ def curso_detalle(curso_id):
         "usuario_logueado": session.get("user_id"),
         "es_profesor": session.get("rol") == "profesor" and session.get("user_id") == profesor_id
     }
+
+    # ── Permisos de gestión sobre este curso ──
+    _rol = session.get("rol")
+    _es_dueno = (_rol == "profesor" and session.get("user_id") == profesor_id)
+    datos_curso["es_admin"] = (_rol == "admin")
+    datos_curso["puede_gestionar"] = (_rol == "admin") or _es_dueno   # agregar/eliminar lecciones
+    datos_curso["puede_editar"] = (_rol == "admin")                   # editar (solo admin)
+    datos_curso["puede_eliminar_curso"] = (_rol == "admin") or _es_dueno
 
     usuario = session.get("user_id")
     puede_acceder = False
@@ -1223,7 +1455,15 @@ def ver_leccion(leccion_id):
     cur.close()
     conn.close()
 
-    return render_template("leccion.html", leccion=datos, reuniones=reuniones, es_profesor=es_profesor)
+    rol_sesion = session.get("rol")
+    puede_gestionar = (rol_sesion == "admin") or es_profesor   # eliminar lección
+    puede_editar = (rol_sesion == "admin")                     # editar (solo admin)
+
+    return render_template(
+        "leccion.html", leccion=datos, reuniones=reuniones,
+        es_profesor=es_profesor, puede_gestionar=puede_gestionar,
+        puede_editar=puede_editar,
+    )
 
 
 # --------------------------
@@ -2068,30 +2308,32 @@ def profesor_eliminar_leccion(leccion_id):
         flash("Debes iniciar sesión.", "warning")
         return redirect(url_for("login"))
 
-    if not requiere_profesor():
-        flash("Acceso solo para profesores.", "warning")
+    if not puede_eliminar_contenido():
+        flash("No tienes permiso para eliminar lecciones.", "warning")
         return redirect(url_for("index"))
 
     conn = conectar_bd()
     cur = conn.cursor()
-    
-    # Verificar que la lección pertenece a un curso del profesor y obtener curso_id
-    cur.execute("""
-        SELECT c.profesor_id, l.curso_id FROM lecciones l
-        JOIN cursos c ON l.curso_id = c.id
-        WHERE l.id = %s;
-    """, (leccion_id,))
+
+    # Obtener el curso de la lección
+    cur.execute("SELECT curso_id FROM lecciones WHERE id = %s;", (leccion_id,))
     fila = cur.fetchone()
-    if not fila or fila[0] != session["user_id"]:
+    if not fila:
+        cur.close()
+        conn.close()
+        flash("La lección no existe.", "error")
+        return redirect(url_for("index"))
+
+    curso_id = fila[0]
+
+    # Admin elimina cualquiera; el profesor solo en sus cursos
+    if not puede_gestionar_curso(cur, curso_id):
         cur.close()
         conn.close()
         flash("No tienes permiso para eliminar esta lección.", "error")
-        return redirect(url_for("dashboard_profesor"))
+        return redirect(url_for("curso_detalle", curso_id=curso_id))
 
-    curso_id = fila[1]
-
-    # Eliminar la lección (las referencias se eliminan en cascada)
-    cur.execute("DELETE FROM lecciones WHERE id = %s;", (leccion_id,))
+    eliminar_leccion_completa(cur, leccion_id)
     conn.commit()
     cur.close()
     conn.close()

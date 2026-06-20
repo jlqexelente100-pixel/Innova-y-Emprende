@@ -133,6 +133,14 @@
                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.361a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
                 Crear clase en vivo
             </button>
+            {% endif %}
+            {% if puede_editar %}
+            <a href="/leccion/{{ leccion.id }}/editar" class="lec-action-btn lec-action-btn--teal">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Editar lección
+            </a>
+            {% endif %}
+            {% if puede_gestionar %}
             <button onclick="eliminarLeccion({{ leccion.id }})" class="lec-action-btn lec-action-btn--danger">
                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14H6L5 6m5 0V4h4v2"/></svg>
                 Eliminar lección

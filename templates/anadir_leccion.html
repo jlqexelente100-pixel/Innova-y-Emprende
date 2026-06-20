@@ -15,7 +15,7 @@
             <h2><i class="bi bi-camera-video"></i> Agregar lección</h2>
             <p>Completa los campos para publicar una nueva lección en tu curso</p>
         </div>
-        <a href="{{ url_for('profesor_dashboard') }}" class="btn-volver">
+        <a href="{{ url_for('admin_dashboard') if session.get('rol') == 'admin' else url_for('profesor_dashboard') }}" class="btn-volver">
             <i class="bi bi-arrow-left"></i> Volver al panel
         </a>
     </div>
