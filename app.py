@@ -547,6 +547,11 @@ def home():
 @app.route('/servicios')
 def servicios():
     return render_template('servicios.html')
+    
+
+@app.route('/politicas_privacidad')
+def politicas_privacidad():
+    return render_template("politicas_privacidad.html")
 
 
 @app.route('/sobre-nosotros')
@@ -652,34 +657,34 @@ def registrar():
 
     if not nombre or not apellido or not username or not correo or not password:
         flash("Todos los campos son obligatorios.", "error")
-        return redirect(url_for("registrar"))
+        return redirect(url_for("/registrar"))
 
     if "@" not in correo or "." not in correo:
         flash("Correo electrónico inválido.", "error")
-        return redirect(url_for("registrar"))
+        return redirect(url_for("/registrar"))
 
     if len(password) < 6:
         flash("La contraseña debe tener al menos 6 caracteres.", "error")
-        return redirect(url_for("registrar"))
+        return redirect(url_for("/registrar"))
 
     password_hash = generate_password_hash(password)
 
     conn = conectar_bd()
     if not conn:
         flash("Error de conexión.", "error")
-        return redirect(url_for("registrar"))
+        return redirect(url_for("/registrar"))
 
     cur = conn.cursor()
     try:
         cur.execute("SELECT id FROM usuarios WHERE correo = %s;", (correo,))
         if cur.fetchone():
-            flash("El correo ya está registrado.", "error")
-            return redirect(url_for("registrar"))
+            flash(" El correo ya está registrado, por favor use otro correo para ingresar.", "error")
+            return redirect(url_for("/registrar.html"))
 
         cur.execute("SELECT id FROM usuarios WHERE username = %s;", (username,))
         if cur.fetchone():
             flash("El nombre de usuario ya está en uso.", "error")
-            return redirect(url_for("registrar"))
+            return redirect(url_for("/registrar.html"))
 
         cur.execute(
             "INSERT INTO usuarios(nombre, apellido, username, correo, password_hash, rol) VALUES (%s,%s,%s,%s,%s,%s);",
@@ -689,13 +694,15 @@ def registrar():
     except Exception as e:
         conn.rollback()
         flash("Error al registrar: " + str(e))
-        return redirect(url_for("registrar"))
+        return redirect(url_for("/registrar.html"))
+    
+    
     finally:
         cur.close()
         conn.close()
 
-    flash("Registrado correctamente. Inicia sesión.", "success")
-    return redirect(url_for("login"))
+        flash("Registrado correctamente.", "success")
+        return redirect(url_for("registrar"))
 
 
 # --------------------------
@@ -1337,7 +1344,7 @@ def curso_detalle(curso_id):
             cur.close()
             conn.close()
             session.clear()
-            flash("Tu sesión expiró. Inicia sesión nuevamente.", "warning")
+            flash("Tu sesión termino. Inicia sesión nuevamente.", "warning")
             return redirect(url_for("login"))
 
         rol = fila_rol[0]

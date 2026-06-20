@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Políticas de Privacidad</title>
+
+    <style>
+
+        body{
+            background: linear-gradient(180deg, #007b91 0%, #006172 30%, #006172 60%, #001a1f 100%);
+            color: white;
+            font-family: Arial, sans-serif;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            margin:0;
+        }
+
+        .contenedor{
+            background:white;
+            width:90%;
+            max-width:700px;
+            padding:40px;
+            border-radius:20px;
+            box-shadow:0 10px 30px rgba(0,0,0,.2);
+        }
+
+        h1{
+            color:#3f7479;
+            text-align:center;
+            margin-bottom:25px;
+        }
+
+        h3{
+            color:#3f7479;
+        }
+
+        p, li{
+            color:#555;
+            line-height:1.7;
+        }
+
+        ul{
+            padding-left:20px;
+        }
+
+        .boton{
+            display:block;
+            width:200px;
+            margin:30px auto 0;
+            padding:12px;
+            text-align:center;
+            text-decoration:none;
+            background:#3f7479;
+            color:white;
+            border-radius:10px;
+            transition:.3s;
+        }
+
+        .boton:hover{
+            background:#3f7479;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="contenedor">
+
+    <h1> Políticas de Privacidad</h1>
+
+    <p>
+        En <strong>Innova y Emprende</strong> protegemos la información de nuestros usuarios.
+    </p>
+
+    <h3>Información que recopilamos</h3>
+
+    <ul>
+        <li>Nombre y apellido.</li>
+        <li>Nombre de usuario.</li>
+        <li>Correo electrónico.</li>
+        <li>Información básica del perfil.</li>
+    </ul>
+
+    <h3> Uso de la información</h3>
+
+    <p>
+        La información recopilada se utiliza para mejorar nuestros servicios y brindar una mejor experiencia dentro de la plataforma.
+    </p>
+
+    <h3>🛡 Seguridad</h3>
+
+    <p>
+        Tu información será protegida y no será compartida con terceros sin tu autorización.
+    </p>
+
+    <p>
+        Al registrarte en <strong>Innova y Emprende</strong>, aceptas estas políticas de privacidad.
+    </p>
+
+    <a class="boton" href="{{ url_for('registrar') }}">
+        Volver al registro
+    </a>
+
+</div>
+
+</body>
+</html>
