@@ -162,10 +162,11 @@ body.dark-mode .stat-val  { color: #e2e8f0; }
 /* Botones de acción */
 .curso-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: .6rem;
 }
 .curso-actions a {
-    flex: 1;
+    flex: 1 1 calc(50% - .3rem);
     text-align: center;
     padding: .45rem .5rem;
     border-radius: var(--radius-sm);
@@ -173,7 +174,13 @@ body.dark-mode .stat-val  { color: #e2e8f0; }
     font-weight: 600;
     text-decoration: none;
     transition: background var(--transition-fast), color var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .3rem;
 }
+/* "Ver/Gestionar" ocupa toda la fila superior; "Lección" y "Eliminar" van debajo 50/50 */
+.curso-actions .btn-ver { flex-basis: 100%; }
 .btn-ver {
     background: rgba(0,92,107,.08);
     color: var(--brand-mid);
@@ -188,7 +195,7 @@ body.dark-mode .stat-val  { color: #e2e8f0; }
 }
 .btn-add:hover  { background: var(--brand-primary); color: #fff; }
 
-.curso-actions form { flex: 1; margin: 0; }
+.curso-actions form { flex: 1 1 calc(50% - .3rem); margin: 0; }
 .btn-del {
     width: 100%;
     padding: .45rem .5rem;
