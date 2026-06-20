@@ -4,61 +4,117 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/perfil.css') }}">
+<style>
+.page-hero {
+    background: linear-gradient(135deg, var(--brand-deep) 0%, var(--brand-primary) 55%, var(--brand-mid) 100%);
+    border-radius: var(--radius-lg);
+    padding: 2rem 2.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+.page-hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand-mid), var(--brand-light));
+}
+.page-hero h2 { font-size: 1.6rem; font-weight: 900; margin: 0; }
+.page-hero p  { margin: .3rem 0 0; opacity: .8; font-size: .92rem; }
+.page-hero-btn {
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    font-weight: 600;
+    border: 1.5px solid rgba(255,255,255,.4);
+    padding: .55rem 1.2rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-size: .88rem;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+}
+.page-hero-btn:hover {
+    background: rgba(255,255,255,.25);
+    color: #fff;
+    border-color: rgba(255,255,255,.7);
+}
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid mt-4 px-2 px-md-3">
-    <div class="perfil-page">
 
-        <!-- Avatar card -->
-        <div class="perfil-avatar-card">
-            <div class="perfil-avatar-wrap">
-                <img
-                    src="{{ url_for('static', filename=usuario.foto) if (usuario.foto) else url_for('static', filename='styles/imagenes/default-user.png') }}"
-                    class="perfil-avatar"
-                    width="100" height="100"
-                    alt="Foto de perfil"
-                >
-            </div>
-            <p class="perfil-avatar-name">{{ usuario.nombre }} {{ usuario.apellido }}</p>
-            <span class="perfil-avatar-role">
-                <i class="bi bi-shield-check"></i>
-                {{ usuario.rol | capitalize }}
-            </span>
-            <a href="{{ url_for('editar_perfil') }}" class="perfil-edit-btn">
-                <i class="bi bi-pencil-square"></i>
-                Editar perfil
-            </a>
+    <div class="page-hero">
+        <div>
+            <h2><i class="bi bi-person-badge"></i> Mi Perfil</h2>
+            <p>Visualiza tu información personal</p>
+        </div>
+        <a href="{{ url_for('editar_perfil') }}" class="page-hero-btn">
+            <i class="bi bi-pencil-square"></i> Editar perfil
+        </a>
+    </div>
+
+    <div class="perfil-container" style="border-top: none;">
+
+        <div class="text-center mb-4">
+            <img
+                src="{% if usuario.foto %}
+                        {{ url_for('static', filename=usuario.foto) }}
+                     {% else %}
+                        {{ url_for('static', filename='styles/imagenes/default-user.png') }}
+                     {% endif %}"
+                class="rounded-circle shadow"
+                width="120" height="120"
+                style="object-fit: cover; border: 4px solid var(--brand-mid);"
+                alt="Foto de perfil"
+            >
         </div>
 
-        <!-- Grid de datos -->
-        <div class="perfil-grid">
-
-            <div class="perfil-item">
-                <h5><i class="bi bi-person"></i> Nombre</h5>
-                <p>{{ usuario.nombre }} {{ usuario.apellido }}</p>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <span class="perfil-label">
+                    <i class="bi bi-person me-1"></i> Nombre
+                </span>
+                <div class="perfil-value-box">{{ usuario.nombre }}</div>
             </div>
-
-            <div class="perfil-item">
-                <h5><i class="bi bi-at"></i> Usuario</h5>
-                <p>{{ usuario.username }}</p>
+            <div class="col-md-6">
+                <span class="perfil-label">
+                    <i class="bi bi-person me-1"></i> Apellido
+                </span>
+                <div class="perfil-value-box">{{ usuario.apellido }}</div>
             </div>
+        </div>
 
-            <div class="perfil-item">
-                <h5><i class="bi bi-envelope"></i> Correo</h5>
-                <p>{{ usuario.correo }}</p>
-            </div>
+        <div class="mb-3">
+            <span class="perfil-label">
+                <i class="bi bi-at me-1"></i> Username
+            </span>
+            <div class="perfil-value-box">{{ usuario.username }}</div>
+        </div>
 
-            <div class="perfil-item">
-                <h5><i class="bi bi-shield-check"></i> Rol</h5>
-                <p>{{ usuario.rol | capitalize }}</p>
-            </div>
+        <div class="mb-3">
+            <span class="perfil-label">
+                <i class="bi bi-envelope me-1"></i> Correo Electrónico
+            </span>
+            <div class="perfil-value-box">{{ usuario.correo }}</div>
+        </div>
 
-            <div class="perfil-item perfil-item-full">
-                <h5><i class="bi bi-calendar3"></i> Miembro desde</h5>
-                <p>{{ usuario.creado_en }}</p>
-            </div>
-
+        <div class="mb-4">
+            <span class="perfil-label">
+                <i class="bi bi-shield-check me-1"></i> Rol de Usuario
+            </span>
+            <div class="perfil-value-box text-capitalize">{{ usuario.rol | capitalize }}</div>
         </div>
 
     </div>

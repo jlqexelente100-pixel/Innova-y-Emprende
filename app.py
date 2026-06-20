@@ -1349,9 +1349,10 @@ def curso_detalle(curso_id):
             return redirect(url_for("login"))
 
         rol = fila_rol[0]
-        if rol in ('profesor', 'admin'):      # ← admin agregado
+        if rol in ('profesor', 'admin'):
             puede_acceder = True
-        elif datos_curso["titulo"] == "Mente Emprendedora":
+        elif datos_curso["precio"] == 0:
+            # Curso gratis: cualquier usuario logueado puede acceder y reseñar
             puede_acceder = True
         else:
             cur.execute("""
@@ -2086,7 +2087,7 @@ def completar_leccion(leccion_id):
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT l.curso_id, c.titulo
+        SELECT l.curso_id, c.titulo, c.precio
         FROM lecciones l
         JOIN cursos c ON l.curso_id = c.id
         WHERE l.id = %s
@@ -2098,13 +2099,15 @@ def completar_leccion(leccion_id):
         return jsonify({"error": "Lección no encontrada"}), 404
 
     curso_id = leccion[0]
+    precio_leccion = float(leccion[2]) if leccion[2] else 0
 
     puede_ver = False
     cur.execute("SELECT rol FROM usuarios WHERE id = %s", (usuario_id,))
     rol = cur.fetchone()[0]
-    if rol in ('profesor', 'admin'):          # ← admin agregado
+    if rol in ('profesor', 'admin'):
         puede_ver = True
-    elif leccion[1] == "Mente Emprendedora":
+    elif precio_leccion == 0:
+        # Curso gratis: acceso libre
         puede_ver = True
     else:
         cur.execute("""
@@ -2495,14 +2498,22 @@ def crear_resena(curso_id):
     rol = cur.fetchone()[0]
 
     if rol != 'profesor':
-        cur.execute("""
-            SELECT 1 FROM compras
-            WHERE usuario_id = %s AND curso_id = %s AND estado = 'completado';
-        """, (usuario_id, curso_id))
-        if not cur.fetchone():
-            cur.close()
-            conn.close()
-            return jsonify({"error": "Solo puedes reseñar cursos que hayas comprado"}), 403
+        # Verificar que el usuario pueda acceder al curso:
+        # 1) Curso gratis (precio = 0 o NULL)
+        # 2) Tiene compra completada
+        cur.execute("SELECT precio FROM cursos WHERE id = %s;", (curso_id,))
+        fila_precio = cur.fetchone()
+        precio_curso = float(fila_precio[0]) if fila_precio and fila_precio[0] else 0
+
+        if precio_curso > 0:
+            cur.execute("""
+                SELECT 1 FROM compras
+                WHERE usuario_id = %s AND curso_id = %s AND estado = 'completado';
+            """, (usuario_id, curso_id))
+            if not cur.fetchone():
+                cur.close()
+                conn.close()
+                return jsonify({"error": "Solo puedes reseñar cursos que hayas comprado"}), 403
 
     data = request.json
     puntaje = data.get("puntaje")

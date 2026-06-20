@@ -1,6 +1,8 @@
-.content {
+body {
     font-family: "Inter", "Lato", sans-serif;
-    background: #f0f2f5;
+    background: #f0f2f5 !important;
+    margin: 0;
+    padding: 0;
 }
 
 .perfil-container {
@@ -11,76 +13,59 @@
     border-radius: 24px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     border-top: 8px solid #1f616d;
-    display: flex;
-    flex-direction: column;
 }
 
-.perfil-header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.1rem;
-}
-
-.perfil-header h2 {
-    margin: 0;
-    color: #1e293b;
-    font-weight: 700;
-}
-
-.perfil-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem 1.5rem;
-}
-
-.perfil-item {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 1rem 1.1rem;
-}
-
-.perfil-item h5 {
+/* Estilos de las etiquetas idénticos al Form Label de editar */
+.perfil-label {
+    display: block;
     margin-bottom: 0.45rem;
-    font-size: 0.82rem;
-    font-weight: 700;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.perfil-item p {
-    margin: 0;
+/* Cajas contenedoras de texto: mismas dimensiones, paddings y colores que tus inputs */
+.perfil-value-box {
+    width: 100%;
+    padding: 0.8rem 0.95rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    font-size: 1rem;
     color: #1e293b;
-    word-break: break-word;
-}
-
-.btn-editar {
+    box-sizing: border-box;
+    min-height: 45px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-top: 1.5rem;
-    padding: 0.85rem 1.4rem;
+}
+
+/* Botón inferior simulando exactamente el comportamiento del botón Guardar */
+.btn-perfil-action {
+    display: block;
+    text-align: center;
+    width: 100%;
+    padding: 0.9rem 1rem;
     background: #1f616d;
-    color: white;
-    text-decoration: none;
+    color: white !important;
+    border: none;
     border-radius: 12px;
+    font-size: 1rem;
     font-weight: 700;
-    transition: all 0.25s ease;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(31, 97, 109, 0.2);
 }
 
-.perfil-boton {
-    margin-top: auto;
-}
-
-.btn-editar:hover {
+.btn-perfil-action:hover {
     background: #164a53;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(31, 97, 109, 0.3);
 }
 
+/* Estilos de imagen idénticos */
 .rounded-circle.shadow {
     border: 4px solid #1f616d !important;
     padding: 3px;
@@ -96,30 +81,7 @@
 }
 
 @media (max-width: 768px) {
-    .perfil-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .perfil-header {
-        align-items: flex-start;
-    }
-
-    .btn-editar {
-        width: 100%;
+    .perfil-container {
+        padding: 1.35rem;
     }
 }
-
-@media (max-width: 768px) {
-    .perfil-container {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .perfil-boton {
-        margin-top: auto;
-    }
-
-    .btn-editar {
-        width: 100%;
-    }
-}   

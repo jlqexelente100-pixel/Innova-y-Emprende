@@ -363,23 +363,20 @@ async function comprarCurso(curso_id, precio) {
 let puntajeSeleccionado = 0;
 
 async function cargarResenas() {
-    // Show skeleton while loading
-    var lista = document.getElementById("reseñas-lista");
-    if (lista) {
-        lista.innerHTML = window.LoadingUI.skProgressCards(2);
-    }
     try {
         const res = await fetch(`/curso/${cursoId}/resenas`);
         const data = await res.json();
 
-        document.getElementById("reseñas-promedio").textContent =
-            data.promedio > 0 ? data.promedio.toFixed(1) : "Sin reseñas";
-        document.getElementById("estrellas-promedio").innerHTML =
-            renderEstrellas(data.promedio);
-        document.getElementById("reseñas-total").textContent =
-            data.total > 0 ? `(${data.total} reseña${data.total !== 1 ? "s" : ""})` : "";
-
+        const promedio = document.getElementById("reseñas-promedio");
+        const estrellas = document.getElementById("estrellas-promedio");
+        const total = document.getElementById("reseñas-total");
         const lista = document.getElementById("reseñas-lista");
+
+        if (promedio) promedio.textContent = data.promedio > 0 ? data.promedio.toFixed(1) : "Sin reseñas";
+        if (estrellas) estrellas.innerHTML = renderEstrellas(data.promedio);
+        if (total) total.textContent = data.total > 0 ? `(${data.total} reseña${data.total !== 1 ? "s" : ""})` : "";
+
+        if (!lista) return;
         if (data.resenas.length === 0) {
             lista.innerHTML = '<p class="text-muted">Aún no hay reseñas. ¡Sé el primero!</p>';
             return;
@@ -399,8 +396,8 @@ async function cargarResenas() {
             </div>
         `).join("");
     } catch (e) {
-        document.getElementById("reseñas-lista").innerHTML =
-            '<p class="text-muted">Error al cargar reseñas.</p>';
+        const lista = document.getElementById("reseñas-lista");
+        if (lista) lista.innerHTML = '<p class="text-muted">Error al cargar reseñas.</p>';
     }
 }
 
@@ -415,6 +412,9 @@ function renderEstrellas(valor) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    // Cargar reseñas al iniciar (dentro de DOMContentLoaded para garantizar que el DOM esté listo)
+    cargarResenas();
+
     document.querySelectorAll(".estrella-input").forEach(estrella => {
         estrella.addEventListener("mouseover", function () {
             const val = parseInt(this.dataset.valor);
@@ -476,9 +476,8 @@ async function enviarResena() {
     }
 }
 
-cargarResenas();
+// ── Sincronizar ancho del header con el sidebar
 
-// ── Sincronizar ancho del header con el sidebar ──
 (function () {
     const sidebar = document.getElementById('sidebar');
     if (!sidebar) return;
@@ -492,7 +491,6 @@ cargarResenas();
         document.documentElement.style.setProperty('--current-sidebar-width', w);
     }
 
-    // Observar cambios de clase en el sidebar
     new MutationObserver(updateHeaderWidth)
         .observe(sidebar, { attributes: true, attributeFilter: ['class'] });
 
