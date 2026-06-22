@@ -244,7 +244,7 @@
       <div class="table-header">
         <span class="table-title">Todos los usuarios</span>
         <div class="search-box">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="" x2="16.65" y2=""/></svg>
           <input type="text" id="searchUsuarios" placeholder="Buscar usuario…" oninput="filtrarTabla('tablaUsuarios', this.value)"/>
         </div>
       </div>
@@ -557,9 +557,11 @@ function renderUsuarios() {
       <td>${u.correo}</td>
       <td><span class="pill ${u.rol}">${u.rol}</span></td>
       <td>${fmtDate(u.creado_en)}</td>
-      <td style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="action-btn edit" onclick='abrirEditarUsuario(${JSON.stringify(u)})'>✏️ Editar</button>
-        <button class="action-btn delete" onclick="confirmarEliminar('¿Eliminar al usuario ${u.nombre}? Sus datos se perderán.', ()=>eliminarUsuario(${u.id}))">🗑️</button>
+      <td>
+        <div class="acciones">
+         <button class="action-btn edit" onclick='abrirEditarUsuario(${JSON.stringify(u)})'>✏️ Editar</button>
+         <button class="action-btn delete" onclick="confirmarEliminar('¿Eliminar al usuario ${u.nombre}? Sus datos se perderán.', ()=>eliminarUsuario(${u.id}))">🗑️</button>
+        </div>
       </td>
     </tr>`).join('');
 }
@@ -580,9 +582,11 @@ function renderProfesores() {
       <td>${p.correo}</td>
       <td>${cursosDel.length}</td>
       <td>${ventasDel.length}</td>
-      <td style="display:flex;gap:6px">
-        <button class="action-btn edit" onclick='abrirEditarUsuario(${JSON.stringify(p)})'>✏️ Editar</button>
-        <button class="action-btn delete" onclick="confirmarEliminar('¿Eliminar al profesor ${p.nombre}?', ()=>eliminarUsuario(${p.id}))">🗑️</button>
+      <td>
+        <div class="acciones">
+          <button class="action-btn edit" onclick='abrirEditarUsuario(${JSON.stringify(p)})'>✏️ Editar</button>
+          <button class="action-btn delete" onclick="confirmarEliminar('¿Eliminar al profesor ${p.nombre}?', ()=>eliminarUsuario(${p.id}))">🗑️</button>
+        </div>
       </td>
     </tr>`;
   }).join('');
@@ -599,10 +603,12 @@ function renderCursos() {
       <td>${c.profesor||'—'}</td>
       <td>$${(+c.precio||0).toFixed(2)}</td>
       <td>${ventas}</td>
-      <td style="display:flex;gap:6px">
-        <a class="action-btn view" href="/curso/${c.id}">👁️ Ver</a>
-        <a class="action-btn edit" href="/curso/${c.id}/editar">✏️ Editar</a>
-        <button class="action-btn delete" onclick="confirmarEliminar('¿Eliminar curso «${c.titulo}»? Se borrarán sus lecciones, compras y reseñas.', ()=>eliminarCurso(${c.id}))">🗑️</button>
+      <td>
+        <div class="acciones">
+          <a class="action-btn view" href="/curso/${c.id}">👁️ Ver</a>
+          <a class="action-btn edit" href="/curso/${c.id}/editar">✏️ Editar</a>
+          <button class="action-btn delete" onclick="confirmarEliminar('¿Eliminar curso «${c.titulo}»? Se borrarán sus lecciones, compras y reseñas.', ()=>eliminarCurso(${c.id}))">🗑️</button>
+        </div>
       </td>
     </tr>`;
   }).join('');
