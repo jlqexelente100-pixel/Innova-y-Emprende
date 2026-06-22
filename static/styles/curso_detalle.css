@@ -1,5 +1,5 @@
 :root {
-    --color-principal: #007bff;
+    --color-principal: #006172;
     --color-secundario: #6c757d;
 }
 
@@ -291,6 +291,31 @@ body {
     margin-bottom: 0.75rem;
 }
 
+.curso-panel .card-body-foro {
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.curso-panel .card-body-foro .boton-foros {
+    display: inline-block;
+    font-family: "Lato", Arial, sans-serif;
+    color: black;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.65rem 1.25rem;
+    border-radius: 10px;
+    border: 0.5px solid #006172;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.curso-panel .card-body-foro .boton-foros:hover {
+    background: #006172;
+    color: white;
+    transform: translateY(-1px);
+}
+
 .leccion-item {
     border-left: 4px solid var(--color-principal);
     padding: 1rem;
@@ -347,6 +372,7 @@ body {
     .profesor-panel .btn-group-responsive > * {
         width: 100%;
     }
+
 }
 
 /* ===== RESEÑAS ===== */
@@ -399,7 +425,7 @@ body {
 
 .reseña-textarea:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: #006172;
 }
 
 .reseña-msg {
@@ -446,3 +472,5 @@ body {
     border-radius: 10px;
     padding: 16px;
 }
+
+/*TARJETA FORO*/

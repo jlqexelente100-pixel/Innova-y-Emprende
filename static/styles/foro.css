@@ -64,9 +64,9 @@ h2 {
 }
 
 .form-control:focus {
-    border-color: #007bff;
+    border-color: #006172;
     background-color: white;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+    box-shadow: 0 0 0 0.2rem rgba(0, 97, 114, 0.15);
     outline: none;
 }
 
@@ -81,7 +81,7 @@ textarea.form-control:focus {
 
 /* Botón publicar */
 .btn-primary {
-    background-color: #007bff;
+    background-color: #006172;
     border: none;
     padding: 0.75rem 2rem;
     font-weight: 600;
@@ -91,7 +91,7 @@ textarea.form-control:focus {
 }
 
 .btn-primary:hover {
-    background-color: #0056b3;
+    background-color: #006172;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
 }
@@ -102,7 +102,7 @@ textarea.form-control:focus {
 
 /* Posts del foro */
 .card:not(:first-child) {
-    border-left: 4px solid #007bff;
+    border-left: 4px solid #006172;
 }
 
 .card .d-flex {
@@ -118,7 +118,7 @@ textarea.form-control:focus {
 }
 
 .rounded-circle:hover {
-    border-color: #007bff;
+    border-color: #006172;
     box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
 }
 
@@ -159,7 +159,7 @@ textarea.form-control:focus {
 
 .alert-info {
     background-color: #e7f3ff;
-    color: #0056b3;
+    color: #006172;
 }
 
 .alert-success {
@@ -254,7 +254,7 @@ textarea.form-control:focus {
 
 :root[data-theme="dark"] .form-control:focus {
     background-color: #333;
-    border-color: #0d6efd;
+    border-color: #006172;
     box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
 }
 
