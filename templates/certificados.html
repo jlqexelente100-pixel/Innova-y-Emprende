@@ -1,44 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Certificado — {{ curso_nombre }}{% endblock %}
 
-<div class="certificado-container">
-    <div class="certificado-border">
-        <div class="certificado-inner">
-            <header>
-                <div class="logo-placeholder">
-                    <span>TU LOGO AQUÍ</span>
-                </div>
-                <h1>Diploma de Capacitación</h1>
-                <div class="folio-fecha">
-                    <span>Folio: [PROG-2026-001]</span>
-                    <span>Emitido: 16 de marzo, 2026</span>
-                </div>
-            </header>
+{% block content %}
+<div class="cert-page">
+    <div class="cert-card">
 
-            <main>
-                <p class="concesion">Se otorga el presente diploma a</p>
-                <h2 class="nombre-participante">Santiago Guzmán</h2>
-                
-                <p class="descripcion">
-                    Por completar satisfactoriamente el curso de <strong>"Programación Web con Python y Flask"</strong>, 
-                    demostrando excelencia en el desarrollo de aplicaciones, gestión de bases de datos 
-                    y buenas prácticas de arquitectura de software.
-                </p>
+        <!-- BANDA AZUL DIAGONAL -->
+        <div class="cert-band">
+            <div class="cert-band-title">
+                <span class="cert-band-big">Certificado</span>
+                <span class="cert-band-sub">DE FINALIZACIÓN</span>
+            </div>
+        </div>
 
-                <div class="sello">
-                    <div class="award-icon">★</div>
-                    <p>CERTIFIED</p>
-                </div>
-            </main>
+        <!-- ACENTO DORADO SUPERIOR DERECHO -->
+        <div class="cert-gold-arc"></div>
 
-            <footer>
-                <div class="firma">
-                    <p class="linea-firma">__________________________</p>
-                    <p class="puesto">Facilitador Senior</p>
+        <!-- SELLO DORADO -->
+        <div class="cert-seal-wrap">
+            <div class="cert-seal">
+                <div class="cert-seal-inner">
+                    <div class="cert-seal-star">★★★★★</div>
+                    <div class="cert-seal-label">INNOVA &amp;</div>
+                    <div class="cert-seal-label">EMPRENDE</div>
+                    <div class="cert-seal-year">2026</div>
                 </div>
-                <div class="firma">
-                    <p class="linea-firma">__________________________</p>
-                    <p class="puesto">Director de Tecnología</p>
-                </div>
-            </footer>
+            </div>
+            <div class="cert-seal-ribbon"></div>
+        </div>
+
+        <!-- CONTENIDO DERECHO -->
+        <div class="cert-content">
+            <p class="cert-presented">
+                Este certificado es orgullosamente presentado<br>
+                en reconocimiento a la dedicación y esfuerzo de
+            </p>
+
+            <h2 class="cert-name">{{ nombre_estudiante }}</h2>
+            <div class="cert-name-line"></div>
+
+            <p class="cert-course-label">{{ curso_nombre | upper }}</p>
+            <p class="cert-desc">
+                Por haber completado satisfactoriamente el curso a través de la plataforma
+                <strong>Innova &amp; Emprende</strong>, demostrando dedicación, compromiso
+                y excelencia en su proceso de aprendizaje.
+            </p>
+
+            <!-- FIRMAS -->
+            <div class="cert-footer">
+
+                <div class="cert-sign">
+                  <div class="cert-sign-name">{{ nombre_instructor }}</div>
+                  <div class="cert-sign-line"></div>
+                  <div class="cert-sign-role">Instructor del Curso</div>
+             </div>
+
+                <div class="cert-center-seals">
+                    <img src="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}" 
+                    alt="Logo Innova y Emprende" 
+                    style="width: 100px; height: 100px; object-fit: contain; position: relative; top: 10px;">
+             </div>
+
+                <div class="cert-sign">
+                   <div class="cert-sign-name">Luna Hurtado</div>
+                   <div class="cert-sign-line"></div>
+                   <div class="cert-sign-role">Directora de Innova y Emprende</div>
+             </div>
+
+            </div>
+
+            <div class="cert-meta">
+                <span>Fecha de emisión: <strong>{{ fecha_emision }}</strong></span>
+                <span class="cert-meta-sep">|</span>
+                <span>ID: <strong>{{ folio }}</strong></span>
+            </div>
+
         </div>
     </div>
+
+    <div class="cert-actions">
+        <button onclick="window.print()">🖨 Imprimir / Guardar PDF</button>
+        <a href="{{ url_for('mis_cursos_progreso') }}" class="cert-btn-back">← Mis Cursos</a>
+    </div>
 </div>
+{% endblock %}

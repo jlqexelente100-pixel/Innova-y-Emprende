@@ -1,119 +1,574 @@
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Great+Vibes&display=swap');
 
-:root {
-    --azul-oscuro: #0a2e36;
-    --crema-fondo: #fdfaf1;
-    --dorado: #a68b5a;
-}
-
-.certificado-container {
-    width: 850px;
-    height: 600px;
-    background-color: var(--azul-oscuro);
-    padding: 25px;
-    color: var(--azul-oscuro);
-    font-family: 'Montserrat', sans-serif;
-    margin: 20px auto;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-.certificado-border {
-    border: 4px double var(--dorado);
-    height: 100%;
-    background-color: var(--crema-fondo);
+/* ══════════════════════════════════════════════
+   PÁGINA — todo encerrado bajo .cert-page
+   para NO afectar el resto de la web
+══════════════════════════════════════════════ */
+.cert-page {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    font-family: 'Lato', sans-serif;
 }
 
-header {
-    background-color: var(--azul-oscuro);
-    color: white;
-    padding: 30px 40px;
-    text-align: center;
+/* ══════════════════════════════════════════════
+   TARJETA PRINCIPAL
+══════════════════════════════════════════════ */
+.cert-card {
+    width: 1000px;
+    height: 700px;
+    max-width: 100%;
+    background: #f5f6f8;
     position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow:
+        0 0 0 1px rgba(0,0,0,0.08),
+        0 25px 70px rgba(0,0,0,0.55);
+    display: flex;
+    align-items: stretch;
 }
 
-.logo-placeholder {
-    width: 80px;
-    height: 100px;
-    background: white;
+.cert-card *,
+.cert-card *::before,
+.cert-card *::after {
+    box-sizing: border-box;
+}
+
+/* ══════════════════════════════════════════════
+   BANDA AZUL DIAGONAL
+══════════════════════════════════════════════ */
+.cert-band {
     position: absolute;
-    top: -10px;
-    left: 40px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100%;
+    background: linear-gradient(160deg, #001f26 0%, #003842 60%, #005c6b 100%);
+    clip-path: polygon(0 0, 100% 0, 72% 100%, 0 100%);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 42px 30px 30px 38px;
+}
+
+.cert-band::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+        -30deg,
+        transparent,
+        transparent 18px,
+        rgba(255,255,255,0.025) 18px,
+        rgba(255,255,255,0.025) 19px
+    );
+    z-index: 0;
+    pointer-events: none;
+}
+
+.cert-band-title {
+    position: relative;
+    z-index: 1;
+}
+
+.cert-band-big {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0px;
+    white-space: nowrap;
+    background: linear-gradient(135deg, #ffffff 30%, #e8c96a 70%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.cert-band-sub {
+    display: block;
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: #c9a84c;
+    margin-top: 4px;
+    text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════
+   ARCO DORADO — esquina superior derecha
+══════════════════════════════════════════════ */
+.cert-gold-arc {
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 200deg,
+        transparent 0deg,
+        transparent 60deg,
+        #c9a84c 60deg,
+        #f0d080 100deg,
+        #c9a84c 130deg,
+        transparent 130deg
+    );
+    z-index: 1;
+    opacity: 0.85;
+}
+
+/* ══════════════════════════════════════════════
+   SELLO DORADO
+══════════════════════════════════════════════ */
+.cert-seal-wrap {
+    position: absolute;
+    left: 25%;
+    top: 67%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.cert-seal {
+    width: 130px;
+    height: 130px;
+    background: radial-gradient(circle at 40% 35%, #f5e07a, #c9a84c 55%, #9a7020 100%);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
-    color: #333;
-    border: 1px solid #ccc;
+    box-shadow:
+        0 0 0 5px #b8962a,
+        0 0 0 8px rgba(201,168,76,0.25),
+        0 6px 20px rgba(0,0,0,0.35);
+    position: relative;
 }
 
-h1 {
-    font-family: 'Libre+Baskerville', serif;
-    font-size: 42px;
+.cert-seal::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #c9a84c 0deg, transparent 0deg,
+        transparent 10deg, #c9a84c 10deg,
+        #c9a84c 20deg, transparent 20deg,
+        transparent 30deg, #c9a84c 30deg,
+        #c9a84c 40deg, transparent 40deg,
+        transparent 50deg, #c9a84c 50deg,
+        #c9a84c 60deg, transparent 60deg,
+        transparent 70deg, #c9a84c 70deg,
+        #c9a84c 80deg, transparent 80deg,
+        transparent 90deg, #c9a84c 90deg,
+        #c9a84c 100deg, transparent 100deg,
+        transparent 110deg, #c9a84c 110deg,
+        #c9a84c 120deg, transparent 120deg,
+        transparent 130deg, #c9a84c 130deg,
+        #c9a84c 140deg, transparent 140deg,
+        transparent 150deg, #c9a84c 150deg,
+        #c9a84c 160deg, transparent 160deg,
+        transparent 170deg, #c9a84c 170deg,
+        #c9a84c 180deg, transparent 180deg,
+        transparent 190deg, #c9a84c 190deg,
+        #c9a84c 200deg, transparent 200deg,
+        transparent 210deg, #c9a84c 210deg,
+        #c9a84c 220deg, transparent 220deg,
+        transparent 230deg, #c9a84c 230deg,
+        #c9a84c 240deg, transparent 240deg,
+        transparent 250deg, #c9a84c 250deg,
+        #c9a84c 260deg, transparent 260deg,
+        transparent 270deg, #c9a84c 270deg,
+        #c9a84c 280deg, transparent 280deg,
+        transparent 290deg, #c9a84c 290deg,
+        #c9a84c 300deg, transparent 300deg,
+        transparent 310deg, #c9a84c 310deg,
+        #c9a84c 320deg, transparent 320deg,
+        transparent 330deg, #c9a84c 330deg,
+        #c9a84c 340deg, transparent 340deg,
+        transparent 350deg, #c9a84c 350deg,
+        #c9a84c 360deg
+    );
+    mask: radial-gradient(transparent 46px, black 46px);
+    -webkit-mask: radial-gradient(transparent 46px, black 46px);
+}
+
+.cert-seal-inner {
+    text-align: center;
+    z-index: 1;
+    padding: 6px;
+}
+
+.cert-seal-star {
+    font-size: 9px;
+    color: #7a5010;
+    letter-spacing: 1px;
+}
+
+.cert-seal-label {
+    font-family: 'Cinzel', serif;
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #5a3800;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+}
+
+.cert-seal-year {
+    font-family: 'Cinzel', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #4a2e00;
+    margin-top: 2px;
+}
+
+.cert-seal-ribbon {
+    width: 22px;
+    height: 38px;
+    background: linear-gradient(180deg, #c9a84c, #9a7020);
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+    margin-top: -4px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+/* ══════════════════════════════════════════════
+   CONTENIDO DERECHO
+══════════════════════════════════════════════ */
+.cert-content {
+    position: relative;
+    z-index: 2;
+    margin-left: 230px;
+    padding: 42px 48px 28px 30px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.cert-presented {
+    font-size: 12.5px;
+    font-weight: 400;
+    color: #444;
+    line-height: 1.7;
+    text-align: right;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
     margin: 0;
-    letter-spacing: 2px;
 }
 
-.folio-fecha {
+.cert-name {
+    font-family: 'Great Vibes', cursive;
+    font-size: 60px;
+    color: #0f2545;
+    text-align: right;
+    line-height: 1.1;
+    margin-top: 6px;
+    margin-bottom: 0;
+    font-weight: 400;
+}
+
+.cert-name-line {
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent 0%, #c9a84c 30%, #c9a84c 70%, transparent 100%);
+    margin: 6px 0 14px;
+}
+
+.cert-course-label {
+    font-family: 'Cinzel', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f2545;
+    letter-spacing: 2px;
+    text-align: right;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+
+.cert-desc {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.65;
+    text-align: right;
+    max-width: 420px;
+    margin-left: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* ══════════════════════════════════════════════
+   PIE: FIRMAS
+══════════════════════════════════════════════ */
+.cert-footer {
     display: flex;
     justify-content: space-between;
-    margin-top: 25px;
-    font-size: 13px;
-    border-top: 1px solid rgba(255,255,255,0.3);
-    padding-top: 10px;
+    align-items: flex-end;
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(201,168,76,0.35);
 }
 
-main {
+.cert-sign {
     text-align: center;
-    padding: 40px 60px;
-    flex-grow: 1;
+    min-width: 140px;
 }
 
-.concesion {
-    font-size: 18px;
-    font-style: italic;
-    margin-bottom: 10px;
+.cert-sign-img {
+    height: 44px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin-bottom: 2px;
 }
 
-.nombre-participante {
-    font-family: 'Libre+Baskerville', serif;
-    font-size: 55px;
-    margin: 10px 0;
-    color: var(--azul-oscuro);
-    border-bottom: 2px solid var(--dorado);
-    display: inline-block;
+.cert-sign-line {
+    width: 140px;
+    height: 1px;
+    background: #0f2545;
+    margin: 0 auto 5px;
 }
 
-.descripcion {
-    margin-top: 30px;
-    line-height: 1.6;
-    font-size: 16px;
-    color: #444;
+.cert-sign-name {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #0f2545;
+    letter-spacing: 0.5px;
 }
 
-.sello {
-    margin-top: 20px;
+.cert-sign-role {
+    font-size: 10px;
+    color: #888;
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.cert-center-seals {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.cert-mini-seal {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    border: 2px solid;
+    gap: 2px;
 }
 
-.award-icon {
-    font-size: 40px;
-    color: var(--dorado);
+.cert-mini-seal--left {
+    border-color: #0f2545;
+    background: rgba(15,37,69,0.05);
 }
 
-footer {
-    display: flex;
-    justify-content: space-around;
-    padding-bottom: 40px;
+.cert-mini-seal--right {
+    border-color: #c9a84c;
+    background: rgba(201,168,76,0.08);
 }
 
-.firma {
+.cert-mini-icon {
+    font-size: 10px;
+    line-height: 1;
+}
+
+.cert-mini-text {
+    font-size: 5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #333;
+    text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════
+   META: FECHA E ID
+══════════════════════════════════════════════ */
+.cert-meta {
+    font-size: 10.5px;
+    color: #888;
+    text-align: center;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+}
+
+.cert-meta strong {
+    color: #0f2545;
+}
+
+.cert-meta-sep {
+    margin: 0 10px;
+    color: #c9a84c;
+}
+
+/* ══════════════════════════════════════════════
+   BOTONES
+══════════════════════════════════════════════ */
+.cert-actions {
+    margin-top: 28px;
     text-align: center;
 }
 
-.linea-firma { margin-bottom: 5px; }
-.puesto { font-weight: bold; font-size: 14px; color: var(--azul-oscuro); }
+.cert-actions button {
+    background: linear-gradient(135deg, #c9a84c, #f0d080);
+    border: none;
+    color: #0f2545;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 36px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.cert-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201,168,76,0.5);
+}
+
+.cert-btn-back {
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    color: #aaa;
+    text-decoration: none;
+    margin-left: 18px;
+    transition: color 0.3s;
+}
+
+.cert-btn-back:hover {
+    color: #fff;
+}
+
+/* ══════════════════════════════════════════════
+   IMPRESIÓN
+══════════════════════════════════════════════ */
+
+@media (min-width: 900px) {
+    .cert-card {
+        width: 860px !important;
+        height: 580px !important;
+        flex-shrink: 0;
+    }
+}
+@media print {
+
+    nav, header, .navbar, sidebar { display: none !important; }
+    .cert-actions { display: none; }
+    .cert-page { padding: 0 !important; }
+    .cert-card { 
+        box-shadow: none;
+        width: 860px !important;
+        height: 580px !important;
+        flex-direction: row !important;
+    }
+    .cert-band {
+        position: absolute !important;
+        width: 300px !important;
+        height: 100% !important;
+        clip-path: polygon(0 0, 100% 0, 72% 100%, 0 100%) !important;
+        padding: 42px 30px 30px 38px !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .cert-content {
+        margin-left: 230px !important;
+        padding: 42px 48px 28px 30px !important;
+    }
+    /* DESPUÉS */
+    .cert-seal-wrap {
+       position: absolute !important;
+       left: 148px !important;
+       bottom: 68px !important;
+       top: auto !important;
+       transform: none !important;
+   }
+    .cert-footer {
+        flex-direction: row !important;
+        align-items: flex-end !important;
+    }
+    .cert-card,
+    .cert-seal,
+    .cert-gold-arc,
+    .cert-seal::before,
+    .cert-band {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    @page {
+        size: landscape;
+        margin: 0;
+    }
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ *//* DESPUÉS */
+@media (max-width: 900px) {
+    .cert-card {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+    }
+    .cert-band {
+        position: relative;
+        width: 100%;
+        height: 120px;
+        clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%);
+        padding: 24px 30px 40px 30px;
+    }
+    .cert-band-big {
+        font-size: 28px;
+    }
+    .cert-content {
+        margin-left: 0;
+        padding: 24px 20px 20px 20px;
+    }
+    .cert-presented,
+    .cert-name,
+    .cert-course-label,
+    .cert-desc {
+        text-align: center;
+    }
+    .cert-name {
+        font-size: 44px;
+    }
+    .cert-name-line {
+        margin: 6px auto 14px;
+    }
+    .cert-desc {
+        margin: 0 auto;
+    }
+    .cert-seal-wrap {
+        position: relative;
+        left: auto;
+        top: auto;
+        transform: none;
+        margin: 20px auto 0;
+    }
+    .cert-footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+    }
+    .cert-gold-arc {
+        display: none;
+    }
+}
+
+* {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}

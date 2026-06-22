@@ -2269,6 +2269,55 @@ def mis_cursos_progreso():
 # --------------------------
 # BÚSQUEDA
 # --------------------------
+
+@app.route("/certificado/<int:curso_id>")
+def ver_certificado(curso_id):
+    if not session.get("user_id"):
+        flash("Debes iniciar sesión", "warning")
+        return redirect(url_for("login"))
+
+    usuario_id = session["user_id"]
+    conn = conectar_bd()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            c.titulo,
+            u_est.nombre,
+            COALESCE(u_est.apellido, ''),
+            u_prof.nombre,
+            COALESCE(u_prof.apellido, ''),
+            pc.completado,
+            pc.ultima_actualizacion
+        FROM cursos c
+        JOIN usuarios u_est ON u_est.id = %s
+        JOIN usuarios u_prof ON u_prof.id = c.profesor_id
+        LEFT JOIN progreso_cursos pc ON pc.curso_id = c.id AND pc.usuario_id = %s
+        WHERE c.id = %s
+    """, (usuario_id, usuario_id, curso_id))
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if not row or not row[5]:
+        flash("Debes completar el curso para ver el certificado.", "warning")
+        return redirect(url_for("mis_cursos_progreso"))
+
+    curso_nombre      = row[0]
+    nombre_estudiante = f"{row[1]} {row[2]}".strip()
+    nombre_instructor = f"{row[3]} {row[4]}".strip()
+    fecha_emision     = row[6].strftime("%d de %B de %Y") if row[6] else datetime.now().strftime("%d de %B de %Y")
+    folio             = f"IYE-{curso_id}-{usuario_id:04d}"
+
+    return render_template("certificados.html",
+        curso_nombre=curso_nombre,
+        nombre_estudiante=nombre_estudiante,
+        nombre_instructor=nombre_instructor,
+        fecha_emision=fecha_emision,
+        folio=folio
+    )
+
+
 @app.route("/buscar")
 def buscar():
     query = request.args.get("q")

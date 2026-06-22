@@ -243,7 +243,7 @@
                         {% endif %}
                     </div>
 
-                    <a href="{{ url_for('curso_detalle', curso_id=curso.curso_id) }}"
+                    <a href="{% if curso.completado %}{{ url_for('ver_certificado', curso_id=curso.curso_id) }}{% else %}{{ url_for('curso_detalle', curso_id=curso.curso_id) }}{% endif %}"
                        class="mc-btn-continuar {% if curso.completado %}mc-btn-done{% endif %}">
                         {% if curso.completado %}Ver certificado
                         {% elif curso.porcentaje > 0 %}Continuar curso
