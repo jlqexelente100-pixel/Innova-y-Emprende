@@ -63,11 +63,33 @@
                 <label for="exampleInputPassword1" class="form-label">Contrasena</label>
                 <input type="password" class="form-control" id="exampleInputPassword1" name="password" required>
               </div>
+              
+              <div class="form-check mt-3 mb-3">
+                <input class="form-check-input"
+                        type="checkbox"
+                        id="politicas"
+                        required>
 
-              <div class="regresar-seguir">
-                <button type="submit" class="btn btn-primary btn-lg">Registrarse</button>
-                <p class="link-lateral">Ya tienes cuenta?<br><a href="{{ url_for('login') }}">Iniciar sesion</a></p>
+                <label class="form-check-label" for="politicas">
+                    He leído y acepto las
+                    <a href="{{ url_for('politicas_privacidad') }}" target="_blank">
+                      Políticas de Privacidad
+                    </a>
+                    de Innova y Emprende.
+                </label>
               </div>
+
+<div class="regresar-seguir">
+  <button type="submit" class="btn btn-primary btn-lg">
+    Registrarse
+  </button>
+
+  <p class="link-lateral">
+    Ya tienes cuenta?<br>
+    <a href="{{ url_for('login') }}">Iniciar sesion</a>
+  </p>
+</div>
+              
             </form>
           </div>
         </div>
