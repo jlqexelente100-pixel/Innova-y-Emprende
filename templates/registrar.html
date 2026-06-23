@@ -41,7 +41,7 @@
       <div class="right-panel">
         <div class="fondo">
           <div class="contenedor">
-            <form method="POST" data-overlay="Verificando…" action="/registrar">
+            <form method="POST" action="/registrar">
               <h1 class="titulo-bienvenida">Registrate</h1>
 
               <label for="nombre" class="form-label">Nombre</label>
@@ -59,9 +59,29 @@
                 <div id="emailHelp" class="form-text">Nunca compartiremos tu correo electronico con nadie mas.</div>
               </div>
 
+              <div class="mb-2">
+                <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+                <div class="input-pass-wrap">
+                  <input type="password" class="form-control" id="exampleInputPassword1" name="password" required autocomplete="new-password">
+                  <button type="button" class="toggle-pass" onclick="togglePass('exampleInputPassword1', this)" tabindex="-1">&#128065;</button>
+                </div>
+                <div class="pass-strength-bar mt-2"><div class="pass-strength-fill" id="strengthFill"></div></div>
+                <p class="pass-strength-label" id="strengthLabel"></p>
+                <ul class="pass-criteria" id="passCriteria">
+                  <li id="c-len">Mínimo 8 caracteres</li>
+                  <li id="c-upper">Una letra mayúscula</li>
+                  <li id="c-lower">Una letra minúscula</li>
+                  <li id="c-num">Un número</li>
+                  <li id="c-spec">Un carácter especial (!@#$%...)</li>
+                </ul>
+              </div>
               <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Contrasena</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" name="password" required>
+                <label for="confirmPassword" class="form-label">Confirmar contraseña</label>
+                <div class="input-pass-wrap">
+                  <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required autocomplete="new-password">
+                  <button type="button" class="toggle-pass" onclick="togglePass('confirmPassword', this)" tabindex="-1">&#128065;</button>
+                </div>
+                <p class="pass-match-msg" id="matchMsg"></p>
               </div>
               
               <div class="form-check mt-3 mb-3">
@@ -98,5 +118,165 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    .input-pass-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-pass-wrap .form-control {
+      padding-right: 2.8rem;
+    }
+    .toggle-pass {
+      position: absolute;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.05rem;
+      line-height: 1;
+      padding: 0;
+      color: #6c757d;
+    }
+    .pass-strength-bar {
+      height: 5px;
+      border-radius: 99px;
+      background: #e9ecef;
+      overflow: hidden;
+    }
+    .pass-strength-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      transition: width .3s ease, background .3s ease;
+    }
+    .pass-strength-label {
+      font-size: .78rem;
+      margin: 4px 0 6px;
+      font-weight: 600;
+      min-height: 1.1em;
+    }
+    .pass-criteria {
+      list-style: none;
+      padding: 0;
+      margin: 4px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .pass-criteria li {
+      font-size: .78rem;
+      color: #adb5bd;
+      padding-left: 1.4em;
+      position: relative;
+      transition: color .2s;
+    }
+    .pass-criteria li::before {
+      content: "✗";
+      position: absolute;
+      left: 0;
+      color: #adb5bd;
+      transition: color .2s;
+    }
+    .pass-criteria li.ok {
+      color: #198754;
+    }
+    .pass-criteria li.ok::before {
+      content: "✓";
+      color: #198754;
+    }
+    .pass-match-msg {
+      font-size: .78rem;
+      margin: 4px 0 0;
+      min-height: 1.1em;
+      font-weight: 600;
+    }
+  </style>
+
+  <script>
+    function togglePass(id, btn) {
+      var input = document.getElementById(id);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.style.opacity = '1';
+      } else {
+        input.type = 'password';
+        btn.style.opacity = '0.5';
+      }
+    }
+
+    var passInput    = document.getElementById('exampleInputPassword1');
+    var confirmInput = document.getElementById('confirmPassword');
+    var fill         = document.getElementById('strengthFill');
+    var label        = document.getElementById('strengthLabel');
+    var matchMsg     = document.getElementById('matchMsg');
+
+    var criteria = {
+      len:   { el: document.getElementById('c-len'),   fn: function(v){ return v.length >= 8; } },
+      upper: { el: document.getElementById('c-upper'), fn: function(v){ return /[A-Z]/.test(v); } },
+      lower: { el: document.getElementById('c-lower'), fn: function(v){ return /[a-z]/.test(v); } },
+      num:   { el: document.getElementById('c-num'),   fn: function(v){ return /[0-9]/.test(v); } },
+      spec:  { el: document.getElementById('c-spec'),  fn: function(v){ return /[^A-Za-z0-9]/.test(v); } }
+    };
+
+    var levels = [
+      { label: '',          color: '',        pct: 0   },
+      { label: 'Muy débil', color: '#dc3545', pct: 20  },
+      { label: 'Débil',     color: '#fd7e14', pct: 40  },
+      { label: 'Regular',   color: '#ffc107', pct: 60  },
+      { label: 'Fuerte',    color: '#0d6efd', pct: 80  },
+      { label: 'Muy fuerte',color: '#198754', pct: 100 }
+    ];
+
+    passInput.addEventListener('input', function() {
+      var v = passInput.value;
+      var score = 0;
+      Object.keys(criteria).forEach(function(k) {
+        var ok = criteria[k].fn(v);
+        criteria[k].el.classList.toggle('ok', ok);
+        if (ok) score++;
+      });
+      var lvl = v.length === 0 ? levels[0] : levels[score];
+      fill.style.width      = lvl.pct + '%';
+      fill.style.background = lvl.color;
+      label.textContent     = lvl.label;
+      label.style.color     = lvl.color;
+      checkMatch();
+    });
+
+    confirmInput.addEventListener('input', checkMatch);
+
+    function checkMatch() {
+      var p = passInput.value;
+      var c = confirmInput.value;
+      if (!c) { matchMsg.textContent = ''; return; }
+      if (p === c) {
+        matchMsg.textContent = '✓ Las contraseñas coinciden';
+        matchMsg.style.color = '#198754';
+      } else {
+        matchMsg.textContent = '✗ Las contraseñas no coinciden';
+        matchMsg.style.color = '#dc3545';
+      }
+    }
+
+    // Block submit if passwords don't match or criteria not met
+    document.querySelector('form').addEventListener('submit', function(e) {
+      var v = passInput.value;
+      var allOk = Object.keys(criteria).every(function(k){ return criteria[k].fn(v); });
+      if (!allOk) {
+        e.preventDefault();
+        document.getElementById('passCriteria').style.fontWeight = '600';
+        passInput.focus();
+        return;
+      }
+      if (passInput.value !== confirmInput.value) {
+        e.preventDefault();
+        matchMsg.textContent = '✗ Las contraseñas no coinciden';
+        matchMsg.style.color = '#dc3545';
+        confirmInput.focus();
+      }
+    });
+  </script>
 </body>
 </html>

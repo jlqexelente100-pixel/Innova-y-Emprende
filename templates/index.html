@@ -36,12 +36,7 @@
   </div>
 
   <!-- Grid de cursos -->
-  <!-- Skeleton cursos -->
-  <div class="sk-grid-4 sk-container" id="sk-cursos">
-    <!-- populated by JS -->
-  </div>
-
-  <div class="cursos-grid" id="real-cursos" style="opacity:0;transition:opacity .35s ease;">
+  <div class="cursos-grid" id="real-cursos">
     {% for curso in cursos %}
     <div class="curso-card" style="--card-color: {{ curso.color_principal }};">
 
@@ -106,20 +101,6 @@
 </a>
 {% block scripts %}
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Show skeleton
-    var sk = document.getElementById("sk-cursos");
-    var real = document.getElementById("real-cursos");
-    if (sk) sk.innerHTML = window.LoadingUI.skCursoCards(8);
-
-    // Reveal real content after a tiny frame (content already rendered by Jinja)
-    requestAnimationFrame(function() {
-        requestAnimationFrame(function() {
-            if (sk) sk.classList.add("loaded");
-            if (real) real.style.opacity = "1";
-        });
-    });
-});
 </script>
 {% endblock %}
 {% endblock %}

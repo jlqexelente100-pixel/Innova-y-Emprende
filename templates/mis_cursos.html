@@ -111,11 +111,7 @@
         {% set en_progreso = cursos|selectattr('porcentaje','gt',0)|rejectattr('completado')|list|length %}
         {% set promedio    = (cursos|sum(attribute='porcentaje') / total)|round(0)|int %}
 
-        <!-- Skeleton stats -->
-        <div class="sk-grid-stats sk-container" id="sk-stats"></div>
-
-        <div class="mc-stats-row" id="real-dashboard"
-             style="opacity:0; transition:opacity .35s ease;">
+        <div class="mc-stats-row" id="real-dashboard">
 
             <div class="mc-stat-card-v2">
                 <div class="mc-stat-icon-v2 mc-icon-v2--teal">
@@ -173,15 +169,7 @@
         </div>
 
 
-        <!-- Skeleton cursos -->
-        <div class="sk-list sk-container" id="sk-mis-cursos"
-             style="margin-bottom:16px;"></div>
-
-        <!-- ══════════════════════════════════════════
-             GRID DE CURSOS
-        ══════════════════════════════════════════ -->
         <section class="mc-grid" id="real-mc-grid"
-                 style="opacity:0; transition:opacity .35s ease;"
                  aria-label="Lista de cursos">
 
             {% for curso in cursos %}
@@ -272,25 +260,6 @@
 
 {% block scripts %}
 <script>
-document.addEventListener("DOMContentLoaded", function () {
 
-    var skStats  = document.getElementById("sk-stats");
-    var realDash = document.getElementById("real-dashboard");
-    var skCursos = document.getElementById("sk-mis-cursos");
-    var realGrid = document.getElementById("real-mc-grid");
-
-    if (skStats)  skStats.innerHTML  = window.LoadingUI.skStatCards(4);
-    if (skCursos) skCursos.innerHTML = window.LoadingUI.skProgressCards(3);
-
-    requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-            if (skStats)  skStats.classList.add("loaded");
-            if (skCursos) skCursos.classList.add("loaded");
-            if (realDash) realDash.style.opacity = "1";
-            if (realGrid) realGrid.style.opacity = "1";
-        });
-    });
-
-});
 </script>
 {% endblock %}

@@ -41,7 +41,7 @@
              {% endif %}
           {% endwith %}
 
-          <form method="POST" data-overlay="Verificando…" action="{{ url_for('recuperar') }}">
+          <form method="POST" action="{{ url_for('recuperar') }}">
              <div class="mb-3">
                 <label for="correo" class="form-label">Ingresa tu correo electronico</label>
                 <input type="email" class="form-control" id="correo" name="correo" placeholder="ejemplo@correo.com" required>
