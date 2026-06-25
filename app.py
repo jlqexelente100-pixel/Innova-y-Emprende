@@ -96,108 +96,138 @@ def conectar_bd():
         return None
 
 
-def enviar_correo_compra(destinatario, nombre_usuario, nombre_curso, monto, fecha):
+def enviar_correo_compra(destinatario, nombre_usuario, nombre_curso, monto, metodo_pago, estado, fecha):
     remitente = "innovayemprende1.2@gmail.com"
     password  = "cwbd dprx ncgc zyyf"
 
     mensaje = MIMEMultipart("alternative")
-    mensaje["Subject"] = "✅ Confirmación de compra — Innova y Emprende"
-    mensaje["From"]    = f"Innova y Emprende <{remitente}>"
+    mensaje["Subject"] = "Confirmación de compra - Innova y Emprende"
+    mensaje["From"]    = "Innova y Emprende <no-reply@innovayemprende.com>"
     mensaje["To"]      = destinatario
 
-    html = f"""
-<!DOCTYPE html>
+    html = f"""<!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-</head>
-<body style="margin:0;padding:0;background:#f0f4f8;font-family:'Segoe UI',Arial,sans-serif;">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:30px 0;">
+  <tr><td align="center">
+    <table width="580" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);">
 
-  <!-- Wrapper -->
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;padding:40px 0;">
-    <tr><td align="center">
+      <!-- Header -->
+      <tr>
+        <td style="padding:28px 40px 20px;border-bottom:1px solid #e0e0e0;">
+          <table cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="vertical-align:middle;padding-right:16px;">
+                <div style="width:48px;height:48px;background:#2e7d32;border-radius:50%;text-align:center;line-height:48px;font-size:26px;color:#fff;">✓</div>
+              </td>
+              <td style="vertical-align:middle;">
+                <h1 style="margin:0;font-size:20px;font-weight:700;color:#1a1a1a;">Confirmación de compra - Innova y Emprende</h1>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
 
-      <!-- Card -->
-      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.10);">
+      <!-- Body -->
+      <tr>
+        <td style="padding:28px 40px;">
 
-        <!-- Header -->
-        <tr>
-          <td style="background:linear-gradient(135deg,#007b91 0%,#006172 100%);padding:36px 40px;text-align:center;">
-            <p style="margin:0 0 6px;font-size:13px;color:rgba(255,255,255,.7);letter-spacing:.08em;text-transform:uppercase;">Innova y Emprende</p>
-            <h1 style="margin:0;font-size:26px;color:#ffffff;font-weight:700;">¡Compra confirmada!</h1>
-            <p style="margin:10px 0 0;font-size:15px;color:rgba(255,255,255,.85);">Tu pago fue procesado exitosamente 🎉</p>
-          </td>
-        </tr>
+          <p style="margin:0 0 4px;font-size:15px;color:#1a1a1a;"><strong>Hola, {nombre_usuario},</strong></p>
+          <p style="margin:0 0 24px;font-size:15px;color:#444;">Tu compra fue realizada exitosamente.</p>
 
-        <!-- Body -->
-        <tr>
-          <td style="padding:36px 40px;">
+          <!-- Detalle -->
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9f9f9;border-radius:8px;border:1px solid #e0e0e0;overflow:hidden;margin-bottom:24px;">
 
-            <p style="margin:0 0 20px;font-size:15px;color:#374151;">Hola <strong>{nombre_usuario}</strong>,</p>
-            <p style="margin:0 0 28px;font-size:15px;color:#374151;line-height:1.6;">
-              Gracias por tu compra. A continuación encontrarás el resumen de tu transacción.
-              Ya puedes acceder a tu curso desde tu perfil.
-            </p>
+            <!-- Curso -->
+            <tr style="border-bottom:1px solid #e0e0e0;">
+              <td style="padding:14px 18px;width:42%;border-bottom:1px solid #e0e0e0;">
+                <table cellpadding="0" cellspacing="0"><tr>
+                  <td style="padding-right:10px;vertical-align:middle;">
+                    <div style="width:30px;height:30px;background:#e8f5e9;border-radius:50%;text-align:center;line-height:30px;font-size:15px;">🎓</div>
+                  </td>
+                  <td style="font-size:14px;font-weight:700;color:#1a1a1a;vertical-align:middle;">Curso:</td>
+                </tr></table>
+              </td>
+              <td style="padding:14px 18px;font-size:14px;color:#333;border-bottom:1px solid #e0e0e0;">{nombre_curso}</td>
+            </tr>
 
-            <!-- Detalle compra -->
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border-radius:12px;overflow:hidden;margin-bottom:28px;border:1px solid #e5e7eb;">
-              <tr style="background:#f1f5f9;">
-                <td colspan="2" style="padding:14px 20px;">
-                  <p style="margin:0;font-size:12px;font-weight:700;color:#6b7280;letter-spacing:.06em;text-transform:uppercase;">Detalle de la compra</p>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding:14px 20px;font-size:14px;color:#6b7280;border-bottom:1px solid #e5e7eb;">Curso</td>
-                <td style="padding:14px 20px;font-size:14px;color:#111827;font-weight:600;text-align:right;border-bottom:1px solid #e5e7eb;">{nombre_curso}</td>
-              </tr>
-              <tr>
-                <td style="padding:14px 20px;font-size:14px;color:#6b7280;border-bottom:1px solid #e5e7eb;">Fecha</td>
-                <td style="padding:14px 20px;font-size:14px;color:#111827;text-align:right;border-bottom:1px solid #e5e7eb;">{fecha}</td>
-              </tr>
-              <tr>
-                <td style="padding:16px 20px;font-size:15px;color:#111827;font-weight:700;">Total pagado</td>
-                <td style="padding:16px 20px;font-size:18px;color:#007b91;font-weight:700;text-align:right;">${monto:.2f} USD</td>
-              </tr>
-            </table>
+            <!-- Valor -->
+            <tr>
+              <td style="padding:14px 18px;border-bottom:1px solid #e0e0e0;">
+                <table cellpadding="0" cellspacing="0"><tr>
+                  <td style="padding-right:10px;vertical-align:middle;">
+                    <div style="width:30px;height:30px;background:#e8f5e9;border-radius:50%;text-align:center;line-height:30px;font-size:15px;">💲</div>
+                  </td>
+                  <td style="font-size:14px;font-weight:700;color:#1a1a1a;vertical-align:middle;">Valor pagado:</td>
+                </tr></table>
+              </td>
+              <td style="padding:14px 18px;font-size:14px;color:#333;border-bottom:1px solid #e0e0e0;">${monto:.2f} USD</td>
+            </tr>
 
-            <!-- CTA -->
-            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
-              <tr>
-                <td align="center">
-                  <a href="https://innovayemprende.com/mis_cursos"
-                     style="display:inline-block;background:linear-gradient(135deg,#007b91,#006172);color:#ffffff;text-decoration:none;
-                            font-size:15px;font-weight:600;padding:14px 36px;border-radius:10px;letter-spacing:.02em;">
-                    Ir a mis cursos &rarr;
-                  </a>
-                </td>
-              </tr>
-            </table>
+            <!-- Método de pago -->
+            <tr>
+              <td style="padding:14px 18px;border-bottom:1px solid #e0e0e0;">
+                <table cellpadding="0" cellspacing="0"><tr>
+                  <td style="padding-right:10px;vertical-align:middle;">
+                    <div style="width:30px;height:30px;background:#e8f5e9;border-radius:50%;text-align:center;line-height:30px;font-size:15px;">💳</div>
+                  </td>
+                  <td style="font-size:14px;font-weight:700;color:#1a1a1a;vertical-align:middle;">Método de pago:</td>
+                </tr></table>
+              </td>
+              <td style="padding:14px 18px;font-size:14px;color:#333;border-bottom:1px solid #e0e0e0;">{metodo_pago}</td>
+            </tr>
 
-            <p style="margin:0;font-size:13px;color:#9ca3af;line-height:1.6;">
-              Si tienes alguna pregunta o inconveniente, responde este correo o contáctanos en
-              <a href="mailto:innovayemprende1.2@gmail.com" style="color:#007b91;">innovayemprende1.2@gmail.com</a>.
-            </p>
+            <!-- Estado -->
+            <tr>
+              <td style="padding:14px 18px;border-bottom:1px solid #e0e0e0;">
+                <table cellpadding="0" cellspacing="0"><tr>
+                  <td style="padding-right:10px;vertical-align:middle;">
+                    <div style="width:30px;height:30px;background:#e8f5e9;border-radius:50%;text-align:center;line-height:30px;font-size:15px;">🛡</div>
+                  </td>
+                  <td style="font-size:14px;font-weight:700;color:#1a1a1a;vertical-align:middle;">Estado de la transacción:</td>
+                </tr></table>
+              </td>
+              <td style="padding:14px 18px;font-size:14px;color:#333;border-bottom:1px solid #e0e0e0;">{estado}</td>
+            </tr>
 
-          </td>
-        </tr>
+            <!-- Fecha -->
+            <tr>
+              <td style="padding:14px 18px;">
+                <table cellpadding="0" cellspacing="0"><tr>
+                  <td style="padding-right:10px;vertical-align:middle;">
+                    <div style="width:30px;height:30px;background:#e8f5e9;border-radius:50%;text-align:center;line-height:30px;font-size:15px;">📅</div>
+                  </td>
+                  <td style="font-size:14px;font-weight:700;color:#1a1a1a;vertical-align:middle;">Fecha:</td>
+                </tr></table>
+              </td>
+              <td style="padding:14px 18px;font-size:14px;color:#333;">{fecha}</td>
+            </tr>
 
-        <!-- Footer -->
-        <tr>
-          <td style="background:#f8fafc;padding:20px 40px;text-align:center;border-top:1px solid #e5e7eb;">
-            <p style="margin:0;font-size:12px;color:#9ca3af;">© 2025 Innova y Emprende · Todos los derechos reservados</p>
-          </td>
-        </tr>
+          </table>
 
-      </table>
-      <!-- /Card -->
+          <p style="margin:0 0 24px;font-size:14px;color:#444;">Gracias por comprar en nuestra plataforma.</p>
 
-    </td></tr>
-  </table>
+          <!-- CTA -->
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td align="center">
+                <a href="https://innovayemprende.com/mis_cursos"
+                   style="display:inline-block;background:#2e7d32;color:#ffffff;text-decoration:none;
+                          font-size:15px;font-weight:600;padding:14px 48px;border-radius:6px;">
+                  Ver mi curso
+                </a>
+              </td>
+            </tr>
+          </table>
 
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+</table>
 </body>
-</html>
-"""
+</html>"""
 
     mensaje.attach(MIMEText(html, "html"))
 
@@ -213,6 +243,7 @@ def enviar_correo_compra(destinatario, nombre_usuario, nombre_curso, monto, fech
     except Exception as e:
         print("Error al enviar correo de compra:", e)
         return False
+
 
 
 def enviar_correo(destinatario, enlace):
@@ -1728,15 +1759,22 @@ def pago_exitoso():
     try:
         conn2 = conectar_bd()
         cur2  = conn2.cursor()
-        cur2.execute("SELECT u.nombre, u.correo, c.titulo FROM usuarios u JOIN cursos c ON c.id = %s WHERE u.id = %s;",
-                     (curso_id, usuario_id))
+        cur2.execute(
+            "SELECT u.nombre, u.correo, cu.titulo, mp.nombre "
+            "FROM usuarios u "
+            "JOIN cursos cu ON cu.id = %s "
+            "LEFT JOIN metodos_pago mp ON mp.id = %s "
+            "WHERE u.id = %s;",
+            (curso_id, metodo_pago_id, usuario_id)
+        )
         row = cur2.fetchone()
         cur2.close()
         conn2.close()
         if row:
             from datetime import datetime
-            fecha_str = datetime.now().strftime("%d/%m/%Y %H:%M")
-            enviar_correo_compra(row[1], row[0], row[2], monto, fecha_str)
+            fecha_str   = datetime.now().strftime("%d/%m/%Y")
+            metodo_str  = row[3] if row[3] else "Tarjeta de crédito"
+            enviar_correo_compra(row[1], row[0], row[2], monto, metodo_str, "Aprobada", fecha_str)
     except Exception as e:
         print("Error enviando correo de compra:", e)
 
