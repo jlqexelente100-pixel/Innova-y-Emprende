@@ -1759,22 +1759,25 @@ def pago_exitoso():
     try:
         conn2 = conectar_bd()
         cur2  = conn2.cursor()
-        cur2.execute(
-            "SELECT u.nombre, u.correo, cu.titulo, mp.nombre "
-            "FROM usuarios u "
-            "JOIN cursos cu ON cu.id = %s "
-            "LEFT JOIN metodos_pago mp ON mp.id = %s "
-            "WHERE u.id = %s;",
-            (curso_id, metodo_pago_id, usuario_id)
-        )
-        row = cur2.fetchone()
+        # Traer datos del usuario
+        cur2.execute("SELECT nombre, correo FROM usuarios WHERE id = %s;", (int(usuario_id),))
+        urow = cur2.fetchone()
+        # Traer título del curso
+        cur2.execute("SELECT titulo FROM cursos WHERE id = %s;", (int(curso_id),))
+        crow = cur2.fetchone()
+        # Traer método de pago
+        metodo_str = "Tarjeta de crédito"
+        if metodo_pago_id:
+            cur2.execute("SELECT nombre FROM metodos_pago WHERE id = %s;", (metodo_pago_id,))
+            mrow = cur2.fetchone()
+            if mrow:
+                metodo_str = mrow[0]
         cur2.close()
         conn2.close()
-        if row:
+        if urow and crow:
             from datetime import datetime
-            fecha_str   = datetime.now().strftime("%d/%m/%Y")
-            metodo_str  = row[3] if row[3] else "Tarjeta de crédito"
-            enviar_correo_compra(row[1], row[0], row[2], monto, metodo_str, "Aprobada", fecha_str)
+            fecha_str = datetime.now().strftime("%d/%m/%Y")
+            enviar_correo_compra(urow[1], urow[0], crow[0], monto, metodo_str, "Aprobada", fecha_str)
     except Exception as e:
         print("Error enviando correo de compra:", e)
 
