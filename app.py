@@ -96,6 +96,125 @@ def conectar_bd():
         return None
 
 
+def enviar_correo_compra(destinatario, nombre_usuario, nombre_curso, monto, fecha):
+    remitente = "innovayemprende1.2@gmail.com"
+    password  = "cwbd dprx ncgc zyyf"
+
+    mensaje = MIMEMultipart("alternative")
+    mensaje["Subject"] = "✅ Confirmación de compra — Innova y Emprende"
+    mensaje["From"]    = f"Innova y Emprende <{remitente}>"
+    mensaje["To"]      = destinatario
+
+    html = f"""
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body style="margin:0;padding:0;background:#f0f4f8;font-family:'Segoe UI',Arial,sans-serif;">
+
+  <!-- Wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;padding:40px 0;">
+    <tr><td align="center">
+
+      <!-- Card -->
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.10);">
+
+        <!-- Header -->
+        <tr>
+          <td style="background:linear-gradient(135deg,#007b91 0%,#006172 100%);padding:36px 40px;text-align:center;">
+            <p style="margin:0 0 6px;font-size:13px;color:rgba(255,255,255,.7);letter-spacing:.08em;text-transform:uppercase;">Innova y Emprende</p>
+            <h1 style="margin:0;font-size:26px;color:#ffffff;font-weight:700;">¡Compra confirmada!</h1>
+            <p style="margin:10px 0 0;font-size:15px;color:rgba(255,255,255,.85);">Tu pago fue procesado exitosamente 🎉</p>
+          </td>
+        </tr>
+
+        <!-- Body -->
+        <tr>
+          <td style="padding:36px 40px;">
+
+            <p style="margin:0 0 20px;font-size:15px;color:#374151;">Hola <strong>{nombre_usuario}</strong>,</p>
+            <p style="margin:0 0 28px;font-size:15px;color:#374151;line-height:1.6;">
+              Gracias por tu compra. A continuación encontrarás el resumen de tu transacción.
+              Ya puedes acceder a tu curso desde tu perfil.
+            </p>
+
+            <!-- Detalle compra -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border-radius:12px;overflow:hidden;margin-bottom:28px;border:1px solid #e5e7eb;">
+              <tr style="background:#f1f5f9;">
+                <td colspan="2" style="padding:14px 20px;">
+                  <p style="margin:0;font-size:12px;font-weight:700;color:#6b7280;letter-spacing:.06em;text-transform:uppercase;">Detalle de la compra</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:14px 20px;font-size:14px;color:#6b7280;border-bottom:1px solid #e5e7eb;">Curso</td>
+                <td style="padding:14px 20px;font-size:14px;color:#111827;font-weight:600;text-align:right;border-bottom:1px solid #e5e7eb;">{nombre_curso}</td>
+              </tr>
+              <tr>
+                <td style="padding:14px 20px;font-size:14px;color:#6b7280;border-bottom:1px solid #e5e7eb;">Fecha</td>
+                <td style="padding:14px 20px;font-size:14px;color:#111827;text-align:right;border-bottom:1px solid #e5e7eb;">{fecha}</td>
+              </tr>
+              <tr>
+                <td style="padding:16px 20px;font-size:15px;color:#111827;font-weight:700;">Total pagado</td>
+                <td style="padding:16px 20px;font-size:18px;color:#007b91;font-weight:700;text-align:right;">${monto:.2f} USD</td>
+              </tr>
+            </table>
+
+            <!-- CTA -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+              <tr>
+                <td align="center">
+                  <a href="https://innovayemprende.com/mis_cursos"
+                     style="display:inline-block;background:linear-gradient(135deg,#007b91,#006172);color:#ffffff;text-decoration:none;
+                            font-size:15px;font-weight:600;padding:14px 36px;border-radius:10px;letter-spacing:.02em;">
+                    Ir a mis cursos &rarr;
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin:0;font-size:13px;color:#9ca3af;line-height:1.6;">
+              Si tienes alguna pregunta o inconveniente, responde este correo o contáctanos en
+              <a href="mailto:innovayemprende1.2@gmail.com" style="color:#007b91;">innovayemprende1.2@gmail.com</a>.
+            </p>
+
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background:#f8fafc;padding:20px 40px;text-align:center;border-top:1px solid #e5e7eb;">
+            <p style="margin:0;font-size:12px;color:#9ca3af;">© 2025 Innova y Emprende · Todos los derechos reservados</p>
+          </td>
+        </tr>
+
+      </table>
+      <!-- /Card -->
+
+    </td></tr>
+  </table>
+
+</body>
+</html>
+"""
+
+    mensaje.attach(MIMEText(html, "html"))
+
+    try:
+        servidor = smtplib.SMTP("smtp.gmail.com", 587, timeout=20)
+        servidor.ehlo()
+        servidor.starttls()
+        servidor.login(remitente, password)
+        servidor.sendmail(remitente, destinatario, mensaje.as_string())
+        servidor.quit()
+        print("Correo de compra enviado a:", destinatario)
+        return True
+    except Exception as e:
+        print("Error al enviar correo de compra:", e)
+        return False
+
+
 def enviar_correo(destinatario, enlace):
     remitente = "innovayemprende1.2@gmail.com"
     password = "cwbd dprx ncgc zyyf"
@@ -1604,6 +1723,22 @@ def pago_exitoso():
         if r:
             session["nombre"] = r[0]
             session["rol"] = r[1]
+
+    # ✅ Enviar correo de confirmación de compra
+    try:
+        conn2 = conectar_bd()
+        cur2  = conn2.cursor()
+        cur2.execute("SELECT u.nombre, u.correo, c.titulo FROM usuarios u JOIN cursos c ON c.id = %s WHERE u.id = %s;",
+                     (curso_id, usuario_id))
+        row = cur2.fetchone()
+        cur2.close()
+        conn2.close()
+        if row:
+            from datetime import datetime
+            fecha_str = datetime.now().strftime("%d/%m/%Y %H:%M")
+            enviar_correo_compra(row[1], row[0], row[2], monto, fecha_str)
+    except Exception as e:
+        print("Error enviando correo de compra:", e)
 
     flash("¡Pago realizado correctamente! ✅", "success")
     return redirect(url_for("mis_compras"))
