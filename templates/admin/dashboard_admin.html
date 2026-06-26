@@ -84,8 +84,18 @@
       <span class="topbar-title" id="topbarTitle">Dashboard</span>
     </div>
     <div class="topbar-actions">
-      <div class="badge-notif">
+      <div class="badge-notif" id="adminBell" onclick="toggleAdminNotif()" title="Notificaciones" style="position:relative;cursor:pointer;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span id="adminNotifCount" style="display:none;position:absolute;top:4px;right:4px;background:#e53935;color:#fff;font-size:10px;font-weight:700;width:16px;height:16px;border-radius:50%;text-align:center;line-height:16px;border:2px solid var(--surface);">0</span>
+      </div>
+
+      <!-- Panel de notificaciones admin -->
+      <div id="adminNotifPanel" style="display:none;position:absolute;top:60px;right:16px;width:360px;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:999;flex-direction:column;overflow:hidden;">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-weight:700;font-size:.95rem;">Notificaciones</span>
+          <button onclick="adminMarcarTodas()" style="background:none;border:none;font-size:.75rem;color:var(--accent);cursor:pointer;font-weight:600;">Marcar todas leídas</button>
+        </div>
+        <div id="adminNotifLista" style="max-height:380px;overflow-y:auto;"></div>
       </div>
       <a href="/index" class="action-btn view">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -849,6 +859,113 @@ async function eliminarCurso(id) {
 
 // ── INIT ───────────────────────────────────────
 cargarTodo();
+
+// ── NOTIFICACIONES ADMIN ────────────────────────
+(function() {
+  const ICONOS = {
+    compra:       { ico: "🛒", color: "#007b91" },
+    nuevo_usuario:{ ico: "👤", color: "#198754" },
+    foro:         { ico: "💬", color: "#0d6efd" },
+    default:      { ico: "🔔", color: "#6c757d" }
+  };
+
+  function tiempoRelativo(fechaStr) {
+    const diff = (Date.now() - new Date(fechaStr)) / 1000;
+    if (diff < 60)    return "Ahora mismo";
+    if (diff < 3600)  return `Hace ${Math.floor(diff/60)} min`;
+    if (diff < 86400) return `Hace ${Math.floor(diff/3600)} h`;
+    return `Hace ${Math.floor(diff/86400)} d`;
+  }
+
+  function renderNotifs(notifs) {
+    const lista = document.getElementById("adminNotifLista");
+    if (!lista) return;
+    if (!notifs.length) {
+      lista.innerHTML = '<p style="text-align:center;padding:28px;color:var(--muted);font-size:.88rem;">Sin notificaciones nuevas</p>';
+      return;
+    }
+    lista.innerHTML = notifs.map(n => {
+      const cfg = ICONOS[n.tipo] || ICONOS.default;
+      return `
+        <div onclick="adminMarcarUna(${n.id}, this)"
+             style="display:flex;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border);cursor:pointer;
+                    background:${n.leida ? 'transparent' : 'rgba(0,123,145,.06)'};transition:background .2s;"
+             id="anotif-${n.id}">
+          <div style="font-size:20px;flex-shrink:0;margin-top:2px;">${cfg.ico}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:.85rem;font-weight:${n.leida ? '500' : '700'};color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.titulo}</div>
+            <div style="font-size:.78rem;color:var(--muted);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.mensaje}</div>
+            <div style="font-size:.72rem;color:var(--muted);">${tiempoRelativo(n.fecha)}</div>
+          </div>
+          ${!n.leida ? '<div style="width:8px;height:8px;background:#e53935;border-radius:50%;flex-shrink:0;margin-top:6px;"></div>' : ''}
+        </div>`;
+    }).join("");
+  }
+
+  function actualizarBadge(notifs) {
+    const count = document.getElementById("adminNotifCount");
+    if (!count) return;
+    const noLeidas = notifs.filter(n => !n.leida).length;
+    count.textContent = noLeidas > 99 ? "99+" : noLeidas;
+    count.style.display = noLeidas > 0 ? "block" : "none";
+    // también animar la campana si hay nuevas
+    const bell = document.getElementById("adminBell");
+    if (bell) bell.style.color = noLeidas > 0 ? "var(--accent)" : "var(--muted)";
+  }
+
+  let _cache = [];
+  let _panelAbierto = false;
+
+  async function cargarAdminNotifs() {
+    try {
+      const r = await fetch("/admin/notificaciones");
+      if (!r.ok) return;
+      _cache = await r.json();
+      actualizarBadge(_cache);
+      if (_panelAbierto) renderNotifs(_cache);
+    } catch(e) {}
+  }
+
+  window.toggleAdminNotif = function() {
+    const panel = document.getElementById("adminNotifPanel");
+    _panelAbierto = !_panelAbierto;
+    panel.style.display = _panelAbierto ? "flex" : "none";
+    if (_panelAbierto) { renderNotifs(_cache); cargarAdminNotifs(); }
+  };
+
+  window.adminMarcarTodas = async function() {
+    await fetch("/admin/notificaciones/marcar-todas", { method: "POST" });
+    _cache.forEach(n => n.leida = true);
+    renderNotifs(_cache);
+    actualizarBadge(_cache);
+  };
+
+  window.adminMarcarUna = async function(id, el) {
+    const notif = _cache.find(n => n.id === id);
+    if (notif && notif.leida) return;
+    await fetch(`/admin/notificaciones/${id}/leida`, { method: "POST" });
+    if (notif) notif.leida = true;
+    el.style.background = "transparent";
+    const punto = el.querySelector('[style*="border-radius:50%"]');
+    if (punto) punto.remove();
+    el.querySelector("div > div:first-child").style.fontWeight = "500";
+    actualizarBadge(_cache);
+  };
+
+  // Cerrar panel al hacer click fuera
+  document.addEventListener("click", function(e) {
+    const panel = document.getElementById("adminNotifPanel");
+    const bell  = document.getElementById("adminBell");
+    if (_panelAbierto && !panel.contains(e.target) && !bell.contains(e.target)) {
+      panel.style.display = "none";
+      _panelAbierto = false;
+    }
+  });
+
+  // Cargar al inicio y cada 30s
+  cargarAdminNotifs();
+  setInterval(cargarAdminNotifs, 30000);
+})();
 </script>
 </body>
 </html>

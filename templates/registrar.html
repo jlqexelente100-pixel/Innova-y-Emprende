@@ -44,6 +44,16 @@
             <form method="POST" action="/registrar">
               <h1 class="titulo-bienvenida">Registrate</h1>
 
+              {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                  {% for category, message in messages %}
+                    <div class="alert {% if category == 'error' %}alert-danger{% elif category == 'success' %}alert-success{% else %}alert-info{% endif %} py-2 mt-2">
+                      <p class="mb-0">{{ message }}</p>
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              {% endwith %}
+
               <label for="nombre" class="form-label">Nombre</label>
               <input type="text" class="form-control" id="nombre" name="nombre" required>
 

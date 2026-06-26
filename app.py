@@ -688,6 +688,26 @@ def crear_tablas():
 # RUTAS DE FRONTEND (HTML)
 # --------------------------
 
+
+# --------------------------
+# HELPER: Notificación al admin
+# --------------------------
+def notif_admin(conn, tipo, titulo, mensaje):
+    """Inserta una notificación para todos los usuarios con rol admin."""
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM usuarios WHERE rol = 'admin';")
+        admins = cur.fetchall()
+        for (admin_id,) in admins:
+            cur.execute(
+                "INSERT INTO notificaciones (usuario_id, tipo, titulo, mensaje) VALUES (%s, %s, %s, %s);",
+                (admin_id, tipo, titulo, mensaje)
+            )
+        cur.close()
+    except Exception as e:
+        print("Error insertando notif admin:", e)
+
+
 @app.route("/")
 @app.route("/home")
 def home():
@@ -807,51 +827,57 @@ def registrar():
 
     if not nombre or not apellido or not username or not correo or not password:
         flash("Todos los campos son obligatorios.", "error")
-        return redirect(url_for("/registrar"))
+        return redirect(url_for("registrar"))
 
     if "@" not in correo or "." not in correo:
         flash("Correo electrónico inválido.", "error")
-        return redirect(url_for("/registrar"))
+        return redirect(url_for("registrar"))
 
     if len(password) < 6:
         flash("La contraseña debe tener al menos 6 caracteres.", "error")
-        return redirect(url_for("/registrar"))
+        return redirect(url_for("registrar"))
 
     password_hash = generate_password_hash(password)
 
     conn = conectar_bd()
     if not conn:
         flash("Error de conexión.", "error")
-        return redirect(url_for("/registrar"))
+        return redirect(url_for("registrar"))
 
     cur = conn.cursor()
     try:
         cur.execute("SELECT id FROM usuarios WHERE correo = %s;", (correo,))
         if cur.fetchone():
-            flash(" El correo ya está registrado, por favor use otro correo para ingresar.", "error")
-            return redirect(url_for("/registrar.html"))
+            flash("El correo ya está registrado, por favor usa otro.", "error")
+            cur.close()
+            conn.close()
+            return redirect(url_for("registrar"))
 
         cur.execute("SELECT id FROM usuarios WHERE username = %s;", (username,))
         if cur.fetchone():
             flash("El nombre de usuario ya está en uso.", "error")
-            return redirect(url_for("/registrar.html"))
+            cur.close()
+            conn.close()
+            return redirect(url_for("registrar"))
 
         cur.execute(
             "INSERT INTO usuarios(nombre, apellido, username, correo, password_hash, rol) VALUES (%s,%s,%s,%s,%s,%s);",
             (nombre, apellido, username, correo, password_hash, rol)
         )
+        notif_admin(conn, "nuevo_usuario",
+            "👤 Nuevo usuario registrado",
+            f"El usuario '{nombre} {apellido}' ({correo}) acaba de registrarse en la plataforma.")
         conn.commit()
-    except Exception as e:
-        conn.rollback()
-        flash("Error al registrar: " + str(e))
-        return redirect(url_for("/registrar.html"))
-    
-    
-    finally:
         cur.close()
         conn.close()
+        flash("¡Registro exitoso! Ya puedes iniciar sesión.", "success")
+        return redirect(url_for("login"))
 
-        flash("Registrado correctamente.", "success")
+    except Exception as e:
+        conn.rollback()
+        cur.close()
+        conn.close()
+        flash("Error al registrar: " + str(e), "error")
         return redirect(url_for("registrar"))
 
 
@@ -1208,7 +1234,28 @@ def admin_api_eliminar_usuario(uid):
     conn = conectar_bd()
     cur = conn.cursor()
     try:
-        cur.execute("DELETE FROM usuarios WHERE id=%s;", (uid,))
+        # 1. Notificaciones del usuario
+        cur.execute("DELETE FROM notificaciones WHERE usuario_id = %s;", (uid,))
+
+        # 2. Reseñas del usuario
+        cur.execute("DELETE FROM resenas WHERE usuario_id = %s;", (uid,))
+
+        # 3. Posts del foro del usuario
+        cur.execute("DELETE FROM foro_posts WHERE usuario_id = %s;", (uid,))
+
+        # 4. Compras del usuario
+        cur.execute("DELETE FROM compras WHERE usuario_id = %s;", (uid,))
+
+        # 5. Progreso de lecciones y cursos (tienen CASCADE pero por si acaso)
+        cur.execute("DELETE FROM progreso_lecciones WHERE usuario_id = %s;", (uid,))
+        cur.execute("DELETE FROM progreso_cursos WHERE usuario_id = %s;", (uid,))
+
+        # 6. Si el usuario es profesor, desvincular sus cursos (no borrarlos)
+        cur.execute("UPDATE cursos SET profesor_id = NULL WHERE profesor_id = %s;", (uid,))
+
+        # 7. Finalmente borrar el usuario
+        cur.execute("DELETE FROM usuarios WHERE id = %s;", (uid,))
+
         conn.commit()
     except Exception as e:
         conn.rollback()
@@ -1755,6 +1802,26 @@ def pago_exitoso():
             session["nombre"] = r[0]
             session["rol"] = r[1]
 
+    # ✅ Notificar al admin sobre nueva compra
+    try:
+        conn_notif = conectar_bd()
+        if conn_notif:
+            cn = conn_notif.cursor()
+            cn.execute("SELECT nombre FROM usuarios WHERE id = %s;", (int(usuario_id),))
+            urow_n = cn.fetchone()
+            cn.execute("SELECT titulo FROM cursos WHERE id = %s;", (int(curso_id),))
+            crow_n = cn.fetchone()
+            cn.close()
+            nombre_u = urow_n[0] if urow_n else f"Usuario #{usuario_id}"
+            nombre_c = crow_n[0] if crow_n else f"Curso #{curso_id}"
+            notif_admin(conn_notif, "compra",
+                f"🛒 Nueva compra: {nombre_c}",
+                f"'{nombre_u}' compró '{nombre_c}' por ${monto:.2f} USD.")
+            conn_notif.commit()
+            conn_notif.close()
+    except Exception as e:
+        print("Error notif admin compra:", e)
+
     # ✅ Enviar correo de confirmación de compra
     try:
         conn2 = conectar_bd()
@@ -2225,10 +2292,77 @@ def crear_post_foro(curso_id):
         INSERT INTO foro_posts (curso_id, usuario_id, titulo, contenido)
         VALUES (%s, %s, %s, %s);
     """, (curso_id, usuario_id, titulo, contenido))
+
+    # Obtener nombre de usuario y curso para la notificación
+    cur.execute("SELECT nombre FROM usuarios WHERE id = %s;", (usuario_id,))
+    urow = cur.fetchone()
+    cur.execute("SELECT titulo FROM cursos WHERE id = %s;", (curso_id,))
+    crow = cur.fetchone()
+    nombre_user  = urow[0] if urow else "Alguien"
+    nombre_curso = crow[0] if crow else f"curso #{curso_id}"
+
+    notif_admin(conn, "foro",
+        "💬 Nuevo comentario en el foro",
+        f"'{nombre_user}' publicó en el foro de '{nombre_curso}': {titulo[:80]}")
+
     conn.commit()
     cur.close()
     conn.close()
     return jsonify({"mensaje": "Post creado"}), 201
+
+@app.route("/admin/notificaciones")
+def admin_notificaciones():
+    if session.get("rol") != "admin":
+        return jsonify({"error": "No autorizado"}), 403
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, tipo, titulo, mensaje, leida, creada_en
+        FROM notificaciones
+        WHERE usuario_id = %s
+        ORDER BY creada_en DESC
+        LIMIT 30;
+    """, (session["user_id"],))
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify([{
+        "id": f[0], "tipo": f[1], "titulo": f[2],
+        "mensaje": f[3], "leida": f[4], "fecha": str(f[5])
+    } for f in filas])
+
+
+@app.route("/admin/notificaciones/marcar-todas", methods=["POST"])
+def admin_marcar_todas_leidas():
+    if session.get("rol") != "admin":
+        return jsonify({"error": "No autorizado"}), 403
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE notificaciones SET leida = TRUE WHERE usuario_id = %s AND leida = FALSE;",
+        (session["user_id"],)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
+
+
+@app.route("/admin/notificaciones/<int:notif_id>/leida", methods=["POST"])
+def admin_marcar_una_leida(notif_id):
+    if session.get("rol") != "admin":
+        return jsonify({"error": "No autorizado"}), 403
+    conn = conectar_bd()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE notificaciones SET leida = TRUE WHERE id = %s AND usuario_id = %s;",
+        (notif_id, session["user_id"])
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
+
 
 @app.route("/notificaciones/no-leidas")
 def notificaciones_no_leidas():
