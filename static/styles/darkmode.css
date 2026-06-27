@@ -418,3 +418,27 @@
     background: rgba(255, 255, 255, 0.08) !important;
     color: #e6edf3 !important;
 }
+
+/* ── Recuperar / Restablecer contraseña (caja simple-auth) ── */
+[data-theme="dark"] .recuperar-box,
+[data-theme="dark"] .simple-auth-shell .contenedor {
+    background: #161b22 !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.55) !important;
+}
+[data-theme="dark"] .simple-auth-shell .contenedor .form-control {
+    background-color: #21262d !important;
+    border-color: #30363d !important;
+    color: #e6edf3 !important;
+}
+[data-theme="dark"] .simple-auth-shell .contenedor .form-control::placeholder { color: #484f58 !important; }
+[data-theme="dark"] .simple-auth-shell .contenedor .form-label,
+[data-theme="dark"] .simple-auth-shell .contenedor label { color: #8b949e !important; }
+[data-theme="dark"] .simple-auth-shell .contenedor .form-text { color: #6a7882 !important; }
+[data-theme="dark"] .simple-auth-shell .contenedor .btn-primary {
+    background: linear-gradient(90deg, #005566, #003d47) !important;
+}
+[data-theme="dark"] .simple-auth-shell .alert-info {
+    background-color: #0d2f3f !important;
+    border-color: #1a5f7a !important;
+    color: #a8d8e2 !important;
+}

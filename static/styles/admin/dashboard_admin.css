@@ -641,3 +641,43 @@ tr:hover td {
   display: none;
 }
 .overlay-close.open { display: block; }
+
+/* ============================================================
+   BOTÓN MODO OSCURO (sidebar)
+   ============================================================ */
+.btn-darkmode-sidebar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.btn-darkmode-sidebar:hover { background: var(--border); color: var(--text); }
+.btn-darkmode-sidebar svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ============================================================
+   MODO OSCURO  (selector unificado [data-theme="dark"])
+   Redefine las variables → todo el panel cambia de tema
+   ============================================================ */
+[data-theme="dark"] {
+  --bg:      #0d1117;
+  --surface: #131c26;
+  --card:    #1a2530;
+  --border:  #26323d;
+  --text:    #e6edf3;
+  --muted:   #93a4b3;
+}
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea,
+[data-theme="dark"] .search-box input { color: var(--text); }

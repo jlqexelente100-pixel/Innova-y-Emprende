@@ -98,3 +98,29 @@ input[type="file"] {
         padding: 1.35rem;
     }
 }
+
+/* ============================================================
+   MODO OSCURO  (selector unificado [data-theme="dark"])
+   ============================================================ */
+[data-theme="dark"] body { background: #0d1117 !important; }
+[data-theme="dark"] .perfil-container {
+    background: #1a2a33;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+}
+[data-theme="dark"] .perfil-container h3 { color: #e2e8f0; }
+[data-theme="dark"] form label { color: #94a3b8; }
+[data-theme="dark"] form .form-control {
+    background-color: #0f1e26;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+}
+[data-theme="dark"] form .form-control:focus {
+    background-color: #152530;
+    border-color: #00b4c7;
+    box-shadow: 0 0 0 4px rgba(0, 180, 199, 0.15);
+}
+[data-theme="dark"] input[type="file"] {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #e2e8f0;
+}
+[data-theme="dark"] .rounded-circle.shadow { background-color: #0f1e26; }

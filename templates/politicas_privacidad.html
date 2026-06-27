@@ -63,7 +63,24 @@
             background:#3f7479;
         }
 
+        /* ===== MODO OSCURO ===== */
+        [data-theme="dark"] body{
+            background: linear-gradient(180deg, #06222a 0%, #04161b 40%, #020d10 100%);
+        }
+        [data-theme="dark"] .contenedor{
+            background:#1a2530;
+            box-shadow:0 10px 30px rgba(0,0,0,.5);
+        }
+        [data-theme="dark"] h1,
+        [data-theme="dark"] h3{ color:#5fd0dd; }
+        [data-theme="dark"] p,
+        [data-theme="dark"] li{ color:#cbd5e1; }
+        [data-theme="dark"] strong{ color:#e2e8f0; }
+        [data-theme="dark"] .boton{ background:#00725a; }
+
     </style>
+
+    <script src="{{ url_for('static', filename='darkmode.js') }}"></script>
 
 </head>
 <body>
