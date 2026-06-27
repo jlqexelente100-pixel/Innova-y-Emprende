@@ -85,3 +85,20 @@ body {
         padding: 1.35rem;
     }
 }
+
+/* ============================================================
+   MODO OSCURO  (selector unificado [data-theme="dark"])
+   ============================================================ */
+[data-theme="dark"] body { background: #0d1117 !important; }
+[data-theme="dark"] .perfil-container {
+    background: #1a2a33;
+    border-top-color: #00b4c7;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+}
+[data-theme="dark"] .perfil-label { color: #94a3b8; }
+[data-theme="dark"] .perfil-value-box {
+    background-color: #0f1e26;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+}
+[data-theme="dark"] .rounded-circle.shadow { background-color: #0f1e26; }

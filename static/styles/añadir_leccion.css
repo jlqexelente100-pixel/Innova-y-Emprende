@@ -141,19 +141,19 @@
 }
 
 /* Darkmode */
-body.dark-mode .leccion-card {
+[data-theme="dark"] .leccion-card {
     background: #1a2a33;
     border-color: rgba(255,255,255,.07);
 }
-body.dark-mode .leccion-card .form-control {
+[data-theme="dark"] .leccion-card .form-control {
     background: #0f1e26;
     border-color: rgba(255,255,255,.1);
     color: #e2e8f0;
 }
-body.dark-mode .leccion-card .form-control:focus {
+[data-theme="dark"] .leccion-card .form-control:focus {
     border-color: var(--brand-light);
     box-shadow: 0 0 0 3px rgba(0,122,140,.2);
     background: #152530;
 }
-body.dark-mode .leccion-card .form-label { color: #94a3b8; }
-body.dark-mode .form-section-title { color: var(--brand-light); border-color: rgba(255,255,255,.08); }
+[data-theme="dark"] .leccion-card .form-label { color: #94a3b8; }
+[data-theme="dark"] .form-section-title { color: var(--brand-light); border-color: rgba(255,255,255,.08); }

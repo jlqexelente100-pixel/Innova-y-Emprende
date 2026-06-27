@@ -21,7 +21,7 @@
     color: var(--mc-ink);
 }
 
-.dark-mode .mc-wrapper {
+[data-theme="dark"] .mc-wrapper {
     --mc-ink:          #f1f5f9;
     --mc-muted:        #94a3b8;
     --mc-border:       #26364b;
@@ -138,10 +138,10 @@
 .mc-icon-v2--blue   { background: #dbeafe; color: #2563eb; }
 .mc-icon-v2--purple { background: #ede9fe; color: #7c3aed; }
 
-.dark-mode .mc-icon-v2--teal   { background: #164e63; color: #38bdf8; }
-.dark-mode .mc-icon-v2--green  { background: #14532d; color: #4ade80; }
-.dark-mode .mc-icon-v2--blue   { background: #1e3a5f; color: #60a5fa; }
-.dark-mode .mc-icon-v2--purple { background: #2e1065; color: #a78bfa; }
+[data-theme="dark"] .mc-icon-v2--teal   { background: #164e63; color: #38bdf8; }
+[data-theme="dark"] .mc-icon-v2--green  { background: #14532d; color: #4ade80; }
+[data-theme="dark"] .mc-icon-v2--blue   { background: #1e3a5f; color: #60a5fa; }
+[data-theme="dark"] .mc-icon-v2--purple { background: #2e1065; color: #a78bfa; }
 
 .mc-stat-text-v2 {
     display: flex;
@@ -302,7 +302,7 @@
     background: #e5edf3;
 }
 
-.dark-mode .mc-preview-track { background: #27394d; }
+[data-theme="dark"] .mc-preview-track { background: #27394d; }
 
 .mc-preview-track span {
     display: block;
@@ -410,7 +410,7 @@
     background: linear-gradient(135deg, #edf9fa, #d3eff3);
 }
 
-.dark-mode .mc-card-cover { background: linear-gradient(135deg, #132d39, #163846); }
+[data-theme="dark"] .mc-card-cover { background: linear-gradient(135deg, #132d39, #163846); }
 
 .mc-card-badge {
     position: absolute;
@@ -460,7 +460,7 @@
     background: #e5edf3;
 }
 
-.dark-mode .mc-bar-track { background: #27394d; }
+[data-theme="dark"] .mc-bar-track { background: #27394d; }
 
 .mc-bar-fill {
     height: 100%;

@@ -233,12 +233,12 @@
 <style>
 .estilos-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1050;padding:16px;}
 .estilos-modal{background:#fff;border-radius:14px;padding:22px;width:100%;max-width:440px;box-shadow:0 18px 50px rgba(0,0,0,.3);}
-body.dark-mode .estilos-modal{background:#1a2a33;color:#e2e8f0;}
+[data-theme="dark"] .estilos-modal{background:#1a2a33;color:#e2e8f0;}
 .estilos-field{margin-bottom:12px;display:flex;flex-direction:column;gap:5px;}
 .estilos-field label{font-size:.82rem;font-weight:600;}
 .estilos-field input[type=color]{width:56px;height:34px;border:1px solid #ccc;border-radius:6px;padding:2px;cursor:pointer;}
 .estilos-field select,.estilos-field textarea{width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:8px;font-size:.9rem;font-family:inherit;}
-body.dark-mode .estilos-field select,body.dark-mode .estilos-field textarea{background:#0f1e26;color:#e2e8f0;border-color:rgba(255,255,255,.15);}
+[data-theme="dark"] .estilos-field select,[data-theme="dark"] .estilos-field textarea{background:#0f1e26;color:#e2e8f0;border-color:rgba(255,255,255,.15);}
 .estilos-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;}
 </style>
 {% endif %}

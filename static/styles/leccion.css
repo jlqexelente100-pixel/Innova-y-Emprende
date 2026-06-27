@@ -135,7 +135,7 @@
     flex-wrap: wrap;
 }
 
-.dark-mode .lec-reunion {
+[data-theme="dark"] .lec-reunion {
     background: #1c1a10;
     border-color: #854d0e;
     border-left-color: #f59e0b;
@@ -158,9 +158,9 @@
 
 .lec-reunion-info { flex: 1; min-width: 120px; }
 .lec-reunion-info strong { font-size: 0.9rem; color: #92400e; display: block; }
-.dark-mode .lec-reunion-info strong { color: #fde68a; }
+[data-theme="dark"] .lec-reunion-info strong { color: #fde68a; }
 .lec-reunion-info p { font-size: 0.8rem; color: #b45309; margin: 2px 0 0; }
-.dark-mode .lec-reunion-info p { color: #fcd34d; }
+[data-theme="dark"] .lec-reunion-info p { color: #fcd34d; }
 .lec-reunion-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* Botones pequeños */
@@ -191,8 +191,8 @@
     color: #b91c1c;
 }
 .lec-btn-danger:hover { background: #fecaca; color: #991b1b; }
-.dark-mode .lec-btn-danger { background: #450a0a; color: #fca5a5; }
-.dark-mode .lec-btn-danger:hover { background: #7f1d1d; }
+[data-theme="dark"] .lec-btn-danger { background: #450a0a; color: #fca5a5; }
+[data-theme="dark"] .lec-btn-danger:hover { background: #7f1d1d; }
 
 /* ── VIDEO ───────────────────────────────────── */
 .lec-video-wrap {
@@ -229,7 +229,7 @@
     background: #f0f9ff;
 }
 
-.dark-mode .lec-video-status--watching {
+[data-theme="dark"] .lec-video-status--watching {
     background: #0c1a2e;
 }
 
@@ -237,7 +237,7 @@
     background: #f0fdf4;
 }
 
-.dark-mode .lec-video-status--done {
+[data-theme="dark"] .lec-video-status--done {
     background: #052e16;
 }
 
@@ -251,8 +251,8 @@
 
 .lec-video-status--watching .lec-status-inner { color: #0369a1; }
 .lec-video-status--done    .lec-status-inner { color: #15803d; }
-.dark-mode .lec-video-status--watching .lec-status-inner { color: #7dd3fc; }
-.dark-mode .lec-video-status--done    .lec-status-inner { color: #86efac; }
+[data-theme="dark"] .lec-video-status--watching .lec-status-inner { color: #7dd3fc; }
+[data-theme="dark"] .lec-video-status--done    .lec-status-inner { color: #86efac; }
 
 /* Barra de progreso del video */
 .lec-vprogress-wrap {
@@ -283,7 +283,7 @@
     overflow: hidden;
 }
 
-.dark-mode .lec-content-card {
+[data-theme="dark"] .lec-content-card {
     background: #1e293b;
     border-color: #334155;
 }
@@ -300,7 +300,7 @@
     color: #334155;
 }
 
-.dark-mode .lec-content-header {
+[data-theme="dark"] .lec-content-header {
     background: #0f172a;
     border-color: #334155;
     color: #94a3b8;
@@ -315,7 +315,7 @@
     white-space: pre-wrap;
 }
 
-.dark-mode .lec-content-body {
+[data-theme="dark"] .lec-content-body {
     color: #94a3b8;
 }
 
@@ -335,7 +335,7 @@
     padding: 1.2rem;
 }
 
-.dark-mode .lec-sidebar-card {
+[data-theme="dark"] .lec-sidebar-card {
     background: #1e293b;
     border-color: #334155;
 }
@@ -376,7 +376,7 @@
     stroke-width: 3;
 }
 
-.dark-mode .lec-ring-bg { stroke: #334155; }
+[data-theme="dark"] .lec-ring-bg { stroke: #334155; }
 
 .lec-ring-fill {
     fill: none;
@@ -396,7 +396,7 @@
     color: #1e293b;
 }
 
-.dark-mode .lec-ring-pct { color: #f1f5f9; }
+[data-theme="dark"] .lec-ring-pct { color: #f1f5f9; }
 
 /* Badge completada */
 .lec-completada-badge {
@@ -414,7 +414,7 @@
     animation: popIn 0.4s cubic-bezier(.34,1.56,.64,1);
 }
 
-.dark-mode .lec-completada-badge {
+[data-theme="dark"] .lec-completada-badge {
     background: #052e16;
     color: #86efac;
 }
@@ -449,7 +449,7 @@
     text-align: left;
 }
 
-.dark-mode .lec-action-btn {
+[data-theme="dark"] .lec-action-btn {
     background: #0f172a;
     border-color: #334155;
     color: #94a3b8;
@@ -462,7 +462,7 @@
     text-decoration: none;
 }
 
-.dark-mode .lec-action-btn:hover {
+[data-theme="dark"] .lec-action-btn:hover {
     background: #1e293b;
     color: #f1f5f9;
 }
@@ -473,7 +473,7 @@
     color: #007b91;
 }
 
-.dark-mode .lec-action-btn--teal {
+[data-theme="dark"] .lec-action-btn--teal {
     background: #003842;
     border-color: #007b91;
     color: #5eead4;
@@ -491,7 +491,7 @@
     color: #dc2626;
 }
 
-.dark-mode .lec-action-btn--danger {
+[data-theme="dark"] .lec-action-btn--danger {
     background: #1c0a0a;
     border-color: #7f1d1d;
     color: #fca5a5;
@@ -519,7 +519,7 @@
     overflow: hidden;
 }
 
-.dark-mode .lec-bar-track { background: #334155; }
+[data-theme="dark"] .lec-bar-track { background: #334155; }
 
 .lec-bar-fill {
     height: 100%;

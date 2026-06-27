@@ -9,7 +9,7 @@
     --text-card: #212529;
 }
 
-body.dark {
+[data-theme="dark"] {
     --bg-card: #1e293b;
     --text-card: #e2e8f0;
 }
@@ -472,5 +472,38 @@ body {
     border-radius: 10px;
     padding: 16px;
 }
+
+/* ============================================================
+   MODO OSCURO  (selector unificado [data-theme="dark"])
+   ============================================================ */
+[data-theme="dark"] .curso-panel { box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45); }
+[data-theme="dark"] .leccion-item {
+    background: #0f1e26;
+    color: #e2e8f0;
+}
+[data-theme="dark"] .leccion-item:hover { background: #16323d; }
+[data-theme="dark"] .leccion-item .text-muted { color: #94a3b8 !important; }
+[data-theme="dark"] .comprar-card {
+    background: #1a2a33;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+}
+[data-theme="dark"] .comprar-precio { color: #e2e8f0; }
+[data-theme="dark"] .comprar-beneficios { border-top-color: rgba(255, 255, 255, 0.1); }
+[data-theme="dark"] .comprar-beneficios-titulo { color: #94a3b8; }
+[data-theme="dark"] .comprar-beneficios ul li { color: #cbd5e1; }
+[data-theme="dark"] .card-body-foro .boton-foros { color: #e2e8f0; border-color: #00b4c7; }
+[data-theme="dark"] .card-body-foro .boton-foros:hover { background: #00b4c7; color: #001f26; }
+[data-theme="dark"] .reseña-form-wrapper { background: #0f1e26; }
+[data-theme="dark"] .reseña-textarea {
+    background: #0f1e26;
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e2e8f0;
+}
+[data-theme="dark"] .reseña-comentario-texto { color: #cbd5e1; }
+[data-theme="dark"] .reseña-item { border-bottom-color: rgba(255, 255, 255, 0.08); }
+[data-theme="dark"] .reseña-fecha,
+[data-theme="dark"] .reseñas-total { color: #94a3b8; }
+[data-theme="dark"] .estrellas-display .estrella.vacia,
+[data-theme="dark"] .estrella-input { color: #475569; }
 
 /*TARJETA FORO*/
