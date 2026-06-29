@@ -60,7 +60,7 @@ body {
     padding: 0 12px 20px;
     display: flex;
     flex-direction: column;
-    transition: width 0.28s ease, min-width 0.28s ease, transform 0.28s ease;
+    transition: none;
     overflow-x: hidden;
     overflow-y: auto;
     position: sticky;
@@ -582,4 +582,8 @@ body {
 [data-theme="dark"] #sidebar .nav-link.active {
     background: rgba(0, 201, 167, 0.14);
     color: #00c9a7;
+}
+
+#sidebar.sidebar-animado {
+    transition: width 0.28s ease, min-width 0.28s ease, transform 0.28s ease;
 }

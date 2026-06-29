@@ -17,6 +17,48 @@
     <link rel="icon" href="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}">
 
     <script src="{{ url_for('static', filename='darkmode.js') }}"></script>
+    <script>
+    (function() {
+        if (localStorage.getItem("sidebar-collapsed") === "true" &&
+            !window.matchMedia("(max-width: 767.98px)").matches) {
+            document.documentElement.classList.add("sidebar-pre-collapsed");
+        }
+    })();
+    </script>
+    <style>
+    .no-sidebar-transition #sidebar,
+    .no-sidebar-transition #sidebar * {
+        transition: none !important;
+        animation: none !important;
+    }
+    .sidebar-pre-collapsed #sidebar {
+        width: 68px !important;
+        min-width: 68px !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+    .sidebar-pre-collapsed #sidebar .nav-label,
+    .sidebar-pre-collapsed #sidebar .sidebar-button-label,
+    .sidebar-pre-collapsed #sidebar .sidebar-brand-text,
+    .sidebar-pre-collapsed #sidebar .user-info {
+        display: none !important;
+    }
+    .sidebar-pre-collapsed #sidebar .nav-link {
+        justify-content: center !important;
+        gap: 0 !important;
+    }
+    .sidebar-pre-collapsed #sidebar .btn-darkmode-sidebar {
+        justify-content: center !important;
+    }
+    .sidebar-pre-collapsed #sidebar .user-box {
+        justify-content: center !important;
+        padding: 10px 0 !important;
+    }
+    .sidebar-pre-collapsed #sidebar .sidebar-logo {
+        justify-content: center !important;
+        padding-bottom: 14px !important;
+    }
+    </style>
     <style>
     /* ── TOAST FLASH ─────────────────────────────────────────── */
     .toast-flash {
@@ -58,7 +100,7 @@
     </style>
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="no-sidebar-transition">
 
 <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
 
@@ -142,10 +184,10 @@
 
             <div class="sidebar-divider"></div>
             <li class="nav-item">
-                <a class="nav-link nav-link-logout" href="{{ url_for('logout') }}" data-tooltip="Cerrar sesión">
-                    <i class="bi bi-box-arrow-left nav-icon"></i>
-                    <span class="nav-label">Cerrar sesión</span>
-                </a>
+                <button class="btn-darkmode-sidebar nav-link" type="button" style="width:100%;text-align:left;background:none;border:none;padding:8px 12px;display:flex;align-items:center;gap:10px;">
+                    <i class="bi bi-moon-stars nav-icon"></i>
+                    <span class="nav-label sidebar-button-label">Oscuro</span>
+                </button>
             </li>
 
             {% else %}
@@ -165,12 +207,14 @@
             {% endif %}
         </ul>
 
-        <!-- Darkmode abajo del todo -->
+        <!-- Cerrar sesión abajo del todo -->
         <div class="sidebar-bottom">
-            <button class="btn-darkmode-sidebar" type="button" title="Cambiar a modo oscuro">
-                <i class="bi bi-moon-stars nav-icon"></i>
-                <span class="nav-label sidebar-button-label">Oscuro</span>
-            </button>
+            {% if session.get('user_id') %}
+            <a class="nav-link nav-link-logout" href="#" onclick="confirmarCerrarSesion(event)" data-tooltip="Cerrar sesión" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;">
+                <i class="bi bi-box-arrow-left nav-icon"></i>
+                <span class="nav-label sidebar-button-label">Cerrar sesión</span>
+            </a>
+            {% endif %}
         </div>
     </nav>
     <!-- ════════════════════════════════ -->
@@ -198,14 +242,14 @@
             <!-- Acciones derecha -->
             <div class="topbar-actions">
                 {% if session.get('user_id') %}
+                <!-- Darkmode solo visible en móvil -->
+                <button class="topbar-darkmode-mobile btn-darkmode-sidebar" type="button" title="Cambiar modo">
+                    <i class="bi bi-moon-stars nav-icon"></i>
+                </button>
                 <!-- Notif -->
                 <a href="#" class="topbar-btn" id="btnAbrirNotifTop" title="Notificaciones">
                     <i class="bi bi-bell"></i>
                     <span id="notifBadgeTop" class="notif-dot d-none"></span>
-                </a>
-                <!-- Configuración -->
-                <a href="{{ url_for('perfil') }}" class="topbar-btn" title="Configuración">
-                    <i class="bi bi-gear"></i>
                 </a>
                 <!-- Logo -->
                 <img src="{{ url_for('static', filename='styles/imagenes/logo_nova.png') }}" alt="Logo" class="topbar-logo-img">
@@ -252,6 +296,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const backdrop  = document.getElementById("sidebarBackdrop");
     const isMobile  = () => window.matchMedia("(max-width: 767.98px)").matches;
 
+    // Restaurar estado colapsado al cargar la página
+    if (!isMobile() && localStorage.getItem("sidebar-collapsed") === "true") {
+        sidebar.classList.add("collapsed");
+    }
+    function activarAnimacion() {
+        document.body.classList.remove("no-sidebar-transition");
+        document.documentElement.classList.remove("sidebar-pre-collapsed");
+        document.removeEventListener("mousemove", activarAnimacion);
+        document.removeEventListener("touchstart", activarAnimacion);
+    }
+    document.addEventListener("mousemove", activarAnimacion);
+    document.addEventListener("touchstart", activarAnimacion);
+ 
+
     // Marcar link activo
     const path = window.location.pathname;
     document.querySelectorAll("#sidebar .nav-link").forEach(link => {
@@ -266,6 +324,7 @@ document.addEventListener("DOMContentLoaded", function () {
     toggle?.addEventListener("click", () => {
         if (isMobile()) { syncMobile(!sidebar.classList.contains("is-open")); return; }
         sidebar.classList.toggle("collapsed");
+        localStorage.setItem("sidebar-collapsed", sidebar.classList.contains("collapsed"));
     });
 
     mobileBtn?.addEventListener("click", () => syncMobile(!sidebar.classList.contains("is-open")));
@@ -475,7 +534,107 @@ function filtrarCursos() {
 
 {% block scripts %}{% endblock %}
 
+<!-- ═══════════ MODAL CERRAR SESIÓN ═══════════ -->
+<style>
+#modalLogout .modal-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px 28px;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 8px 40px rgba(0,97,114,.25);
+    text-align: center;
+    position: relative;
+}
+#modalLogout .modal-texto-sub {
+    color: #666;
+    font-size: .93rem;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+[data-theme="dark"] #modalLogout .modal-card {
+    background: #1e2430;
+}
+[data-theme="dark"] #modalLogout .modal-texto-sub {
+    color: #aab;
+}
+</style>
+<div id="modalLogout" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:2000;
+    background:rgba(0,0,0,.6);
+    align-items:center;
+    justify-content:center;
+">
+    <div class="modal-card">
+        <div style="
+            width:62px;height:62px;border-radius:50%;
+            background:rgba(0,97,114,.1);
+            display:flex;align-items:center;justify-content:center;
+            margin:0 auto 16px;
+        ">
+            <i class="bi bi-box-arrow-left" style="font-size:1.8rem;color:#006172;"></i>
+        </div>
+        <h5 style="font-weight:700;margin-bottom:8px;color:var(--bs-body-color);">¿Cerrar sesión?</h5>
+        <p class="modal-texto-sub">¿Estás seguro de que deseas cerrar tu sesión?</p>
+        <div style="display:flex;gap:10px;justify-content:center;">
+            <button onclick="document.getElementById('modalLogout').style.display='none'"
+                style="
+                    padding:10px 24px;border-radius:10px;border:2px solid #006172;
+                    background:transparent;color:#006172;font-weight:600;
+                    cursor:pointer;font-size:.93rem;transition:all .2s;
+                "
+                onmouseover="this.style.background='rgba(0,97,114,.08)'"
+                onmouseout="this.style.background='transparent'"
+            >Cancelar</button>
+            <a href="{{ url_for('logout') }}"
+                style="
+                    padding:10px 24px;border-radius:10px;border:none;
+                    background:#006172;color:#fff;font-weight:600;
+                    cursor:pointer;font-size:.93rem;text-decoration:none;
+                    display:inline-flex;align-items:center;gap:6px;transition:background .2s;
+                "
+                onmouseover="this.style.background='#004f5e'"
+                onmouseout="this.style.background='#006172'"
+            ><i class="bi bi-box-arrow-left"></i> Sí, salir</a>
+        </div>
+    </div>
+</div>
 
+<!-- Botón darkmode visible solo en móvil (topbar) -->
+<style>
+.topbar-darkmode-mobile {
+    display: none;
+}
+@media (max-width: 767.98px) {
+    .topbar-darkmode-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        font-size: 1.25rem;
+        cursor: pointer;
+        color: inherit;
+        padding: 4px 6px;
+        border-radius: 8px;
+    }
+}
+</style>
+
+<script>
+function confirmarCerrarSesion(e) {
+    e.preventDefault();
+    const modal = document.getElementById('modalLogout');
+    modal.style.display = 'flex';
+}
+// Cerrar modal al hacer clic en el fondo oscuro
+document.getElementById('modalLogout').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+});
+</script>
 
 <script>
 // Auto-cerrar toasts de éxito después de 4s

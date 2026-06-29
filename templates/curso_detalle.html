@@ -376,8 +376,9 @@ async function cargarResenas() {
         lista.innerHTML = data.resenas.map(r => `
             <div class="reseña-item">
                 <div class="reseña-header">
-                    <img src="${r.foto ? '/static/' + r.foto : '/static/styles/imagenes/default-avatar.png'}"
-                         class="reseña-avatar" alt="${r.autor}">
+                    <img src="${r.foto ? '/static/' + r.foto : '/static/styles/imagenes/default-user.png'}"
+                         class="reseña-avatar" alt="${r.autor}"
+                         onerror="this.onerror=null;this.src='/static/styles/imagenes/default-user.png'">
                     <div>
                         <strong>${r.autor}</strong>
                         <div class="estrellas-display">${renderEstrellas(r.puntaje)}</div>

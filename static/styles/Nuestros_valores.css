@@ -40,6 +40,10 @@ body {
     animation: fadeUp 0.7s ease forwards;
 }
 
+.fade-up:nth-child(2) { animation-delay: 0.15s; }
+.fade-up:nth-child(3) { animation-delay: 0.3s; }
+.fade-up:nth-child(4) { animation-delay: 0.45s; }
+
 @keyframes fadeUp {
     to {
         opacity: 1;
