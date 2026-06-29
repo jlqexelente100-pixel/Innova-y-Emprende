@@ -803,7 +803,7 @@ def login():
     elif rol == "profesor":
         return redirect(url_for("profesor_dashboard"))
     else:
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
 
 @app.route("/logout")
@@ -922,7 +922,7 @@ def profesor_dashboard():
 
     if not requiere_profesor():
         flash("Acceso solo para profesores.", "warning")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     profesor_id = session["user_id"]
     conn = conectar_bd()
@@ -982,7 +982,7 @@ def profesor_crear_curso():
 
     if not puede_agregar_contenido():
         flash("No tienes permiso para crear cursos.", "warning")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     if request.method == "POST":
         titulo = request.form.get("titulo")
@@ -1007,7 +1007,7 @@ def profesor_crear_curso():
             """, (titulo, descripcion, precio, imagen_url, profesor_id))
             conn.commit()
             flash("Curso creado exitosamente", "success")
-            return redirect(url_for("home"))
+            return redirect(url_for("index"))
         except Exception as e:
             conn.rollback()
             flash("No se pudo crear el curso: probablemente ya existe un curso con el mismo título.", "error")
@@ -1030,7 +1030,7 @@ def profesor_anadir_leccion(curso_id):
 
     if not puede_agregar_contenido():
         flash("No tienes permiso para agregar lecciones.", "warning")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     # El profesor solo puede agregar lecciones a SUS cursos; el admin a cualquiera
     conn_chk = conectar_bd()
@@ -1136,7 +1136,7 @@ def admin_dashboard():
         return redirect(url_for("login"))
     if not requiere_admin():
         flash("Acceso solo para administradores", "warning")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
     # Simplemente renderiza el template, los datos los carga el JS via API
     return render_template("admin/dashboard_admin.html")
 
@@ -1743,18 +1743,18 @@ def pago_exitoso():
 
     if not stripe_session_id:
         flash("Solicitud inválida.", "warning")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     # Verificar con Stripe
     try:
         checkout = stripe.checkout.Session.retrieve(stripe_session_id)
     except Exception as e:
         flash("No se pudo verificar el pago.", "error")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     if checkout.payment_status != "paid":
         flash("El pago no fue completado.", "error")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     # ✅ Recuperar datos desde los metadatos de Stripe
     usuario_id = None
@@ -1768,7 +1768,7 @@ def pago_exitoso():
 
     if not usuario_id or not curso_id:
         flash("Error al procesar la compra.", "error")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     monto = checkout.amount_total / 100
 
@@ -1858,7 +1858,7 @@ def pago_exitoso():
 @app.route("/pago-cancelado")
 def pago_cancelado():
     flash("El pago fue cancelado.", "warning")
-    return redirect(url_for("home"))
+    return redirect(url_for("index"))
 
 
 # --------------------------
@@ -2143,7 +2143,7 @@ def perfil():
 
     if not usuario:
         flash("Usuario no encontrado.", "error")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     datos = {
         "nombre": usuario[0], "apellido": usuario[1], "username": usuario[2],
@@ -2237,7 +2237,7 @@ def foro_curso(curso_id):
             cur.close()
             conn.close()
             flash("No estás inscrito en este curso.", "warning")
-            return redirect(url_for("home"))
+            return redirect(url_for("index"))
 
     cur.execute("""
         SELECT fp.id, fp.titulo, fp.contenido, fp.creado_en,
@@ -2632,7 +2632,7 @@ def ver_certificado(curso_id):
 def buscar():
     query = request.args.get("q")
     if not query:
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     conn = conectar_bd()
     cur = conn.cursor()
@@ -2671,7 +2671,7 @@ def profesor_eliminar_leccion(leccion_id):
 
     if not puede_eliminar_contenido():
         flash("No tienes permiso para eliminar lecciones.", "warning")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     conn = conectar_bd()
     cur = conn.cursor()
@@ -2683,7 +2683,7 @@ def profesor_eliminar_leccion(leccion_id):
         cur.close()
         conn.close()
         flash("La lección no existe.", "error")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     curso_id = fila[0]
 
@@ -2713,7 +2713,7 @@ def profesor_reportes():
         return redirect(url_for("login"))
     if not requiere_profesor():
         flash("Acceso solo para profesores.", "warning")
-        return redirect(url_for("home"))
+        return redirect(url_for("index"))
 
     profesor_id = session["user_id"]
     conn = conectar_bd()
