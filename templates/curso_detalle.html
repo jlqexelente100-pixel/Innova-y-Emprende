@@ -165,11 +165,7 @@
                         <i class="fas fa-pen"></i> Editar curso
                     </a>
                     {% endif %}
-                    {% if curso.es_profesor %}
-                    <button class="btn btn-sm btn-secondary" onclick="editarEstilos()">
-                        Personalizar CSS
-                    </button>
-                    {% endif %}
+
                     {% if curso.puede_eliminar_curso %}
                     <button class="btn btn-sm btn-danger" onclick="eliminarCurso()">
                         <i class="fas fa-trash"></i> Eliminar curso

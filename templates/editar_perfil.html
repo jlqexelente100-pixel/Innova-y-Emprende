@@ -80,6 +80,7 @@
                 style="object-fit: cover; border: 4px solid var(--brand-mid);"
                 alt="Foto de perfil"
                 id="fotoPreview"
+                onerror="this.onerror=null;this.src='{{ url_for('static', filename='styles/imagenes/default-user.png') }}'"
             >
         </div>
 

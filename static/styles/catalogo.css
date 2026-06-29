@@ -29,6 +29,16 @@ margin-bottom: 36px;
 flex-wrap: wrap;
 }
 
+.filtros-bar--centrado {
+flex-direction: column;
+align-items: center;
+text-align: center;
+}
+
+.filtros-bar--centrado .grupo_texto {
+max-width: 680px;
+}
+
 .filtros-bar h2 {
 font-family: 'Sora', sans-serif;
 font-weight: 700;
