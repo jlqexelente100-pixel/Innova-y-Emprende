@@ -242,10 +242,7 @@
             <!-- Acciones derecha -->
             <div class="topbar-actions">
                 {% if session.get('user_id') %}
-                <!-- Darkmode solo visible en móvil -->
-                <button class="topbar-darkmode-mobile btn-darkmode-sidebar" type="button" title="Cambiar modo">
-                    <i class="bi bi-moon-stars nav-icon"></i>
-                </button>
+    
                 <!-- Notif -->
                 <a href="#" class="topbar-btn" id="btnAbrirNotifTop" title="Notificaciones">
                     <i class="bi bi-bell"></i>
@@ -603,26 +600,7 @@ function filtrarCursos() {
     </div>
 </div>
 
-<!-- Botón darkmode visible solo en móvil (topbar) -->
-<style>
-.topbar-darkmode-mobile {
-    display: none;
-}
-@media (max-width: 767.98px) {
-    .topbar-darkmode-mobile {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: none;
-        border: none;
-        font-size: 1.25rem;
-        cursor: pointer;
-        color: inherit;
-        padding: 4px 6px;
-        border-radius: 8px;
-    }
-}
-</style>
+
 
 <script>
 function confirmarCerrarSesion(e) {

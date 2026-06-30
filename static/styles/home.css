@@ -349,9 +349,13 @@ body {
     }
 
     .nav-links {
+        position: static;
+        left: auto;
+        transform: none;
         flex-direction: column;
         align-items: stretch;
         gap: 0.35rem;
+        width: 100%;
     }
 
     .nav-links li a {
