@@ -1562,8 +1562,20 @@ def curso_detalle(curso_id):
 
     datos_curso["puede_acceder"] = puede_acceder
 
+    lecciones_completadas_ids = set()
+    if usuario and puede_acceder:
+        conn2 = conectar_bd()
+        cur2 = conn2.cursor()
+        cur2.execute("""
+            SELECT leccion_id FROM progreso_lecciones
+            WHERE usuario_id = %s AND completada = TRUE
+        """, (usuario,))
+        lecciones_completadas_ids = {row[0] for row in cur2.fetchall()}
+        cur2.close()
+        conn2.close()
+
     lista_lecciones = [
-        {"id": l[0], "titulo": l[1], "video_url": l[2], "contenido": l[3], "fecha": str(l[4]) if l[4] else None}
+        {"id": l[0], "titulo": l[1], "video_url": l[2], "contenido": l[3], "fecha": str(l[4]) if l[4] else None, "completada": l[0] in lecciones_completadas_ids}
         for l in lecciones
     ]
 

@@ -194,8 +194,8 @@
     transform: translateY(-1px);
 }
 
-.mc-btn-done       { background: #15803d; }
-.mc-btn-done:hover { background: #166534; }
+.mc-btn-done       { background: #006172; }
+.mc-btn-done:hover { background: #004f5e; }
 
 /* ─────────────────────────────────────────
    ESTADO VACÍO
@@ -421,7 +421,7 @@
     font-weight: 800;
 }
 
-.mc-badge--done   { color: #15803d; background: #dcfce7; }
+.mc-badge--done   { color: #006172; background: #d0f0f4; }
 .mc-badge--active { color: var(--mc-primary); background: #e0f4f7; }
 .mc-badge--new    { color: #2563eb; background: #dbeafe; }
 
@@ -468,7 +468,7 @@
     transition: width .8s ease;
 }
 
-.mc-bar--done   { background: #16a34a; }
+.mc-bar--done   { background: linear-gradient(90deg, #004f5e, #006172); }
 .mc-bar--active { background: linear-gradient(90deg, #057d92, #18aec2); }
 .mc-bar--new    { min-width: 0; background: #bae6fd; }
 

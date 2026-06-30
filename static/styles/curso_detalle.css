@@ -299,19 +299,20 @@ body {
 .curso-panel .card-body-foro .boton-foros {
     display: inline-block;
     font-family: "Lato", Arial, sans-serif;
-    color: black;
+    color: white;
     font-size: 0.95rem;
     font-weight: 500;
     padding: 0.65rem 1.25rem;
     border-radius: 10px;
     border: 0.5px solid #006172;
+    background: #006172;
     cursor: pointer;
     text-decoration: none;
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .curso-panel .card-body-foro .boton-foros:hover {
-    background: #006172;
+    background: #00859c;
     color: white;
     transform: translateY(-1px);
 }
@@ -333,14 +334,14 @@ body {
 }
 
 .btn-principal {
-    background-color: var(--color-principal);
-    border-color: var(--color-principal);
+    background-color: #006172;
+    border-color: #006172;
     color: white;
 }
 
 .btn-principal:hover {
-    background-color: var(--color-secundario);
-    border-color: var(--color-secundario);
+    background-color: #00859c;
+    border-color: #00859c;
     color: white;
 }
 
@@ -507,3 +508,16 @@ body {
 [data-theme="dark"] .estrella-input { color: #475569; }
 
 /*TARJETA FORO*/
+
+/*LECCION COMPLETA*/
+.leccion-completada-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #006172;
+    color: white;
+    flex-shrink: 0;
+}
